@@ -27,6 +27,7 @@ public class BatchInsertNewKeywords : IJob
         
         var deserializedKeywords = JsonConvert.DeserializeObject<List<CreateKeywordDto>>(keywords);
         var parsedNoteId = Guid.Parse(noteId);
+        
         if (deserializedKeywords == null || deserializedKeywords.Count == 0) return;
 
         List<Keyword> createdKeys = deserializedKeywords.Select(d => d.ToConcreteKeyword()).ToList();

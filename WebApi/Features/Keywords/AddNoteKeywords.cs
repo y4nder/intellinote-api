@@ -111,18 +111,22 @@ public class AddNoteKeywords
                 if(saved.IsFailure) return Result.Failure<AddNoteKeywordsResponse>(saved.Error!);
             }
             
-            //publish mediator notification for creating batch notes
-            List<CreateKeywordDto> createKeywordDtos = toCreate.
-                Select(name => new CreateKeywordDto
-                {
-                    Name = name
-                }).ToList();
-            
-            await _mediator.Publish(new CreateBatchKeywordsNotification
+            if (toCreate.Count != 0)
             {
-                NoteId = note!.Id,
-                Keywords = createKeywordDtos
-            }, cancellationToken);
+                //publish mediator notification for creating batch notes
+                List<CreateKeywordDto> createKeywordDtos = toCreate.
+                    Select(name => new CreateKeywordDto
+                    {
+                        Name = name
+                    }).ToList();
+                
+                await _mediator.Publish(new CreateBatchKeywordsNotification
+                {
+                    NoteId = note!.Id,
+                    Keywords = createKeywordDtos
+                }, cancellationToken);
+            }
+            
 
 
             return Result.Success(new AddNoteKeywordsResponse
