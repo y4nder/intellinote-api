@@ -2,6 +2,8 @@
 using MediatR;
 using WebApi.Data.Entities;
 using WebApi.Errors;
+using WebApi.Errors.ErrorDefinitions;
+using WebApi.Features.Keywords.Notifications;
 using WebApi.Features.Utilities;
 using WebApi.Repositories;
 using WebApi.ResultType;
@@ -78,10 +80,10 @@ public class AddNoteKeywords
             if (!validationResult.IsValid)
                 return Result.Failure<AddNoteKeywordsResponse>(validationResult.Errors.ExtractToList());
             
-            Note? note = await _noteRepository.FindByIdAsync(command.NoteId);
+            var note = await _noteRepository.FindByIdAsync(command.NoteId);
 
             //Ensure note ownership
-            Result owned = OwnershipValidator.Ensure(
+            var owned = OwnershipValidator.Ensure(
                 note, 
                 n => n.User.Id == _userContext.Id()
             );
@@ -89,37 +91,39 @@ public class AddNoteKeywords
             if(owned.IsFailure) 
                 return Result.Failure<AddNoteKeywordsResponse>(owned.Error!);
             
-            List<Guid> keywordIds = command.Keywords
-                .Where(k => k.KeywordId.HasValue)
-                .Select(k => k.KeywordId!.Value).ToList();
-            
-            List<string> keywordNames = command.Keywords
-                .Where(k => !string.IsNullOrWhiteSpace(k.Name))
-                .Select(k => k.Name!).ToList();
+            var keywordIds = ExtractKeywordIds(command);
+            var keywordNames = ExtractKeywordNames(command);
 
-            List<Keyword> existingKeywords = await _keywordRepository.GetExistingKeywords(keywordIds, keywordNames, cancellationToken);
+            var existingKeywords = await _keywordRepository
+                .GetExistingKeywords(keywordIds, keywordNames, cancellationToken);
             
             // list of note retrieved keyword names
-            List<string> toCreate = keywordNames
+            var keywordsToCreate = keywordNames
                 .Where(k => existingKeywords.All(ek => ek.Name != k))
                 .ToList();
 
-            if (existingKeywords.Count != 0)
+            // if notes keywords has ids that match in the existing keywords
+            if (HasMatchingKeywords(note, existingKeywords))
             {
-                note!.AddKeywords(existingKeywords);
-                Result saved = await _unitOfWork.Commit(cancellationToken);
-                if(saved.IsFailure) return Result.Failure<AddNoteKeywordsResponse>(saved.Error!);
+                return Result.Failure<AddNoteKeywordsResponse>(KeywordErrors.KeywordAlreadyExists);
             }
             
-            if (toCreate.Count != 0)
+            if (existingKeywords.Any())
             {
-                //publish mediator notification for creating batch notes
-                List<CreateKeywordDto> createKeywordDtos = toCreate.
+                note!.AddKeywords(existingKeywords);
+                var saved = await _unitOfWork.Commit(cancellationToken);
+                if(saved.IsFailure) return Result.Failure<AddNoteKeywordsResponse>(saved.Error!);
+            } 
+            
+            if (keywordsToCreate.Any())
+            {
+                var createKeywordDtos = keywordsToCreate.
                     Select(name => new CreateKeywordDto
                     {
                         Name = name
                     }).ToList();
                 
+                //publish mediator notification for creating batch notes
                 await _mediator.Publish(new CreateBatchKeywordsNotification
                 {
                     NoteId = note!.Id,
@@ -127,12 +131,36 @@ public class AddNoteKeywords
                 }, cancellationToken);
             }
             
-
-
+            if(!existingKeywords.Any() && !keywordsToCreate.Any())
+            {
+                return Result.Failure<AddNoteKeywordsResponse>(KeywordErrors.InvalidKeywordIds);
+            }
+            
             return Result.Success(new AddNoteKeywordsResponse
             {
                 Message = "Added note Keywords"
             });
+        }
+
+        private static bool HasMatchingKeywords(Note? note, List<Keyword> existingKeywords)
+        {
+            return note!.Keywords.Any(k => existingKeywords.Any(ek => ek.Id == k.Id || ek.Name == k.Name));
+        }
+
+        private static List<string> ExtractKeywordNames(AddNoteKeywordsCommand command)
+        {
+            List<string> keywordNames = command.Keywords
+                .Where(k => !string.IsNullOrWhiteSpace(k.Name))
+                .Select(k => k.Name!.ToUpper()).ToList();
+            return keywordNames;
+        }
+
+        private static List<Guid> ExtractKeywordIds(AddNoteKeywordsCommand command)
+        {
+            List<Guid> keywordIds = command.Keywords
+                .Where(k => k.KeywordId.HasValue)
+                .Select(k => k.KeywordId!.Value).ToList();
+            return keywordIds;
         }
     }
 }

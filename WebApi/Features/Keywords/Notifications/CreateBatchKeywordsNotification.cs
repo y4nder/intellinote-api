@@ -4,7 +4,7 @@ using Quartz;
 using WebApi.Data.Entities;
 using WebApi.Features.Keywords.Jobs;
 
-namespace WebApi.Features.Keywords;
+namespace WebApi.Features.Keywords.Notifications;
 
 public class CreateBatchKeywordsNotification : INotification
 {
@@ -23,10 +23,8 @@ public class CreateBatchKeywordsNotificationHandler : INotificationHandler<Creat
 
     public async Task Handle(CreateBatchKeywordsNotification notification, CancellationToken cancellationToken)
     {
-        if (notification.Keywords.Count == 0)
-        {
-            return;
-        }
+        if (!notification.Keywords.Any()) return;
+        
         
         IScheduler scheduler = await _schedulerFactory.GetScheduler(cancellationToken);
 

@@ -13,8 +13,8 @@ public class Keyword : Entity<Guid>
     {
         return new Keyword
         {
-            Id = Guid.NewGuid(),
-            Name = name,
+            Id = Guid.NewGuid(), 
+            Name = name.ToUpper()
         };
     }
     public Keyword() { }

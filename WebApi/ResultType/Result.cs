@@ -69,3 +69,5 @@ public class Result<TValue> : Result
             : Failure<TValue>(new Error("NullValue", "The value is null.", StatusCodes.Status400BadRequest));
     }
 }
+
+ 
