@@ -41,6 +41,8 @@ public class Note : Entity<Guid>
 
     public void AddKeywords(List<Keyword> keywords)
     {
+        
+        
         if (Keywords.Count == 0)
         {
             Keywords = keywords;
