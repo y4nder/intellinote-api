@@ -7,5 +7,6 @@ public static class WebServices
     {
         services.AddScoped<UnitOfWork>();
         services.AddScoped(typeof(UserContext<,>));
+        services.AddScoped<EmbeddingService>();
     }
 }

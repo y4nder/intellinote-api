@@ -2,6 +2,7 @@
 using FluentValidation;
 using MediatR;
 using WebApi.Data.Entities;
+using WebApi.Features.Notes.Notification;
 using WebApi.Repositories;
 using WebApi.ResultType;
 using WebApi.Services;
@@ -30,14 +31,16 @@ public class CreateNote
         private readonly NoteRepository _noteRepository;
         private readonly UnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly IMediator _mediator;
         
 
-        public Handler(UserContext<User, string> userContext, NoteRepository noteRepository, UnitOfWork unitOfWork, IMapper mapper)
+        public Handler(UserContext<User, string> userContext, NoteRepository noteRepository, UnitOfWork unitOfWork, IMapper mapper, IMediator mediator)
         {
             _userContext = userContext;
             _noteRepository = noteRepository;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _mediator = mediator;
         }
 
         public async Task<Result<NotesContracts.CreateNoteResponse>> Handle(Command request, CancellationToken cancellationToken)
@@ -51,8 +54,19 @@ public class CreateNote
             
             _noteRepository.Add(note);
             await _unitOfWork.Commit(cancellationToken);
+            await HandleEmbeddings(note, cancellationToken);
             var noteDto = _mapper.Map<NoteDto>(note);
             return Result.Success(new NotesContracts.CreateNoteResponse(noteDto));
+        }
+
+        private async Task HandleEmbeddings(Note note, CancellationToken cancellationToken)
+        {
+            var textToEmbed = $"{note.Title} {note.Content}";
+            await _mediator.Publish(new GenerateNoteEmbeddingsNotification
+            {
+                NoteId = note.Id,
+                TextToEmbed = textToEmbed
+            }, cancellationToken);
         }
     }
 }

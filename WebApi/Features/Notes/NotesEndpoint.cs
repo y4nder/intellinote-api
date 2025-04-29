@@ -12,9 +12,9 @@ public class NotesEndpoint : ICarterModule
         var route = app.CreateApiGroup("notes", "Notes")
             .RequireAuthorization();
 
-        route.MapGet("", async (ISender sender) =>
+        route.MapGet("", async ([FromServices]ISender sender, [FromQuery]string? term = null, [FromQuery]int skip = 0, [FromQuery]int take = 10) =>
         {
-            var query = new NotesContracts.GetNotesRequest();
+                var query = new NotesContracts.GetNotesRequest(term, skip, take);
             var response = await sender.Send(query);
             return response.ToHttpResult();
         }).AddProducedTypes<NotesContracts.GetNotesResponse>();

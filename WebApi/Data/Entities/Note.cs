@@ -18,6 +18,8 @@ public class Note : Entity<Guid>
     public Vector? Embedding { get; set; }
 
     public string? Summary { get; set; }
+    
+    public static int EmbeddingDimensions = 1536;
 
     public Note() { }
 

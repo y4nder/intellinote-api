@@ -7,10 +7,11 @@ namespace WebApi.Features.Notes;
 
 public class NotesContracts
 {
-    public record GetNotesRequest() : IRequest<Result<GetNotesResponse>>;
     public record GetNoteResponse(NoteDto Note);
+    public record GetNotesRequest(string? Term = null, int Skip = 0, int Take = 10) : IRequest<Result<GetNotesResponse>>;
     public record GetNotesResponse(
-        List<NoteDto> Notes
+        List<NoteDto> Notes,
+        int TotalCount
     );
     
     public record CreateNoteRequest(

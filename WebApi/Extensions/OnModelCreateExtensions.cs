@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Pgvector;
 using WebApi.Data.Entities;
 
 namespace WebApi.Extensions;
@@ -32,10 +33,18 @@ public static class OnModelCreateExtensions
 
     private static ModelBuilder NoteExtensions(this ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Note>(n =>
+        {
+            n.Property(p => p.Embedding)
+                .HasColumnType("vector(1536)");
+        });
+
+        modelBuilder.Entity<Note>().HasIndex(n => n.Embedding).HasMethod("ivfflat").HasOperators("vector_cosine_ops");
+        
         modelBuilder.Entity<Note>()
             .HasMany(n => n.Keywords)
             .WithMany(k => k.Notes)
-            .UsingEntity<KeywordNote>();
+            .UsingEntity<KeywordNote>();    
         
         modelBuilder.Entity<KeywordNote>()
             .HasOne(kn => kn.Keyword)
