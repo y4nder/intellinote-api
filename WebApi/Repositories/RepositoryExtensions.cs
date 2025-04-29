@@ -6,7 +6,9 @@ public static class RepositoryExtensions
     {
         services.AddScoped<SampleRepository>();
         services.AddScoped<UserDataRepository>();
+        
         services.AddScoped<NoteRepository>();
+        
         services.AddScoped<FolderRepository>();
         services.AddScoped<KeywordRepository>();
     }

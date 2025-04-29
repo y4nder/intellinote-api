@@ -37,6 +37,33 @@ public static class OnModelCreateExtensions
             .WithMany(k => k.Notes)
             .UsingEntity<KeywordNote>();
         
+        modelBuilder.Entity<KeywordNote>()
+            .HasOne(kn => kn.Keyword)
+            .WithMany()
+            .HasForeignKey(kn => kn.KeywordId);
+        
+        modelBuilder.Entity<KeywordNote>()
+            .HasOne(kn => kn.Note)
+            .WithMany()
+            .HasForeignKey(kn => kn.NoteId);
+        
         return modelBuilder;
-    }   
+    }
+
+    private static ModelBuilder KeywordNoteExtensions(this ModelBuilder modelBuilder)
+    {
+        // modelBuilder.Entity<KeywordNote>()
+        //     .HasKey(kn => new { kn.NoteId, kn.KeywordId });
+        //
+        // modelBuilder.Entity<KeywordNote>()
+        //     .HasOne(kn => kn.Note)
+        //     .WithMany(n => n.KeywordNotes)
+        //     .HasForeignKey(kn => kn.NoteId);
+        //
+        // modelBuilder.Entity<KeywordNote>()
+        //     .HasOne(kn => kn.Keyword)
+        //     .WithMany(k => k.KeywordNotes)
+        //     .HasForeignKey(kn => kn.KeywordId);
+        return modelBuilder;
+    }
 }

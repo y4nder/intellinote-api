@@ -31,15 +31,17 @@ public static class ServicesExtensions
         return builder;
     }
 
-    public static IServiceCollection AddApplicationDbContext(this IServiceCollection services,
+    public static IServiceCollection AddApplicationServices(this IServiceCollection services,
         IConfiguration configuration)
     {
         var connectionString = configuration.GetConnectionString("DefaultConnection") ??
                                throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
         // modify database provider
-        services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connectionString));
+        services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connectionString, 
+            o => o.UseVector()));
         services.AddDatabaseDeveloperPageExceptionFilter();
+        // services.AddMongoDbExtensions(configuration);
         
         // //adding repository scope
         services.AddRepositories();

@@ -1,4 +1,6 @@
-﻿using WebApi.Generics;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using Pgvector;
+using WebApi.Generics;
 
 namespace WebApi.Data.Entities;
 
@@ -7,9 +9,15 @@ public class Note : Entity<Guid>
     public string Title { get; set; }
     public string Content { get; set; }
     public string UserId { get; set; }
-    public User User { get; set; }
+    public User User { get; set; } 
     public Folder? Folder { get; set; }
     public List<Keyword> Keywords { get; set; } = new List<Keyword>();
+    
+    //Embedding
+    [Column(TypeName = "vector(1536)")]
+    public Vector? Embedding { get; set; }
+
+    public string? Summary { get; set; }
 
     public Note() { }
 

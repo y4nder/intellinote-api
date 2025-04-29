@@ -15,7 +15,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Setup Database Context
-builder.Services.AddApplicationDbContext(builder.Configuration);
+builder.Services.AddApplicationServices(builder.Configuration);
 
 // Adding Aufy
 builder.Services.SetupAufy(builder.Configuration);

@@ -25,7 +25,7 @@ public class FolderEndpoints : ICarterModule
         }).AddProducedTypesWithoutValidation<FolderContracts.GetFolderResponse>();
         
         route.MapPost("", async (ISender sender, FolderContracts.CreateFolderRequest request) =>
-        {
+        {   
             var response = await sender.Send(request.Map());
             return response.ToHttpResult();
         }).AddProducedTypesWithoutValidation<FolderContracts.CreateFolderResponse>();
