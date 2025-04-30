@@ -1,4 +1,6 @@
-﻿using WebApi.Generics;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using Pgvector;
+using WebApi.Generics;
 
 namespace WebApi.Data.Entities;
 
@@ -7,9 +9,18 @@ public class Note : Entity<Guid>
     public string Title { get; set; }
     public string Content { get; set; }
     public string UserId { get; set; }
-    public User User { get; set; }
+    public User User { get; set; } 
     public Folder? Folder { get; set; }
     public List<Keyword> Keywords { get; set; } = new List<Keyword>();
+    public List<string> Topics { get; set; } = new();
+    
+    //Embedding
+    [Column(TypeName = "vector(1536)")]
+    public Vector? Embedding { get; set; }
+
+    public string? Summary { get; set; }
+    
+    public static int EmbeddingDimensions = 1536;
 
     public Note() { }
 
@@ -58,6 +69,7 @@ public class Note : Entity<Guid>
     {
         Title = note.Title;
         Content = note.Content;
+        Summary = note.Summary;
         SetUpdated();
     }
 
@@ -69,6 +81,7 @@ public class NoteDto
     public Guid Id { get; set; }
     public string Title { get; set; } = string.Empty;
     public string Content { get; set; } = string.Empty;
+    public string Summary { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
     public AuthorDto Author { get; set; } = null!;

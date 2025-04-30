@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
+using Pgvector;
+using Pgvector.EntityFrameworkCore;
 using WebApi.Data;
 using WebApi.Data.Entities;
 using WebApi.Generics;
@@ -16,14 +18,32 @@ public class NoteRepository : Repository<Note, Guid>
         _mapper = mapper;
     }
 
-    public async Task<List<NoteDto>> GetAllNotesForUserAsync(string userId)
+    public async Task<PaginatedResult<NoteDto>> GetAllNotesForUserAsync(string userId, Vector? searchVector = null, int skip = 0, int take = 10)
     {
-        return await DbSet.AsNoTracking()
-            .Where(n => n.UserId == userId)
+        var baseQuery = DbSet.AsNoTracking().Where(n => n.UserId == userId);
+
+        var totalCount = await baseQuery.CountAsync();
+        
+        if (searchVector != null)
+        {
+            baseQuery = baseQuery.OrderBy(n => 
+                n.Embedding!.CosineDistance(searchVector));
+        }
+        
+        var notes =  await baseQuery
+            .Skip(skip)
+            .Take(take)
             .ProjectTo<NoteDto>(_mapper.ConfigurationProvider)
             .ToListAsync();
+
+        return new PaginatedResult<NoteDto>
+        {
+            Items = notes,
+            TotalItems = totalCount,
+        };
     }
 
+    
     public async Task<NoteDto?> FindNoteWithProjection(Guid noteId)
     {
         return await DbSet.Where(n => n.Id == noteId)

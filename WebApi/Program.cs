@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Identity;
 using Serilog;
 using WebApi.Extensions;
 using WebApi.Middlewares;
+using WebApi.Services.External;
+using WebApi.Services.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,7 +17,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Setup Database Context
-builder.Services.AddApplicationDbContext(builder.Configuration);
+builder.Services.SetupCors();
+
+builder.Services.AddApplicationServices(builder.Configuration);
 
 // Adding Aufy
 builder.Services.SetupAufy(builder.Configuration);
@@ -41,8 +45,13 @@ builder.Services.SetupEmailService(builder.Configuration);
 builder.Services.AddHttpContextAccessor();
 
 // adding quartz
-
 builder.Services.SetupQuartz(builder.Configuration);
+
+// adding signalr
+builder.Services.AddSignalR();
+
+// adding external api service
+builder.Services.AddGeneratedResponseService(builder.Configuration);
 
 var app = builder.Build();
 
@@ -70,8 +79,10 @@ app.UseAuthorization();
 
 app.UseAufyEndpoints();
 
+
 app.MapFallbackToFile("index.html");
 
+app.MapHub<NoteHub>("/note-hub");
 //use result pattern exception handler
 app.UseResultExceptionHandler();
 try

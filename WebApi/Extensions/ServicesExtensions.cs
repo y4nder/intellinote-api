@@ -8,6 +8,7 @@ using Aufy.FluentEmail;
 using FluentEmail.MailKitSmtp;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 using Quartz;
 using Quartz.Impl.AdoJobStore;
 using Serilog;
@@ -15,8 +16,10 @@ using WebApi.Data;
 using WebApi.Data.Entities;
 using WebApi.Features.Auth;
 using WebApi.Features.Keywords.Jobs;
+using WebApi.Features.Notes.Jobs;
 using WebApi.Repositories;
 using WebApi.Services;
+
 
 namespace WebApi.Extensions;
 
@@ -31,15 +34,20 @@ public static class ServicesExtensions
         return builder;
     }
 
-    public static IServiceCollection AddApplicationDbContext(this IServiceCollection services,
+    public static IServiceCollection AddApplicationServices(this IServiceCollection services,
         IConfiguration configuration)
     {
         var connectionString = configuration.GetConnectionString("DefaultConnection") ??
                                throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-
-        // modify database provider
-        services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connectionString));
+        var dataSourceBuilder = new NpgsqlDataSourceBuilder(connectionString);
+        dataSourceBuilder.UseVector();
+        var dataSource = dataSourceBuilder.Build();
+        services.AddDbContext<ApplicationDbContext>(options => 
+            options.UseNpgsql(dataSource, 
+                x => x.UseVector())
+        );
         services.AddDatabaseDeveloperPageExceptionFilter();
+        services.AddOpenAiExtensions(configuration);
         
         // //adding repository scope
         services.AddRepositories();
@@ -89,6 +97,23 @@ public static class ServicesExtensions
             });
         return services;
     }
+    
+    public static IServiceCollection SetupCors(this IServiceCollection services)
+    {
+        services.AddCors(options =>
+        {
+            options.AddDefaultPolicy(builder =>
+            {
+                builder
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .SetIsOriginAllowed(_ => true)
+                    .AllowAnyOrigin();
+            });
+        });
+        
+        return services;
+    }
 
     // adding quartz
     public static IServiceCollection SetupQuartz(this IServiceCollection services, IConfiguration configuration)
@@ -112,6 +137,10 @@ public static class ServicesExtensions
             q.AddJob<BatchInsertNewKeywords>(j => j
                 .StoreDurably()
                 .WithIdentity(BatchInsertNewKeywords.Name));
+            
+            q.AddJob<GenerateNoteEmbeddings>(j => j
+                .StoreDurably()
+                .WithIdentity(GenerateNoteEmbeddings.Name));
             
         });
 

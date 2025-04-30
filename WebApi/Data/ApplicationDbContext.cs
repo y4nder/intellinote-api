@@ -21,9 +21,17 @@ public class ApplicationDbContext : IdentityDbContext<User>, IAufyDbContext<User
     public DbSet<Keyword> Keywords { get; set; }
     public DbSet<KeywordNote> KeywordNotes { get; set; }
 
+    // protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    // {
+    //     base.OnConfiguring(optionsBuilder);
+    //     optionsBuilder.UseNpgsql()
+    // }
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
+        builder.HasPostgresExtension("vector");
+        
         builder.ApplyAufyModel();
         builder.Ignore<DomainEvent>();
         builder.UseModelCreateExtension();

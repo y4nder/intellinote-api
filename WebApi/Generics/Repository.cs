@@ -45,19 +45,19 @@ public abstract class Repository<TEntity, TIdentifier> where TEntity : Entity<TI
         return await DbSet.ToListAsync();
     }
     
-    public async Task<PaginatedList<TEntity>> GetFilteredPaginatedAsync(int pageNumber, int pageSize, Expression<Func<TEntity, bool>>? expression = null )
-    {
-        IQueryable<TEntity> filteredQuery = DbSet.AsQueryable();
-
-        if (expression is not null)
-            filteredQuery = filteredQuery.Where(expression);
-
-        var totalItems = await filteredQuery.CountAsync();
-        var items = await filteredQuery
-            .Skip((pageNumber - 1) * pageSize)
-            .Take(pageSize)
-            .ToListAsync();
-
-        return new PaginatedList<TEntity>(items, totalItems, pageNumber, pageSize);
-    }
+    // public async Task<PaginatedResult<TEntity>> GetFilteredPaginatedAsync(int pageNumber, int pageSize, Expression<Func<TEntity, bool>>? expression = null )
+    // {
+    //     IQueryable<TEntity> filteredQuery = DbSet.AsQueryable();
+    //
+    //     if (expression is not null)
+    //         filteredQuery = filteredQuery.Where(expression);
+    //
+    //     var totalItems = await filteredQuery.CountAsync();
+    //     var items = await filteredQuery
+    //         .Skip((pageNumber - 1) * pageSize)
+    //         .Take(pageSize)
+    //         .ToListAsync();
+    //
+    //     return new PaginatedResult<TEntity>(items, totalItems, pageNumber, pageSize);
+    // }
 }
