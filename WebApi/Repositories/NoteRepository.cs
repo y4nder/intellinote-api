@@ -26,7 +26,8 @@ public class NoteRepository : Repository<Note, Guid>
         
         if (searchVector != null)
         {
-            baseQuery = baseQuery.OrderBy(n => n.Embedding!.CosineDistance(searchVector));
+            baseQuery = baseQuery.OrderBy(n => 
+                n.Embedding!.CosineDistance(searchVector));
         }
         
         var notes =  await baseQuery

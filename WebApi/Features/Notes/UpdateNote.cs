@@ -16,6 +16,7 @@ public class UpdateNote
         public Guid NoteId { get; set; }
         public String? Title { get; set; }
         public String? Content { get; set; }
+        public String? Summary { get; set; }
     }
     
     internal sealed class Handler  : IRequestHandler<Command, Result<NotesContracts.UpdateNoteResponse>>
@@ -54,6 +55,7 @@ public class UpdateNote
             {
                 Title = request.Title ?? existingNote.Title,
                 Content = request.Content ?? existingNote.Content,
+                Summary = request.Summary ?? existingNote.Summary
             });
             
             var saved = await _unitOfWork.Commit(cancellationToken);
@@ -67,7 +69,7 @@ public class UpdateNote
         
         private async Task HandleEmbeddings(Note note, CancellationToken cancellationToken)
         {
-            var textToEmbed = $"{note.Title} {note.Content}";
+            var textToEmbed = $"{note.Title} {note.Content} {note.Summary}";
             await _mediator.Publish(new GenerateNoteEmbeddingsNotification
             {
                 NoteId = note.Id,

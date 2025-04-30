@@ -1,4 +1,6 @@
 ﻿
+using WebApi.Services.Hubs;
+
 namespace WebApi.Services;
 
 public static class WebServices
@@ -8,5 +10,7 @@ public static class WebServices
         services.AddScoped<UnitOfWork>();
         services.AddScoped(typeof(UserContext<,>));
         services.AddScoped<EmbeddingService>();
+
+        services.AddSingleton<NoteHubService>();
     }
 }

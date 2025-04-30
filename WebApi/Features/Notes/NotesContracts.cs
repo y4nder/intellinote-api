@@ -23,7 +23,8 @@ public class NotesContracts
 
     public record UpdateNoteRequest(
         String Title,
-        String Content
+        String Content,
+        String Summary
 ) : IMappable<UpdateNote.Command>;
     
     

@@ -55,6 +55,15 @@ public static class OnModelCreateExtensions
             .HasOne(kn => kn.Note)
             .WithMany()
             .HasForeignKey(kn => kn.NoteId);
+
+        modelBuilder.Entity<Note>(n =>
+        {
+            n.Property(t => t.Topics)
+                .HasConversion(
+                    v => string.Join(';', v),
+                    v => v.Split(';', StringSplitOptions.RemoveEmptyEntries).ToList()
+                );
+        });
         
         return modelBuilder;
     }

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Serilog;
 using WebApi.Extensions;
 using WebApi.Middlewares;
+using WebApi.Services.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +16,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Setup Database Context
+builder.Services.SetupCors();
+
 builder.Services.AddApplicationServices(builder.Configuration);
 
 // Adding Aufy
@@ -44,6 +47,8 @@ builder.Services.AddHttpContextAccessor();
 
 builder.Services.SetupQuartz(builder.Configuration);
 
+builder.Services.AddSignalR();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -70,8 +75,10 @@ app.UseAuthorization();
 
 app.UseAufyEndpoints();
 
+
 app.MapFallbackToFile("index.html");
 
+app.MapHub<NoteHub>("/note-hub");
 //use result pattern exception handler
 app.UseResultExceptionHandler();
 try

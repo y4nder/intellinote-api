@@ -97,6 +97,23 @@ public static class ServicesExtensions
             });
         return services;
     }
+    
+    public static IServiceCollection SetupCors(this IServiceCollection services)
+    {
+        services.AddCors(options =>
+        {
+            options.AddDefaultPolicy(builder =>
+            {
+                builder
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .SetIsOriginAllowed(_ => true)
+                    .AllowAnyOrigin();
+            });
+        });
+        
+        return services;
+    }
 
     // adding quartz
     public static IServiceCollection SetupQuartz(this IServiceCollection services, IConfiguration configuration)
