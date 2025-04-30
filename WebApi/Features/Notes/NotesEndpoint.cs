@@ -32,6 +32,11 @@ public class NotesEndpoint : ICarterModule
             return response.ToHttpResult();
         }).AddProducedTypes<NotesContracts.CreateNoteResponse>();
 
+        // route.MapPost("/{noteId:guid}", async (ISender sender, Guid noteId) =>
+        // {
+        //
+        // });
+
         route.MapPut("/{noteId:guid}", async (ISender sender, Guid noteId, [FromBody]NotesContracts.UpdateNoteRequest request) =>
         {
             var command = request.Map();

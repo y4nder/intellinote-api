@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Serilog;
 using WebApi.Extensions;
 using WebApi.Middlewares;
+using WebApi.Services.External;
 using WebApi.Services.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -44,10 +45,13 @@ builder.Services.SetupEmailService(builder.Configuration);
 builder.Services.AddHttpContextAccessor();
 
 // adding quartz
-
 builder.Services.SetupQuartz(builder.Configuration);
 
+// adding signalr
 builder.Services.AddSignalR();
+
+// adding external api service
+builder.Services.AddGeneratedResponseService(builder.Configuration);
 
 var app = builder.Build();
 
