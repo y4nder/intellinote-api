@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.SignalR;
 using WebApi.Data.Entities;
+using WebApi.Services.External;
 
 namespace WebApi.Services.Hubs;
 
@@ -9,6 +10,8 @@ public interface INoteUpdateClient
     Task BroadcastMessage(BroadcastMessageDto message);
     
     Task NotifyEmbeddingDone(EmbeddingDoneDto message);
+    
+    Task NotifyGenerationDone(GenerationDoneDto message);
 }
 
 public class BroadcastMessageDto
@@ -22,6 +25,13 @@ public class EmbeddingDoneDto
     public string Message { get; set; } = null!;
     public DateTime DateTime { get; set; } = DateTime.UtcNow;   
     public long MilleSeconds { get; set; }   
+}
+
+public class GenerationDoneDto
+{
+    public GeneratedResponse Response { get; set; } = null!;
+    public DateTime DateTime { get; set; } = DateTime.UtcNow;
+    public long MilleSeconds { get; set; }
 }
 
 public class NoteHub : Hub<INoteUpdateClient>

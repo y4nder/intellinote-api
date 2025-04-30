@@ -142,6 +142,9 @@ public static class ServicesExtensions
                 .StoreDurably()
                 .WithIdentity(GenerateNoteEmbeddings.Name));
             
+            q.AddJob<GenerateKeywordAndSummaryJob>(j => j
+                .StoreDurably()
+                .WithIdentity(GenerateKeywordAndSummaryJob.Name));
         });
 
         services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
