@@ -12,3 +12,10 @@ public class GeneratedResponse
     public string Summary { get; set; } = null!;
     public List<string> Topics { get; set; } = new();
 }
+
+public class GeneratedResponseDto
+{
+    public List<string> Keywords { get; set; } = new();
+    public string Summary { get; set; } = null!;
+    public List<string> Topics { get; set; } = new();
+}

@@ -32,10 +32,12 @@ public class NotesEndpoint : ICarterModule
             return response.ToHttpResult();
         }).AddProducedTypes<NotesContracts.CreateNoteResponse>();
 
-        // route.MapPost("/{noteId:guid}", async (ISender sender, Guid noteId) =>
-        // {
-        //
-        // });
+        route.MapPost("/ai/{noteId:guid}", async (ISender sender, Guid noteId) =>
+        {
+            var command = new SummarizeNote.Command{NoteId = noteId};
+            var response = await sender.Send(command);
+            return response.ToHttpResult();
+        }).AddProducedTypesWithoutValidation<SummarizeNote.SummarizeNoteResponse>();
 
         route.MapPut("/{noteId:guid}", async (ISender sender, Guid noteId, [FromBody]NotesContracts.UpdateNoteRequest request) =>
         {

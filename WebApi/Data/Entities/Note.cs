@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using Pgvector;
 using WebApi.Generics;
+using WebApi.Services;
 
 namespace WebApi.Data.Entities;
 
@@ -9,9 +10,12 @@ public class Note : Entity<Guid>
     public string Title { get; set; }
     public string Content { get; set; }
     public string UserId { get; set; }
-    public User User { get; set; } 
+    public User User { get; set; }
+    
+    [ForeignKey("FolderId")]
+    public Guid? FolderId { get; set; }
     public Folder? Folder { get; set; }
-    public List<Keyword> Keywords { get; set; } = new List<Keyword>();
+    public List<string> Keywords { get; set; } = new();
     public List<string> Topics { get; set; } = new();
     
     //Embedding
@@ -52,17 +56,7 @@ public class Note : Entity<Guid>
 
     public void AddKeywords(List<Keyword> keywords)
     {
-        
-        
-        if (Keywords.Count == 0)
-        {
-            Keywords = keywords;
-        }
-        else
-        {
-            Keywords.AddRange(keywords);
-        }
-        SetUpdated();
+        throw new NotImplementedException();
     }
 
     public void Update(Note note)
@@ -73,7 +67,32 @@ public class Note : Entity<Guid>
         SetUpdated();
     }
 
-    public List<Keyword> GetKeywords() => Keywords.AsReadOnly().ToList();
+    public void SetEmbedding(Vector embedding)
+    {
+        Embedding = embedding;
+        SetUpdated();
+    }
+
+    public void ForceUpdate()
+    {
+        SetUpdated();
+    }
+
+    public string FlattenNoteForEmbedding()
+    {
+        var text = $"{Title} {Content} {Summary}";
+        if (Topics.Any())
+        {
+            text += string.Join(' ', Topics);
+        }
+
+        if (Keywords.Any())
+        {
+            text += string.Join(' ', Keywords);
+        }
+        return TextCleaner.Clean(text);
+    }
+    
 }
 
 public class NoteDto
@@ -86,7 +105,8 @@ public class NoteDto
     public DateTime? UpdatedAt { get; set; }
     public AuthorDto Author { get; set; } = null!;
     public FolderDto? Folder { get; set; }
-    public List<KeywordDto> Keywords { get; set; } = new();
+    public List<string> Keywords { get; set; } = new();
+    public List<string> Topics { get; set; } = new();
 }
 
 public class NoteDtoMinimal
@@ -95,5 +115,6 @@ public class NoteDtoMinimal
     public string Title { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
-    public List<KeywordDto> Keywords { get; set; } = new();
+    public List<string> Keywords { get; set; } = new();
+    public List<string> Topics { get; set; } = new();
 }

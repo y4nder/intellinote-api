@@ -4,7 +4,7 @@ using WebApi.Extensions;
 
 namespace WebApi.Features.Keywords;
 
-public class KeywordEndpoints : ICarterModule
+public class KeywordEndpoints
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {

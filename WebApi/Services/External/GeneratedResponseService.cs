@@ -18,9 +18,10 @@ public class GeneratedResponseService
         {
             text = TextCleaner.Clean(text);
             _logger.LogInformation($"[GET_RESP]: {text}");
-            var response = await _httpClient.GetFromJsonAsync<GeneratedResponse>("/api/generate");
+            var response = await _httpClient.PostAsJsonAsync("/api/generate", new { document = text });         
             _logger.LogInformation($"[GET_RESP]: {response}");
-            return response!;
+            var generated = await response.Content.ReadFromJsonAsync<GeneratedResponse>();
+            return generated!;
         }
         catch (Exception ex)
         {

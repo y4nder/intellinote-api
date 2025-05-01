@@ -44,7 +44,7 @@ public class GenerateNoteEmbeddings : IJob
         var note = await _noteRepository.FindByIdAsync(parsedId);
         if(note == null) return;
         
-        note.Embedding = textEmbeddingsVector;
+        note.SetEmbedding(textEmbeddingsVector);
         
         await _unitOfWork.Commit(CancellationToken.None);
         stopWatch.Stop();

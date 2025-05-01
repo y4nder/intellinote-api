@@ -13,10 +13,12 @@ public class FolderContracts
 
     public record CreateFolderRequest(
         String Name,
-        String Description
+        String Description,
+        List<Guid> NoteIds,
+        bool Auto
     ) : IMappable<CreateFolder.Command>;
     
-    public record CreateFolderResponse(FolderWithDetailsDto Folder);
+    public record CreateFolderResponse(FolderWithDetailsDto Folder, bool IsGenerating);
 
     public record UpdateFolderRequest(
         String? Name,

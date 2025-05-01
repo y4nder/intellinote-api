@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.SignalR;
-using WebApi.Data.Entities;
+using WebApi.Services.External;
 
 namespace WebApi.Services.Hubs;
 
@@ -9,6 +9,12 @@ public interface INoteUpdateClient
     Task BroadcastMessage(BroadcastMessageDto message);
     
     Task NotifyEmbeddingDone(EmbeddingDoneDto message);
+    
+    Task NotifyGenerationDone(GenerationDoneDto message);
+    
+    Task NotifyFolderCreationDone(FolderCreationDoneDto message);
+
+    Task NotifyFolderUpdateDone(FolderUpdateDoneDto message);
 }
 
 public class BroadcastMessageDto
@@ -22,6 +28,29 @@ public class EmbeddingDoneDto
     public string Message { get; set; } = null!;
     public DateTime DateTime { get; set; } = DateTime.UtcNow;   
     public long MilleSeconds { get; set; }   
+}
+
+public class GenerationDoneDto
+{
+    public GeneratedResponseDto Response { get; set; } = null!;
+    public DateTime DateTime { get; set; } = DateTime.UtcNow;
+    public long MilleSeconds { get; set; }
+}
+
+public class FolderCreationDoneDto
+{
+    public string Message { get; set; } = null!;
+    public Guid FolderId { get; set; }
+    DateTime DateTime { get; set; } = DateTime.UtcNow;
+    public long MilliSeconds { get; set; }
+}
+
+public class FolderUpdateDoneDto
+{
+    public string Message { get; set; } = null!;
+    public Guid FolderId { get; set; }
+    DateTime DateTime { get; set; } = DateTime.UtcNow;
+    public long MilliSeconds { get; set; }
 }
 
 public class NoteHub : Hub<INoteUpdateClient>

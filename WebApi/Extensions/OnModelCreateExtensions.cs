@@ -10,30 +10,22 @@ public static class OnModelCreateExtensions
     public static ModelBuilder UseModelCreateExtension(this ModelBuilder modelBuilder)
     {
         // add keyword extensions here
-        modelBuilder.KeywordExtensions();
+        // modelBuilder.KeywordExtensions();
         modelBuilder.NoteExtensions();
+        modelBuilder.FolderExtensions();
         
         return modelBuilder;
     }
     
-    public static ModelBuilder SampleEntityExtension(this ModelBuilder modelBuilder){
-        modelBuilder.Entity<SampleEntity>(c => {
-            c.HasIndex(e => e.UniqueName).IsUnique();
-        });
-        return modelBuilder;
-    }
-
-    private static ModelBuilder KeywordExtensions(this ModelBuilder modelBuilder)
-    {
-        modelBuilder.Entity<Keyword>(k =>
-        {
-            k.HasIndex(e => e.Name).IsUnique();
-        });
-        return modelBuilder;
-    }
-
     private static ModelBuilder NoteExtensions(this ModelBuilder modelBuilder)
     {
+        // Configure the relationship between Folder and Note with custom delete behavior
+        modelBuilder.Entity<Note>()
+            .HasOne(n => n.Folder)  // A Note has one Folder
+            .WithMany(f => f.Notes) // A Folder has many Notes
+            .HasForeignKey(n => n.FolderId) // FolderId is the foreign key
+            .OnDelete(DeleteBehavior.SetNull);  // Set FolderId to null when Folder is deleted
+        
         modelBuilder.Entity<Note>(n =>
         {
             n.Property(p => p.Embedding)
@@ -42,21 +34,6 @@ public static class OnModelCreateExtensions
 
         modelBuilder.Entity<Note>().HasIndex(n => n.Embedding).HasMethod("ivfflat").HasOperators("vector_cosine_ops");
         
-        modelBuilder.Entity<Note>()
-            .HasMany(n => n.Keywords)
-            .WithMany(k => k.Notes)
-            .UsingEntity<KeywordNote>();    
-        
-        modelBuilder.Entity<KeywordNote>()
-            .HasOne(kn => kn.Keyword)
-            .WithMany()
-            .HasForeignKey(kn => kn.KeywordId);
-        
-        modelBuilder.Entity<KeywordNote>()
-            .HasOne(kn => kn.Note)
-            .WithMany()
-            .HasForeignKey(kn => kn.NoteId);
-
         modelBuilder.Entity<Note>(n =>
         {
             n.Property(t => t.Topics)
@@ -71,23 +48,47 @@ public static class OnModelCreateExtensions
             ;
         });
         
+        modelBuilder.Entity<Note>(n =>
+        {
+            n.Property(t => t.Keywords)
+                .HasConversion(
+                    v => string.Join(';', v),
+                    v => v.Split(';', StringSplitOptions.RemoveEmptyEntries).ToList()
+                )
+                .Metadata.SetValueComparer(new ValueComparer<List<string>>(
+                    (c1, c2) => c1.SequenceEqual(c2),
+                    c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
+                    c => c.ToList()));
+        });
+        
+
+        
         return modelBuilder;
     }
 
-    private static ModelBuilder KeywordNoteExtensions(this ModelBuilder modelBuilder)
+    private static ModelBuilder FolderExtensions(this ModelBuilder modelBuilder)
     {
-        // modelBuilder.Entity<KeywordNote>()
-        //     .HasKey(kn => new { kn.NoteId, kn.KeywordId });
-        //
-        // modelBuilder.Entity<KeywordNote>()
-        //     .HasOne(kn => kn.Note)
-        //     .WithMany(n => n.KeywordNotes)
-        //     .HasForeignKey(kn => kn.NoteId);
-        //
-        // modelBuilder.Entity<KeywordNote>()
-        //     .HasOne(kn => kn.Keyword)
-        //     .WithMany(k => k.KeywordNotes)
-        //     .HasForeignKey(kn => kn.KeywordId);
+        modelBuilder.Entity<Folder>(f =>
+        {
+            f.Property(k => k.Keywords)
+                .HasConversion(
+                    v => string.Join(';', v),
+                    v => v.Split(';', StringSplitOptions.RemoveEmptyEntries).ToList()
+                )
+                .Metadata.SetValueComparer(new ValueComparer<List<string>>(
+                    (c1, c2) => c1.SequenceEqual(c2),
+                    c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
+                    c => c.ToList()));
+        });
+        
+        modelBuilder.Entity<Folder>().HasIndex(f => f.Embedding).HasMethod("ivfflat").HasOperators("vector_cosine_ops");
+        
+        modelBuilder.Entity<Folder>()
+            .HasMany(f => f.Notes)  // A Note has one Folder
+            .WithOne(n => n.Folder) // A Folder has many Notes
+            .HasForeignKey(n => n.FolderId) // FolderId is the foreign key
+            .OnDelete(DeleteBehavior.SetNull);  // Set FolderId to null when Folder is deleted
+        
         return modelBuilder;
     }
 }
