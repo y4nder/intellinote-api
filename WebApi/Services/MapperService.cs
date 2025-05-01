@@ -28,7 +28,7 @@ public class MapperService : Profile
     }
 }
 
-public static class MapperServiceExtensions
+public static class MapperServiceExtensions2
 {
     public static void AddMapperService(this IServiceCollection services)
     {

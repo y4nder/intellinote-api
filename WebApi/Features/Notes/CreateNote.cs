@@ -50,7 +50,7 @@ public class CreateNote
             var note = Note.Create(
                 user,
                 request.Title,
-                request.Content);
+                request.Content);   
             
             _noteRepository.Add(note);
             await _unitOfWork.Commit(cancellationToken);
@@ -61,7 +61,7 @@ public class CreateNote
 
         private async Task HandleEmbeddings(Note note, CancellationToken cancellationToken)
         {
-            var textToEmbed = $"{note.Title} {note.Content}";
+            var textToEmbed = note.FlattenNoteForEmbedding();
             await _mediator.Publish(new GenerateNoteEmbeddingsNotification
             {
                 NoteId = note.Id,

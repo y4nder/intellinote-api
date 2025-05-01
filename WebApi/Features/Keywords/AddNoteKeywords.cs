@@ -144,7 +144,8 @@ public class AddNoteKeywords
 
         private static bool HasMatchingKeywords(Note? note, List<Keyword> existingKeywords)
         {
-            return note!.Keywords.Any(k => existingKeywords.Any(ek => ek.Id == k.Id || ek.Name == k.Name));
+            // return note!.Keywords.Any(k => existingKeywords.Any(ek => ek.Id == k.Id || ek.Name == k.Name));
+            return false;
         }
 
         private static List<string> ExtractKeywordNames(AddNoteKeywordsCommand command)

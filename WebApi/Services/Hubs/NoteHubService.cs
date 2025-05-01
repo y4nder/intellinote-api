@@ -22,10 +22,38 @@ public class NoteHubService
 
     public async Task NotifyGenerationDone(GeneratedResponse response, long milleSeconds)
     {
+        // todo change to caller
         await _hubContext.Clients.All.NotifyGenerationDone(new GenerationDoneDto
         {
-            Response = response,
+            Response = new GeneratedResponseDto
+            {
+                Keywords = response.Keywords.Select(k => k.Keyword).ToList(),
+                Topics = response.Topics,
+                Summary = response.Summary,
+            },
             MilleSeconds = milleSeconds
         });   
+    }
+
+    public async Task NotifyFolderCreationDone(Folder folder, long milleSeconds)
+    {
+        // todo change to caller
+        await _hubContext.Clients.All.NotifyFolderCreationDone(new FolderCreationDoneDto
+        {
+            FolderId = folder.Id,
+            Message = $"Folder {folder.Name} created!",
+            MilliSeconds = milleSeconds
+        });
+    }
+    
+    public async Task NotifyFolderUpdateDone(Folder folder, long milleSeconds)
+    {
+        // todo change to caller
+        await _hubContext.Clients.All.NotifyFolderUpdateDone(new FolderUpdateDoneDto
+        {
+            FolderId = folder.Id,
+            Message = $"Folder {folder.Name} updated!",
+            MilliSeconds = milleSeconds
+        });
     }
 }

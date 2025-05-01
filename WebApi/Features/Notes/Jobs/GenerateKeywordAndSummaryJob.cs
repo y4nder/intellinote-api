@@ -48,6 +48,7 @@ public class GenerateKeywordAndSummaryJob : IJob
         
         note.Summary = generatedResponse.Summary;
         note.Topics = generatedResponse.Topics;
+        note.Keywords = generatedResponse.Keywords.Select(k => k.Keyword).ToList();
 
         await _unitOfWork.Commit(CancellationToken.None);
         stopWatch.Stop();

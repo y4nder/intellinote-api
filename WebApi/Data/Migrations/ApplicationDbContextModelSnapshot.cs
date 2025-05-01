@@ -484,21 +484,6 @@ namespace WebApi.Data.Migrations
                     b.ToTable("AufyRefreshTokens", (string)null);
                 });
 
-            modelBuilder.Entity("FolderKeyword", b =>
-                {
-                    b.Property<Guid>("FoldersId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("KeywordsId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("FoldersId", "KeywordsId");
-
-                    b.HasIndex("KeywordsId");
-
-                    b.ToTable("FolderKeyword");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -644,6 +629,13 @@ namespace WebApi.Data.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<Vector>("Embedding")
+                        .HasColumnType("vector(1536)");
+
+                    b.Property<string>("Keywords")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
@@ -660,50 +652,16 @@ namespace WebApi.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Embedding");
+
+                    NpgsqlIndexBuilderExtensions.HasMethod(b.HasIndex("Embedding"), "ivfflat");
+                    NpgsqlIndexBuilderExtensions.HasOperators(b.HasIndex("Embedding"), new[] { "vector_cosine_ops" });
+
                     b.HasIndex("UserDataId");
 
                     b.HasIndex("UserId");
 
                     b.ToTable("Folders");
-                });
-
-            modelBuilder.Entity("WebApi.Data.Entities.Keyword", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Name")
-                        .IsUnique();
-
-                    b.ToTable("Keywords");
-                });
-
-            modelBuilder.Entity("WebApi.Data.Entities.KeywordNote", b =>
-                {
-                    b.Property<Guid>("KeywordId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("NoteId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("KeywordId", "NoteId");
-
-                    b.HasIndex("NoteId");
-
-                    b.ToTable("KeywordNotes");
                 });
 
             modelBuilder.Entity("WebApi.Data.Entities.Note", b =>
@@ -724,6 +682,10 @@ namespace WebApi.Data.Migrations
 
                     b.Property<Guid?>("FolderId")
                         .HasColumnType("uuid");
+
+                    b.Property<string>("Keywords")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("Summary")
                         .HasColumnType("text");
@@ -905,21 +867,6 @@ namespace WebApi.Data.Migrations
                     b.Navigation("JobDetail");
                 });
 
-            modelBuilder.Entity("FolderKeyword", b =>
-                {
-                    b.HasOne("WebApi.Data.Entities.Folder", null)
-                        .WithMany()
-                        .HasForeignKey("FoldersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("WebApi.Data.Entities.Keyword", null)
-                        .WithMany()
-                        .HasForeignKey("KeywordsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -986,30 +933,12 @@ namespace WebApi.Data.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("WebApi.Data.Entities.KeywordNote", b =>
-                {
-                    b.HasOne("WebApi.Data.Entities.Keyword", "Keyword")
-                        .WithMany()
-                        .HasForeignKey("KeywordId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("WebApi.Data.Entities.Note", "Note")
-                        .WithMany()
-                        .HasForeignKey("NoteId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Keyword");
-
-                    b.Navigation("Note");
-                });
-
             modelBuilder.Entity("WebApi.Data.Entities.Note", b =>
                 {
                     b.HasOne("WebApi.Data.Entities.Folder", "Folder")
                         .WithMany("Notes")
-                        .HasForeignKey("FolderId");
+                        .HasForeignKey("FolderId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("WebApi.Data.Entities.UserData", null)
                         .WithMany("Notes")

@@ -18,8 +18,8 @@ public class ApplicationDbContext : IdentityDbContext<User>, IAufyDbContext<User
     public DbSet<AufyRefreshToken> RefreshTokens { get; set; }
     public DbSet<Note> Notes { get; set; }
     public DbSet<Folder> Folders { get; set; }
-    public DbSet<Keyword> Keywords { get; set; }
-    public DbSet<KeywordNote> KeywordNotes { get; set; }
+    // public DbSet<Keyword> Keywords { get; set; }
+    // public DbSet<KeywordNote> KeywordNotes { get; set; }
 
     // protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     // {

@@ -69,7 +69,7 @@ public class UpdateNote
         
         private async Task HandleEmbeddings(Note note, CancellationToken cancellationToken)
         {
-            var textToEmbed = $"{note.Title} {note.Content} {note.Summary}";
+            var textToEmbed = note.FlattenNoteForEmbedding();
             await _mediator.Publish(new GenerateNoteEmbeddingsNotification
             {
                 NoteId = note.Id,

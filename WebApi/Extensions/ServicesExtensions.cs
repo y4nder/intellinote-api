@@ -15,6 +15,7 @@ using Serilog;
 using WebApi.Data;
 using WebApi.Data.Entities;
 using WebApi.Features.Auth;
+using WebApi.Features.Folders.Jobs;
 using WebApi.Features.Keywords.Jobs;
 using WebApi.Features.Notes.Jobs;
 using WebApi.Repositories;
@@ -145,6 +146,10 @@ public static class ServicesExtensions
             q.AddJob<GenerateKeywordAndSummaryJob>(j => j
                 .StoreDurably()
                 .WithIdentity(GenerateKeywordAndSummaryJob.Name));
+            
+            q.AddJob<GenerateFolderEmbeddings>(j => j
+                .StoreDurably()
+                .WithIdentity(GenerateFolderEmbeddings.Name));
         });
 
         services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
