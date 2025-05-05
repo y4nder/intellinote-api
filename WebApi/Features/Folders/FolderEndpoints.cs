@@ -1,7 +1,9 @@
 ﻿using Carter;
 using MediatR;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Extensions;
+using WebApi.ResultType;
 
 namespace WebApi.Features.Folders;
 
@@ -43,5 +45,33 @@ public class FolderEndpoints : ICarterModule
             var response = await sender.Send(new DeleteFolder.Command{FolderId = folderId});
             return response.ToHttpResult();
         }).AddProducedTypesWithoutValidation<FolderContracts.DeleteFolderResponse>();
+
+        route.MapPost("/{folderId:guid}/action", async (Guid folderId, ISender sender, [FromQuery] string type, [FromBody]FolderContracts.UpdateFolderNotesRequest request ) =>
+        {
+            if (!FolderContracts.AllowedActionTypes.Contains(type))
+            {
+                var errorMessage = "Invalid action type. Allowed types: " + string.Join(", ", FolderContracts.AllowedActionTypes) + ".";
+                return Results.BadRequest(new { Error = errorMessage });   
+            }
+            
+            if (type.Equals("add"))
+            {
+                var response = await sender.Send(new AddNotesToFolder
+                {
+                    FolderId = folderId,
+                    NoteIds = request.NoteIds
+                });
+                return response.ToHttpResult();
+            }
+            else
+            {
+                var response = await sender.Send(new RemoveNotesToFolder
+                {
+                    FolderId = folderId,
+                    NoteIds = request.NoteIds
+                });
+                return response.ToHttpResult();
+            }
+        });
     }
 }

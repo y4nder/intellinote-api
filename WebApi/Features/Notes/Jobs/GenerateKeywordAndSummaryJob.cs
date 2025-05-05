@@ -44,7 +44,19 @@ public class GenerateKeywordAndSummaryJob : IJob
         
         if(note == null) return;
 
-        var generatedResponse = await _generatedResponseService.GetGeneratedResponse(text!);
+        GeneratedResponse? generatedResponse;
+        try
+        {
+            generatedResponse = await _generatedResponseService.GetGeneratedResponse(text);
+        }
+        catch (Exception e)
+        {
+            stopWatch.Stop();
+            await _noteHubService.NotifyGenerationFailed(
+                $"Failed to generate response for note {note.Id}", 
+                stopWatch.ElapsedMilliseconds);
+            return;
+        }
         
         note.Summary = generatedResponse.Summary;
         note.Topics = generatedResponse.Topics;
@@ -52,7 +64,7 @@ public class GenerateKeywordAndSummaryJob : IJob
 
         await _unitOfWork.Commit(CancellationToken.None);
         stopWatch.Stop();
-        await _noteHubService.NotifyGenerationDone(generatedResponse, stopWatch.ElapsedMilliseconds);
+        await _noteHubService.NotifyGenerationDone(note, generatedResponse, stopWatch.ElapsedMilliseconds);
         await HandleEmbeddings(note, CancellationToken.None);
     }
     

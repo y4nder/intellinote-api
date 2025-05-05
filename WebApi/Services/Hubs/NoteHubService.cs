@@ -7,7 +7,7 @@ namespace WebApi.Services.Hubs;
 public class NoteHubService
 {
     private readonly IHubContext<NoteHub, INoteUpdateClient> _hubContext;
-
+    
     public NoteHubService(IHubContext<NoteHub, INoteUpdateClient> hubContext)
     {
         _hubContext = hubContext;
@@ -15,22 +15,49 @@ public class NoteHubService
     
     public async Task NotifyEmbeddingDone(Note note, long milleSeconds)
     {
-        var message = $"note: {note.Id} embedding done!\nETA: {milleSeconds}ms";
-        // todo change to caller
-        await _hubContext.Clients.All.NotifyEmbeddingDone(new EmbeddingDoneDto { Message = message, MilleSeconds = milleSeconds });   
+        var message = $"{note.Title} was embedded!";
+        await _hubContext.Clients.User(note.UserId).NotifyEmbeddingDone(new EmbeddingDoneDto { Message = message, MilleSeconds = milleSeconds });
+        
+        await _hubContext.Clients.User(note.UserId).NotifyStandard(new NotificationStandardDto
+        {
+            Title = "Embedding done",
+            Message = message,
+            Id = note.Id.ToString(),
+            Name = note.Title
+        });
     }
 
-    public async Task NotifyGenerationDone(GeneratedResponse response, long milleSeconds)
+    public async Task NotifyGenerationDone(Note note, GeneratedResponse response, long milleSeconds)
     {
         // todo change to caller
-        await _hubContext.Clients.All.NotifyGenerationDone(new GenerationDoneDto
+        await _hubContext.Clients.User(note.UserId).NotifyGenerationDone(new GenerationDoneDto
         {
+            Id = note.Id.ToString(),
+            Name = note.Title,
             Response = new GeneratedResponseDto
             {
                 Keywords = response.Keywords.Select(k => k.Keyword).ToList(),
                 Topics = response.Topics,
                 Summary = response.Summary,
             },
+            MilleSeconds = milleSeconds
+        });   
+        
+        await _hubContext.Clients.User(note.UserId).NotifyStandard(new NotificationStandardDto
+        {
+            Title = "Summarization Finished!",
+            Message = "Your note has been summarized! Check it out now!",
+            Id = note.Id.ToString(),
+            Name = note.Title
+        });
+    }
+
+    public async Task NotifyGenerationFailed(string message, long milleSeconds)
+    {
+        // todo change to caller
+        await _hubContext.Clients.All.NotifyGenerationFailed(new GenerationFailedDto
+        {
+            Message = message,
             MilleSeconds = milleSeconds
         });   
     }
@@ -55,5 +82,10 @@ public class NoteHubService
             Message = $"Folder {folder.Name} updated!",
             MilliSeconds = milleSeconds
         });
+    }
+    
+    public async Task ManualDevNotify()
+    {
+        await _hubContext.Clients.All.ManualDevNotify("notified ka");
     }
 }

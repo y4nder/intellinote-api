@@ -6,6 +6,7 @@ using WebApi.Features.Utilities;
 using WebApi.Repositories;
 using WebApi.ResultType;
 using WebApi.Services;
+using WebApi.Services.Parsers;
 
 namespace WebApi.Features.Notes;
 
@@ -25,7 +26,7 @@ public class UpdateNote
         private readonly UnitOfWork _unitOfWork;
         private readonly UserContext<User, string> _userContext;
         private readonly IMediator _mediator;
-        private readonly EmbeddingService _embeddingService;
+        private readonly BlockNoteParserService _blockNoteParserService;
         private readonly IMapper _mapper;
 
         public Handler(NoteRepository noteRepository,
@@ -33,14 +34,14 @@ public class UpdateNote
             IMapper mapper,
             UserContext<User, string> userContext,
             IMediator mediator,
-            EmbeddingService embeddingService)
+            BlockNoteParserService blockNoteParserService)
         {
             _noteRepository = noteRepository;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _userContext = userContext;
             _mediator = mediator;
-            _embeddingService = embeddingService;
+            _blockNoteParserService = blockNoteParserService;
         }
 
         public async Task<Result<NotesContracts.UpdateNoteResponse>> Handle(Command request, CancellationToken cancellationToken)
@@ -62,14 +63,18 @@ public class UpdateNote
             if(saved.IsFailure) return Result.Failure<NotesContracts.UpdateNoteResponse>(saved.Error!);
 
             var noteDto = _mapper.Map<NoteDto>(existingNote);
-            await HandleEmbeddings(existingNote, cancellationToken);
+            if (!string.IsNullOrWhiteSpace(existingNote.Content))
+            {
+                await HandleEmbeddings(existingNote, cancellationToken);
+            }
             
             return Result.Success(new NotesContracts.UpdateNoteResponse(noteDto));
         }
         
         private async Task HandleEmbeddings(Note note, CancellationToken cancellationToken)
         {
-            var textToEmbed = note.FlattenNoteForEmbedding();
+            var textToEmbed = _blockNoteParserService.PrepareNoteForEmbedding(note);
+            if(string.IsNullOrEmpty(textToEmbed)) return;
             await _mediator.Publish(new GenerateNoteEmbeddingsNotification
             {
                 NoteId = note.Id,

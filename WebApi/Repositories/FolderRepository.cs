@@ -38,4 +38,12 @@ public class FolderRepository : Repository<Folder, Guid>
             .Include(f => f.User)
             .FirstOrDefaultAsync();
     }
+
+    public async Task<Folder?> FindByIdAsyncWithNotes(Guid id)
+    {
+        return await DbSet.Where(f => f.Id == id)
+            .Include(f => f.User)
+            .Include(f => f.Notes)
+            .FirstOrDefaultAsync();   
+    }
 }

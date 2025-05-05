@@ -23,7 +23,7 @@ public class NoteRepository : Repository<Note, Guid>
         return await DbSet.Where(n => noteIds.Contains(n.Id)).ToListAsync();   
     }
 
-    public async Task<PaginatedResult<NoteDto>> GetAllNotesForUserAsync(string userId, Vector? searchVector = null, int skip = 0, int take = 10)
+    public async Task<PaginatedResult<NoteDtoMinimal>> GetAllNotesForUserAsync(string userId, Vector? searchVector = null, int skip = 0, int take = 10)
     {
         var baseQuery = DbSet.AsNoTracking().Where(n => n.UserId == userId);
 
@@ -36,12 +36,13 @@ public class NoteRepository : Repository<Note, Guid>
         }
         
         var notes =  await baseQuery
+            .OrderByDescending(n => n.UpdatedAt) // 👈 sort by updated date
             .Skip(skip)
             .Take(take)
-            .ProjectTo<NoteDto>(_mapper.ConfigurationProvider)
+            .ProjectTo<NoteDtoMinimal>(_mapper.ConfigurationProvider)
             .ToListAsync();
 
-        return new PaginatedResult<NoteDto>
+        return new PaginatedResult<NoteDtoMinimal>
         {
             Items = notes,
             TotalItems = totalCount,

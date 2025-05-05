@@ -1,0 +1,85 @@
+using MediatR;
+using WebApi.Data.Entities;
+using WebApi.Errors.ErrorDefinitions;
+using WebApi.Features.Folders.Notifications;
+using WebApi.Features.Utilities;
+using WebApi.Repositories;
+using WebApi.ResultType;
+using WebApi.Services;
+
+namespace WebApi.Features.Folders;
+
+public class RemoveNotesToFolder : IRequest<Result<RemoveNotesToFolderResponse>>
+{
+    public Guid FolderId { get; set; }
+    public List<Guid> NoteIds { get; set; } = new List<Guid>();
+}
+
+public class RemoveNotesToFolderResponse
+{
+    public String Message { get; set; } = null!;
+    public Guid FolderId { get; set; }
+}
+
+internal sealed class RemoveNotesToFolderHandler : IRequestHandler<RemoveNotesToFolder, Result<RemoveNotesToFolderResponse>>
+{
+    private readonly UserContext<User, string> _userContext;
+    private readonly FolderRepository _folderRepository;
+    private readonly NoteRepository _noteRepository;
+    private readonly UnitOfWork _unitOfWork;
+    private readonly IMediator _mediator;
+
+    public RemoveNotesToFolderHandler(
+        UserContext<User, string> userContext,
+        FolderRepository folderRepository,
+        NoteRepository noteRepository,
+        UnitOfWork unitOfWork,
+        IMediator mediator)
+    {
+        _userContext = userContext;
+        _folderRepository = folderRepository;
+        _noteRepository = noteRepository;
+        _unitOfWork = unitOfWork;
+        _mediator = mediator;
+    }
+    // Don't waste time checking this function it's basically the same as AddNotesToFolder except for line 62
+    public async Task<Result<RemoveNotesToFolderResponse>> Handle(RemoveNotesToFolder request, CancellationToken cancellationToken)
+    {
+        if (!request.NoteIds.Any()) 
+            return Result.Failure<RemoveNotesToFolderResponse>(FolderErrors.NoIdsProvided);
+        
+        var folder = await _folderRepository.FindByIdAsyncWithNotes(request.FolderId);
+
+        if (folder == null) 
+            return Result.Failure<RemoveNotesToFolderResponse>(FolderErrors.FolderNotFound);
+        
+        var owned = OwnershipValidator.Ensure(folder, f => f.UserId == _userContext.Id());
+        
+        if (owned.IsFailure) return Result.Failure<RemoveNotesToFolderResponse>(owned.Error!);
+        
+        var notes = await _noteRepository.GetNotesByNoteIdsAsync(request.NoteIds);
+
+        folder.RemoveNotes(notes); // this line here
+        foreach (var note in notes)
+        {
+            note.ForceUpdate();
+        }
+        
+        // commit changes
+        await _unitOfWork.Commit(cancellationToken);
+        
+        // send for embedding
+        await _mediator.Publish(new DelegateFolderEmbeddingNotification
+        {
+            FolderId = request.FolderId,
+            Notes = folder.Notes,
+            Auto = false,
+        }, cancellationToken);
+        
+        return Result.Success(new RemoveNotesToFolderResponse
+        {
+            Message = $"{notes.Count} Notes were removed to the folder",
+            FolderId = request.FolderId
+        });
+    }
+}

@@ -5,6 +5,7 @@ namespace WebApi.Services.Hubs;
 
 public interface INoteUpdateClient
 {
+    Task NotifyStandard(NotificationStandardDto message);
     Task BroadcastConnection(string message);
     Task BroadcastMessage(BroadcastMessageDto message);
     
@@ -12,9 +13,21 @@ public interface INoteUpdateClient
     
     Task NotifyGenerationDone(GenerationDoneDto message);
     
+    Task NotifyGenerationFailed(GenerationFailedDto message);
+    
     Task NotifyFolderCreationDone(FolderCreationDoneDto message);
 
     Task NotifyFolderUpdateDone(FolderUpdateDoneDto message);
+    
+    Task ManualDevNotify(string message);   
+}
+
+public class NotificationStandardDto
+{
+    public string Title { get; set; } = null!;
+    public string Message { get; set; } = null!;
+    public string Id { get; set; } = null!;
+    public string Name { get; set; } = null!;
 }
 
 public class BroadcastMessageDto
@@ -28,11 +41,20 @@ public class EmbeddingDoneDto
     public string Message { get; set; } = null!;
     public DateTime DateTime { get; set; } = DateTime.UtcNow;   
     public long MilleSeconds { get; set; }   
-}
+}   
 
 public class GenerationDoneDto
 {
+    public string Name { get; set; } = null!;
+    public string Id { get; set; } = null!;
     public GeneratedResponseDto Response { get; set; } = null!;
+    public DateTime DateTime { get; set; } = DateTime.UtcNow;
+    public long MilleSeconds { get; set; }
+}
+
+public class GenerationFailedDto
+{
+    public string Message { get; set; } = null!;
     public DateTime DateTime { get; set; } = DateTime.UtcNow;
     public long MilleSeconds { get; set; }
 }
@@ -82,4 +104,6 @@ public class NoteHub : Hub<INoteUpdateClient>
     {
         _logger.LogInformation($"[EMB_ACK]: {message}");
     }
+    
+    
 }   

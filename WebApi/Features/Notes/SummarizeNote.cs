@@ -6,6 +6,7 @@ using WebApi.Features.Utilities;
 using WebApi.Repositories;
 using WebApi.ResultType;
 using WebApi.Services;
+using WebApi.Services.Parsers;
 
 namespace WebApi.Features.Notes;
 
@@ -27,32 +28,34 @@ public class SummarizeNote
         private readonly NoteRepository _noteRepository;
         private readonly UserContext<User, string> _userContext;
         private readonly ISchedulerFactory _schedulerFactory;
+        private readonly BlockNoteParserService  _blockNoteParserService;     
 
-        public Handler(NoteRepository noteRepository, UserContext<User, string> userContext, ISchedulerFactory schedulerFactory)
+        public Handler(NoteRepository noteRepository, UserContext<User, string> userContext, ISchedulerFactory schedulerFactory, BlockNoteParserService blockNoteParserService)
         {
             _noteRepository = noteRepository;
             _userContext = userContext;
             _schedulerFactory = schedulerFactory;
+            _blockNoteParserService = blockNoteParserService;
         }
 
         public async Task<Result<SummarizeNoteResponse>> Handle(Command request, CancellationToken cancellationToken)
         {
-            var note = await _noteRepository.FindNoteWithProjection(request.NoteId);
+            var note = await _noteRepository.FindByIdAsync(request.NoteId);
             
             var owned = OwnershipValidator.Ensure(
                 note,
-                n => n.Author.Id == _userContext.Id()
+                n => n.User.Id == _userContext.Id()
             );
             if (owned.IsFailure) 
                 return Result.Failure<SummarizeNoteResponse>(owned.Error!);
             
-            var text = $"{note!.Title} {note.Content}";
+            var text = _blockNoteParserService.PrepareNoteForSummarization(note!);
             
             var scheduler = await _schedulerFactory.GetScheduler(cancellationToken);
 
             var jobData = new JobDataMap()
             {
-                { "noteId", note.Id.ToString() },
+                { "noteId", note!.Id.ToString() },
                 { "text", text }
             };
 

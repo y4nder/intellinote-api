@@ -5,7 +5,6 @@ using Quartz;
 using WebApi.Data.Entities;
 using WebApi.Errors;
 using WebApi.Errors.ErrorDefinitions;
-using WebApi.Features.Folders.Jobs;
 using WebApi.Features.Folders.Notifications;
 using WebApi.Repositories;
 using WebApi.ResultType;
