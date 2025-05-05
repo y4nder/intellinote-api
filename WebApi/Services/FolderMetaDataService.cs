@@ -17,11 +17,11 @@ public class FolderMetaDataService
         List<ChatMessage> messages =
         [
             new UserChatMessage($"""
-                                     Analyze the following combined note titles and summaries, and generate:
-                                     1. A short, meaningful title for a folder that would group these notes.
-                                     2. A concise description explaining what kind of notes belong in this folder.
-
-                                     Notes content:
+                                     Please analyze the following combined note titles and summaries and generate:
+                                     1. A short, meaningful title for a folder that effectively groups these notes, ensuring that it is relevant to the content and provides a clear understanding of the theme.
+                                     2. A concise yet informative description of the folder, starting with a brief introduction to the folder's theme. Then, explain the types of notes that belong in this folder and why they are grouped together. Be sure to highlight key topics or subjects covered by the notes.
+                                     
+                                     The notes content is as follows:
                                      {text}
                                  """)
         ];

@@ -50,11 +50,12 @@ public class GenerateFolderEmbeddings : IJob
         
         folder.Embedding = folderEmbeddingsVector;
         
+        var metadata = await HandleGeneration(descriptionToEmbed);
+        folder.Description = metadata.Description;
+        
         if (auto) //usually from folder creation
         {
-            var metadata = await HandleGeneration(descriptionToEmbed);
             folder.Name = metadata.Title;
-            folder.Description = metadata.Description;
         }
         
         await _unitOfWork.Commit(CancellationToken.None);

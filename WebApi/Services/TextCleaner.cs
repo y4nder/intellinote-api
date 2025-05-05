@@ -10,14 +10,13 @@ public static class TextCleaner
         if (string.IsNullOrWhiteSpace(input))
             return string.Empty;
 
-        // Remove HTML tags
         string cleaned = Regex.Replace(input, "<.*?>", " ");
 
-        // Convert to lowercase
+        // Convert to lowercase for normalization
         cleaned = cleaned.ToLowerInvariant();
 
-        // Remove punctuation
-        cleaned = Regex.Replace(cleaned, @"[^\w\s]", " ");
+        // Remove punctuation (preserve letters, digits, and spaces)
+        cleaned = Regex.Replace(cleaned, @"[^\p{L}\p{N}\s]", " "); // \p{L} = letters, \p{N} = numbers
 
         // Normalize whitespace
         cleaned = Regex.Replace(cleaned, @"\s+", " ").Trim();

@@ -46,7 +46,17 @@ public class Note : Entity<Guid>
         User user, 
         String title, 
         String content)
-    {   
+    {
+        if (string.IsNullOrWhiteSpace(title))
+        {
+            title = "Untitled Note";
+        }
+
+        if (string.IsNullOrWhiteSpace(content))
+        {
+            content = "[{\"type\":\"paragraph\"}]";
+        }
+        
         return new Note(
             Guid.NewGuid(), 
             user, 
@@ -115,6 +125,8 @@ public class NoteDtoMinimal
     public string Title { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
+    public string? Summary { get; set; }
+    public FolderDto? Folder { get; set; }
     public List<string> Keywords { get; set; } = new();
     public List<string> Topics { get; set; } = new();
 }

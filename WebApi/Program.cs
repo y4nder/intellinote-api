@@ -72,7 +72,7 @@ app.MapCarter();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
-app.UseCors();
+app.UseCors("AllowLocalDev");
 
 app.UseAuthentication();
 app.UseAuthorization();

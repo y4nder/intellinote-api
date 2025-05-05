@@ -13,7 +13,8 @@ public class MapperService : Profile
             .ForMember(dest => dest.Keywords, opt => opt.MapFrom(src => src.Keywords))
             .ReverseMap();
         CreateMap<Note, NoteDtoMinimal>()
-            .ForMember(d => d.Keywords, opt => opt.MapFrom(src => src.Keywords));
+            .ForMember(d => d.Keywords, opt => opt.MapFrom(src => src.Keywords))
+            .ForMember(dest => dest.Folder, opt => opt.MapFrom(src => src.Folder));
         
         CreateMap<Folder, FolderDto>().ReverseMap();
         CreateMap<Folder, FolderWithDetailsDto>()

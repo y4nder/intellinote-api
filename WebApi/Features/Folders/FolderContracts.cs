@@ -27,5 +27,10 @@ public class FolderContracts
     
     public record UpdateFolderResponse(FolderWithDetailsDto Folder);
     
-    public record DeleteFolderResponse(Guid FolderId);    
+    public record DeleteFolderResponse(Guid FolderId);
+    
+    public static string[] AllowedActionTypes = ["add", "delete"];
+
+    public record UpdateFolderNotesRequest(
+        List<Guid> NoteIds);
 }

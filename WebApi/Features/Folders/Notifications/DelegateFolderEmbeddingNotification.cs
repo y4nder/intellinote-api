@@ -2,6 +2,7 @@ using MediatR;
 using Quartz;
 using WebApi.Data.Entities;
 using WebApi.Features.Folders.Jobs;
+using WebApi.Services.Parsers;
 
 namespace WebApi.Features.Folders.Notifications;
 
@@ -9,39 +10,20 @@ public class DelegateFolderEmbeddingNotification : INotification
 {
     public Guid FolderId { get; set; }
     public bool Auto { get; set; }
-
     public List<Note> Notes { get; set; } = new List<Note>();
-    
-    public static DelegateFolderEmbeddingNotification
-        CreateFolderJob(Guid folderId, List<Note> notes)
-    {
-        return new DelegateFolderEmbeddingNotification
-        {
-            FolderId = folderId,
-            Auto = true,
-            Notes = notes
-        };       
-    }
-    
-    public static DelegateFolderEmbeddingNotification
-        UpdateFolderJob(Guid folderId, List<Note> notes)
-    {
-        return new DelegateFolderEmbeddingNotification
-        {
-            FolderId = folderId,
-            Auto = false,
-            Notes = notes
-        };       
-    }
 }
 
 public class DelegateFolderEmbeddingNotificationHandler : INotificationHandler<DelegateFolderEmbeddingNotification>
 {
     private readonly ISchedulerFactory _schedulerFactory;
+    private readonly BlockNoteParserService _blockNoteParserService;     
 
-    public DelegateFolderEmbeddingNotificationHandler(ISchedulerFactory schedulerFactory)
+    public DelegateFolderEmbeddingNotificationHandler(
+        ISchedulerFactory schedulerFactory,
+        BlockNoteParserService blockNoteParserService)
     {
         _schedulerFactory = schedulerFactory;
+        _blockNoteParserService = blockNoteParserService;
     }
 
     public async Task Handle(DelegateFolderEmbeddingNotification notification, CancellationToken cancellationToken)
@@ -72,7 +54,9 @@ public class DelegateFolderEmbeddingNotificationHandler : INotificationHandler<D
     
     private string PrepareTexts(List<Note> notes)
     {
-        var texts = notes.Select(x => x.FlattenNoteForEmbedding()).ToList();
+        var texts = notes.Select(note => 
+            _blockNoteParserService.PrepareNoteForEmbedding(note)
+        ).ToList();
         var allTextAndTopics = string.Join(" ", texts);
         return allTextAndTopics;
     }

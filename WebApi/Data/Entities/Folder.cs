@@ -55,12 +55,16 @@ public class Folder : Entity<Guid>
         SetUpdated();
     }
 
-    // public void AddKeywords(List<Keyword> keywords)
-    // {
-    //     if (Keywords.Count == 0) Keywords = keywords;
-    //     else Keywords.AddRange(keywords);
-    //     SetUpdated();
-    // }
+    public void RemoveNotes(List<Note> notes)
+    {
+        var noteIdsToRemove = notes.Select(n => n.Id).ToList();
+        Notes.RemoveAll(n => noteIdsToRemove.Contains(n.Id));
+
+        // Remove keywords that are only associated with the removed notes
+        var keywordsToRemove = notes.SelectMany(n => n.Keywords).Distinct().ToList();
+        Keywords.RemoveAll(k => keywordsToRemove.Contains(k));
+        SetUpdated();
+    }
 }
 
 public class FolderDto
