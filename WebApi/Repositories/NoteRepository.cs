@@ -31,9 +31,15 @@ public class NoteRepository : Repository<Note, Guid>
         
         if (searchVector != null)
         {
-            baseQuery = baseQuery.OrderBy(n => 
-                n.Embedding!.CosineDistance(searchVector));
+            baseQuery = baseQuery
+                .OrderBy(n => n.Embedding!.CosineDistance(searchVector))
+                .ThenByDescending(n => n.UpdatedAt);
         }
+        else
+        {
+            baseQuery = baseQuery.OrderByDescending(n => n.UpdatedAt);
+        }
+
         
         var notes =  await baseQuery
             .OrderByDescending(n => n.UpdatedAt) // 👈 sort by updated date
