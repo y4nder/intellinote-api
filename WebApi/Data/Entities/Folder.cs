@@ -77,6 +77,7 @@ public class FolderWithDetailsDto
 {
     public Guid Id { get; set; }
     public String Name { get; set; }
+    public string Description { get; set; }
     public AuthorDto Author { get; set; }
     public List<NoteDtoMinimal> Notes { get; set; }
     public List<string> Keywords { get; set; }

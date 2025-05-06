@@ -1,3 +1,5 @@
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using WebApi.Services.External;
 
@@ -75,6 +77,7 @@ public class FolderUpdateDoneDto
     public long MilliSeconds { get; set; }
 }
 
+[Authorize]
 public class NoteHub : Hub<INoteUpdateClient>
 {
     private readonly ILogger<NoteHub> _logger;
@@ -88,9 +91,10 @@ public class NoteHub : Hub<INoteUpdateClient>
     {
         try
         {
+            var userId = Context.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             _logger.LogInformation("Connected: {ConnectionId}", Context.ConnectionId);
             _logger.LogInformation("Connected user: {UserIdentifier}", Context.UserIdentifier);
-            await Clients.Caller.BroadcastMessage(new BroadcastMessageDto { Message = $"Connected: {Context.ConnectionId}" });
+            await Clients.Caller.BroadcastMessage(new BroadcastMessageDto { Message = $"Connected: {userId}" });
         }
         catch (Exception ex)
         {

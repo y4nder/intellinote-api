@@ -103,18 +103,18 @@ public static class ServicesExtensions
     {
         services.AddCors(options =>
         {
-            options.AddDefaultPolicy(builder =>
-            {
-                builder
-                    .AllowAnyHeader()
-                    .AllowAnyMethod()
-                    .SetIsOriginAllowed(_ => true)
-                    .AllowAnyOrigin();
-            });
+            // options.AddDefaultPolicy(builder =>
+            // {
+            //     builder
+            //         .AllowAnyHeader()
+            //         .AllowAnyMethod()
+            //         .SetIsOriginAllowed(_ => true)
+            //         .AllowAnyOrigin();
+            // });
             options.AddPolicy("AllowLocalDev",
                 policy =>
                 {
-                    policy.WithOrigins("http://localhost:5173", "https://wd0xffs1-5173.asse.devtunnels.ms")
+                    policy.WithOrigins("https://wd0xffs1-5173.asse.devtunnels.ms", "http://localhost:5173")
                         .AllowAnyHeader()
                         .AllowAnyMethod()
                         .AllowCredentials(); // If using cookies/auth
