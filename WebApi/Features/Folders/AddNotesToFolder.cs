@@ -1,3 +1,4 @@
+using AutoMapper;
 using MediatR;
 using WebApi.Data.Entities;
 using WebApi.Errors.ErrorDefinitions;
@@ -19,6 +20,7 @@ public class AddNotesToFolderResponse
 {
     public String Message { get; set; } = null!;
     public Guid FolderId { get; set; }
+    public List<NoteDtoMinimal> Notes { get; set; } = new();
 }
 
 internal sealed class AddNotesToFolderHandler : IRequestHandler<AddNotesToFolder, Result<AddNotesToFolderResponse>>
@@ -28,19 +30,22 @@ internal sealed class AddNotesToFolderHandler : IRequestHandler<AddNotesToFolder
     private readonly NoteRepository _noteRepository;
     private readonly UnitOfWork _unitOfWork;
     private readonly IMediator _mediator;
+    private readonly IMapper _mapper;
 
     public AddNotesToFolderHandler(
         UserContext<User, string> userContext,
         FolderRepository folderRepository,
         NoteRepository noteRepository,
         UnitOfWork unitOfWork,
-        IMediator mediator)
+        IMediator mediator, 
+        IMapper mapper)
     {
         _userContext = userContext;
         _folderRepository = folderRepository;
         _noteRepository = noteRepository;
         _unitOfWork = unitOfWork;
         _mediator = mediator;
+        _mapper = mapper;
     }
     // Don't waste time checking this function it's basically the same as RemoveNotesToFolder except for line 63
     public async Task<Result<AddNotesToFolderResponse>> Handle(AddNotesToFolder request, CancellationToken cancellationToken)
@@ -77,10 +82,13 @@ internal sealed class AddNotesToFolderHandler : IRequestHandler<AddNotesToFolder
             Auto = false,
         }, cancellationToken);
         
+        var notesDto = _mapper.Map<List<NoteDtoMinimal>>(notes);
+        
         return Result.Success(new AddNotesToFolderResponse
         {
             Message = $"{notes.Count} Notes were added to the folder",
-            FolderId = request.FolderId
+            FolderId = request.FolderId,
+            Notes = notesDto
         });
     }
 }

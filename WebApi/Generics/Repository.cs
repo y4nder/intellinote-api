@@ -19,6 +19,7 @@ public abstract class Repository<TEntity, TIdentifier> where TEntity : Entity<TI
     
     public DbContext GetDbContext() => _context;
 
+    public DbSet<TEntity> GetDbSet() => DbSet;
     
     public void Add(TEntity entity)
     {

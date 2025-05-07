@@ -38,7 +38,7 @@ public class BlockNoteParserService
         return TextCleaner.Clean(text);
     }
 
-    public string? PrepareNoteForSummarization(Note note)
+    public string? ExtractNoteBlockContents(Note note)
     {
         TryParse(note.Content, out var blocks);
         

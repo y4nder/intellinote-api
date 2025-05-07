@@ -81,6 +81,20 @@ public static class OnModelCreateExtensions
                     c => c.ToList()));
         });
         
+        modelBuilder.Entity<Folder>(n =>
+        {
+            n.Property(t => t.Topics)
+                .HasConversion(
+                    v => string.Join(';', v),
+                    v => v.Split(';', StringSplitOptions.RemoveEmptyEntries).ToList()
+                )
+                .Metadata.SetValueComparer(new ValueComparer<List<string>>(
+                    (c1, c2) => c1.SequenceEqual(c2),
+                    c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
+                    c => c.ToList()));
+            ;
+        });
+        
         modelBuilder.Entity<Folder>().HasIndex(f => f.Embedding).HasMethod("ivfflat").HasOperators("vector_cosine_ops");
         
         modelBuilder.Entity<Folder>()

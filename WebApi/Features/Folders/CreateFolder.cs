@@ -78,7 +78,7 @@ public class CreateFolder
             
             var notes = new List<Note>();
             
-            if (request.NoteIds.Count > 0)
+            if (request.NoteIds.Any())
             {
                 notes = await _noteRepository.GetNotesByNoteIdsAsync(request.NoteIds);
                 if (notes.Count != request.NoteIds.Count)
@@ -94,7 +94,7 @@ public class CreateFolder
             
             var saved = await _unitOfWork.Commit(cancellationToken);
             
-            if (saved.IsSuccess && notes.Count > 0)
+            if (saved.IsSuccess && notes.Any())
             {
                 await _mediator.Publish(new DelegateFolderEmbeddingNotification
                 {

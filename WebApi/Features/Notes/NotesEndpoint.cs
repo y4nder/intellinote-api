@@ -52,5 +52,14 @@ public class NotesEndpoint : ICarterModule
             var response = await sender.Send(new DeleteNote.Command{NoteId = noteId});
             response.ToHttpResult();
         }).AddProducedTypesWithoutValidation<NotesContracts.DeleteNoteResponse>();
+
+        route.MapPost("/{noteId:guid}/assign", async (ISender sender, Guid noteId) =>
+        {
+            var response = await sender.Send(new AssignNoteFolder.AssignNoteFolderRequest
+            {
+                NoteId = noteId
+            });
+            return response.ToHttpResult();
+        }).AddProducedTypesWithoutValidation<AssignNoteFolder.AssignNoteFolderResponse>();
     }
 }

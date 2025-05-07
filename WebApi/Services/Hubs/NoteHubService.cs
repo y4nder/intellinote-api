@@ -18,13 +18,8 @@ public class NoteHubService
         var message = $"{note.Title} was embedded!";
         await _hubContext.Clients.User(note.UserId).NotifyEmbeddingDone(new EmbeddingDoneDto { Message = message, MilleSeconds = milleSeconds });
         
-        await _hubContext.Clients.User(note.UserId).NotifyStandard(new NotificationStandardDto
-        {
-            Title = "Embedding done",
-            Message = message,
-            Id = note.Id.ToString(),
-            Name = note.Title
-        });
+        await _hubContext.Clients.User(note.UserId).NotifyStandard(
+            NotificationStandardDto.NoteEmbeddingDone(note));
     }
 
     public async Task NotifyGenerationDone(Note note, GeneratedResponse response, long milleSeconds)
@@ -43,13 +38,9 @@ public class NoteHubService
             MilleSeconds = milleSeconds
         });   
         
-        await _hubContext.Clients.User(note.UserId).NotifyStandard(new NotificationStandardDto
-        {
-            Title = "Summarization Finished!",
-            Message = "Your note has been summarized! Check it out now!",
-            Id = note.Id.ToString(),
-            Name = note.Title
-        });
+        await _hubContext.Clients.User(note.UserId).NotifyStandard(
+            NotificationStandardDto.NoteSummarizationDone(note)
+        );
     }
 
     public async Task NotifyGenerationFailed(string message, long milleSeconds)
@@ -67,7 +58,7 @@ public class NoteHubService
         // todo change to caller
         await _hubContext.Clients.All.NotifyFolderCreationDone(new FolderCreationDoneDto
         {
-            FolderId = folder.Id,
+            Id = folder.Id,
             Message = $"Folder {folder.Name} created!",
             MilliSeconds = milleSeconds
         });
@@ -76,9 +67,10 @@ public class NoteHubService
     public async Task NotifyFolderUpdateDone(Folder folder, long milleSeconds)
     {
         // todo change to caller
-        await _hubContext.Clients.All.NotifyFolderUpdateDone(new FolderUpdateDoneDto
+        await _hubContext.Clients.User(folder.UserId).NotifyFolderUpdateDone(new FolderUpdateDoneDto
         {
-            FolderId = folder.Id,
+            Id = folder.Id,
+            FolderDescription = folder.Description,
             Message = $"Folder {folder.Name} updated!",
             MilliSeconds = milleSeconds
         });

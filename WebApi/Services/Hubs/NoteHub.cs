@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
+using WebApi.Data.Entities;
 using WebApi.Services.External;
 
 namespace WebApi.Services.Hubs;
@@ -26,10 +27,38 @@ public interface INoteUpdateClient
 
 public class NotificationStandardDto
 {
+    private const string Note = "Note";
+    private const string Folder = "Folder";
+    
+    public string Type { get; set; } = null!;
     public string Title { get; set; } = null!;
     public string Message { get; set; } = null!;
     public string Id { get; set; } = null!;
     public string Name { get; set; } = null!;
+
+    public static NotificationStandardDto NoteEmbeddingDone(Note note)
+    {
+        return new NotificationStandardDto
+        {
+            Type = Note,
+            Title = "Embedding done",
+            Message = $"{note.Title} was embedded!",
+            Id = note.Id.ToString(),
+            Name = note.Title
+        };
+    }
+    
+    public static NotificationStandardDto NoteSummarizationDone(Note note)
+    {
+        return new NotificationStandardDto
+        {
+            Type = Note,
+            Title = "Summarization Finished!",
+            Message = "Your note has been summarized! Check it out now!",
+            Id = note.Id.ToString(),
+            Name = note.Title
+        };
+    }
 }
 
 public class BroadcastMessageDto
@@ -64,7 +93,7 @@ public class GenerationFailedDto
 public class FolderCreationDoneDto
 {
     public string Message { get; set; } = null!;
-    public Guid FolderId { get; set; }
+    public Guid Id { get; set; }
     DateTime DateTime { get; set; } = DateTime.UtcNow;
     public long MilliSeconds { get; set; }
 }
@@ -72,7 +101,8 @@ public class FolderCreationDoneDto
 public class FolderUpdateDoneDto
 {
     public string Message { get; set; } = null!;
-    public Guid FolderId { get; set; }
+    public Guid Id { get; set; }
+    public string FolderDescription { get; set; } = null!;
     DateTime DateTime { get; set; } = DateTime.UtcNow;
     public long MilliSeconds { get; set; }
 }
