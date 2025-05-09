@@ -29,13 +29,14 @@ public class GetUserNotes
         {
             var currentUser = await _userContext.GetCurrentUser();
             
-            Vector? searchVector = null;
-            if (!string.IsNullOrEmpty(request.Term))
-            {
-                searchVector = await _embeddingService.GenerateEmbeddings(request.Term);                
-            }
+            // Vector? searchVector = null;
+            // if (!string.IsNullOrEmpty(request.Term))
+            // {
+            //     searchVector = await _embeddingService.GenerateEmbeddings(request.Term);                
+            // }
             
-            var result = await _noteRepository.GetAllNotesForUserAsync(currentUser.Id, searchVector, request.Skip, request.Take);
+            // var result = await _noteRepository.GetAllNotesForUserAsync(currentUser.Id, searchVector, request.Skip, request.Take);
+            var result = await _noteRepository.SearchNotesAsync(currentUser.Id, request.Term, request.Skip, request.Take);
             return Result.Success(new NotesContracts.GetNotesResponse(result.Items, result.TotalItems));
         }
     }

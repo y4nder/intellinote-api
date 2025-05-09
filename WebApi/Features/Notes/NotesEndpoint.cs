@@ -15,7 +15,7 @@ public class NotesEndpoint : ICarterModule
 
         route.MapGet("", async ([FromServices]ISender sender, [FromQuery]string? term = null, [FromQuery]int skip = 0, [FromQuery]int take = 10) =>
         {
-                var query = new NotesContracts.GetNotesRequest(term, skip, take);
+            var query = new NotesContracts.GetNotesRequest(term, skip, take);
             var response = await sender.Send(query);
             return response.ToHttpResult();
         }).AddProducedTypes<NotesContracts.GetNotesResponse>();
@@ -27,6 +27,7 @@ public class NotesEndpoint : ICarterModule
             return response.ToHttpResult();
         }).AddProducedTypesWithoutValidation<NotesContracts.GetNoteResponse>();
         
+
         route.MapPost("", async (ISender sender, NotesContracts.CreateNoteRequest request) =>
         {
             var response = await sender.Send(request.Map());

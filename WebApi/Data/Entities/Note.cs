@@ -2,6 +2,7 @@
 using Pgvector;
 using WebApi.Generics;
 using WebApi.Services;
+using WebApi.Services.Parsers;
 
 namespace WebApi.Data.Entities;
 
@@ -9,6 +10,7 @@ public class Note : Entity<Guid>
 {
     public string Title { get; set; }
     public string Content { get; set; }
+    public string NormalizedContent { get; set; }
     public string UserId { get; set; }
     public User User { get; set; }
     
@@ -129,4 +131,5 @@ public class NoteDtoMinimal
     public FolderDto? Folder { get; set; }
     public List<string> Keywords { get; set; } = new();
     public List<string> Topics { get; set; } = new();
+    public BlockSnippet? Snippet { get; set; } = null;
 }

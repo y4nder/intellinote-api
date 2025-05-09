@@ -45,6 +45,7 @@ public class GenerateNoteEmbeddings : IJob
         if(note == null) return;
         
         note.SetEmbedding(textEmbeddingsVector);
+        note.NormalizedContent = textToEmbed;
         
         await _unitOfWork.Commit(CancellationToken.None);
         stopWatch.Stop();

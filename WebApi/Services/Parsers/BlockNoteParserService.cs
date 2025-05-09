@@ -2,6 +2,7 @@ using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using WebApi.Data.Entities;
+using WebApi.Services.Stemmer;
 
 namespace WebApi.Services.Parsers;
 
@@ -25,15 +26,15 @@ public class BlockNoteParserService
         
         var noteContent = Stringify(blocks);
         
-        var text = $"{note.Title} {note.Summary}";
+        var text = $"{note.Title} {note.Summary} {noteContent}";
         if (note.Topics.Any())
         {
-            text += string.Join(' ', note.Topics);
+            text += " " + string.Join(' ', note.Topics);
         }
 
         if (note.Keywords.Any())
         {
-            text += string.Join(' ', note.Keywords);
+            text += " " + string.Join(' ', note.Keywords);
         }
         return TextCleaner.Clean(text);
     }
@@ -63,6 +64,77 @@ public class BlockNoteParserService
             _logger.LogError(e, "Error in TryParse");
         }
     }
+
+    public BlockSnippet? ExtractSnippet(string textToFind, NoteDto note)
+    {
+        TryParse(note.Content, out var blocks);
+        var scoredSnippets = ExtractAllScoredSnippets(textToFind, blocks);
+        
+        // Return the highest scoring snippet or null if none found
+        return scoredSnippets
+            .OrderByDescending(x => x.Score)
+            .FirstOrDefault()?
+            .BlockSnippet;
+    }
+
+    public List<ScoredBlockSnippet> ExtractAllScoredSnippets(string textToFind, List<PartialBlock> blocks)
+    {
+        var results = new List<ScoredBlockSnippet>();
+
+        foreach (var block in blocks)
+        {
+            var textBuilder = new StringBuilder();
+
+            foreach (var content in block.Content)
+            {
+                switch (content)
+                {
+                    case InlineContent inline:
+                        textBuilder.Append(inline.Text + " ");
+                        break;
+
+                    case TableContent table:
+                        foreach (var row in table.Rows)
+                        {
+                            foreach (var cell in row.Cells)
+                            {
+                                foreach (var inline in cell.Content)
+                                {
+                                    textBuilder.Append(inline.Text + " ");
+                                }
+                            }
+                        }
+                        break;
+                }
+            }
+
+            var cleanedText = TextCleaner.Clean(textBuilder.ToString());
+            var result = QueryMatcher.QueryMatchScore(cleanedText, textToFind);
+            
+            if (result.score >= 20)
+            {
+                results.Add(new ScoredBlockSnippet
+                {
+                    Score = result.score,
+                    BlockSnippet = new BlockSnippet
+                    {
+                        Id = block.Id,
+                        Text = cleanedText
+                    }
+                });
+            }
+
+            // Recursively check children
+            if (block.Children.Any())
+            {
+                var childResults = ExtractAllScoredSnippets(textToFind, block.Children);
+                results.AddRange(childResults);
+            }
+        }
+
+        return results;
+    }
+
 
     public string Stringify(List<PartialBlock> blocks)
     {
@@ -200,4 +272,16 @@ public class InlineContent : IBlockContent
 {
     public string Type { get; set; } = null!;
     public string Text { get; set; } = string.Empty;
+}
+
+public class BlockSnippet
+{
+    public string Id { get; set; } = null!;
+    public string Text { get; set; } = null!;
+}
+
+public class ScoredBlockSnippet
+{
+    public int Score { get; set; }
+    public BlockSnippet BlockSnippet { get; set; } = null!;
 }
