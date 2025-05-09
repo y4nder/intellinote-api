@@ -2,6 +2,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Extensions;
+using WebApi.Features.Notes.AutoAssignNote;
 
 namespace WebApi.Features.Notes;
 
@@ -55,11 +56,11 @@ public class NotesEndpoint : ICarterModule
 
         route.MapPost("/{noteId:guid}/assign", async (ISender sender, Guid noteId) =>
         {
-            var response = await sender.Send(new AssignNoteFolder.AssignNoteFolderRequest
+            var response = await sender.Send(new GetPotentialFolders.AssignNoteFolderRequest
             {
                 NoteId = noteId
             });
             return response.ToHttpResult();
-        }).AddProducedTypesWithoutValidation<AssignNoteFolder.AssignNoteFolderResponse>();
+        }).AddProducedTypesWithoutValidation<GetPotentialFolders.AssignNoteFolderResponse>();
     }
 }

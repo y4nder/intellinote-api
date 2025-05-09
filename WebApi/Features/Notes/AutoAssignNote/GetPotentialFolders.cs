@@ -9,9 +9,9 @@ using WebApi.ResultType;
 using WebApi.Services;
 using WebApi.Services.Parsers;
 
-namespace WebApi.Features.Notes;
+namespace WebApi.Features.Notes.AutoAssignNote;
 
-public class AssignNoteFolder
+public class GetPotentialFolders
 {
     public class AssignNoteFolderRequest : IRequest<Result<AssignNoteFolderResponse>>
     {
@@ -69,16 +69,11 @@ public class AssignNoteFolder
                 .Select(folder =>
                 {
                     var folderKeywords = new HashSet<string>(folder.Keywords);
-                    // var intersection = noteKeywords.Intersect(folderKeywords).Count();
-                    // var union = noteKeywords.Union(folderKeywords).Count();
                     var keywordScore = KeywordSimilarity.Compute(noteKeywords.ToList(), folderKeywords.ToList());
-
-                    // var cosineDistance = folder.Embedding!.CosineDistance(noteVector);
                     var cosineSimilarity = InMemoryCosineSimilarity.Compute(
                         folder.Embedding!.ToArray(), 
                         noteVector.ToArray()
                     );
-                    
                     var finalScore = 0.9 * cosineSimilarity + 0.1 * keywordScore;
 
                     return new FolderScore
@@ -88,16 +83,15 @@ public class AssignNoteFolder
                         Score = finalScore
                     };
                 })
-                // .Where(f => f.Score > 0.6)
                 .OrderByDescending(f => f.Score)
                 .Take(10)
                 .ToList();
 
             
-                return Result.Success(new AssignNoteFolderResponse
-                {
-                    Scores = scoredFolders
-                });
+            return Result.Success(new AssignNoteFolderResponse
+            {
+                Scores = scoredFolders
+            });
 
         }
 
