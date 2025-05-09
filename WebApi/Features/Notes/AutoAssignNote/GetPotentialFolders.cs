@@ -30,7 +30,10 @@ public class GetPotentialFolders
         private readonly BlockNoteParserService _blockNoteParserService;
         private readonly UserContext<User, string> _userContext;
 
-        public Handler(NoteRepository noteRepository, BlockNoteParserService blockNoteParserService, UserContext<User, string> userContext, FolderRepository folderRepository)
+        public Handler(NoteRepository noteRepository,
+            BlockNoteParserService blockNoteParserService,
+            UserContext<User, string> userContext,
+            FolderRepository folderRepository)
         {
             _noteRepository = noteRepository;
             _blockNoteParserService = blockNoteParserService;
