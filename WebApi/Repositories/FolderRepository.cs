@@ -45,5 +45,5 @@ public class FolderRepository : Repository<Folder, Guid>
             .Include(f => f.User)
             .Include(f => f.Notes)
             .FirstOrDefaultAsync();   
-    }
+    }   
 }

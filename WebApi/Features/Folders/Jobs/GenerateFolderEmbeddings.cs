@@ -46,10 +46,6 @@ public class GenerateFolderEmbeddings : IJob
         var folder = await _repository.FindByIdAsync(parsedId);
         if(folder == null) return;
         
-        var folderEmbeddingsVector = await _embeddingService.GenerateEmbeddings(descriptionToEmbed);
-        
-        folder.Embedding = folderEmbeddingsVector;
-        
         var metadata = await HandleGeneration(descriptionToEmbed);
         folder.Description = metadata.Description;
         
@@ -58,6 +54,12 @@ public class GenerateFolderEmbeddings : IJob
             folder.Name = metadata.Title;
         }
         
+        var folderEmbeddingsVector = await _embeddingService.GenerateEmbeddings(
+            descriptionToEmbed + " " + metadata.Description
+        );
+
+        folder.Embedding = folderEmbeddingsVector;
+                
         await _unitOfWork.Commit(CancellationToken.None);
         stopWatch.Stop();
         if (auto)

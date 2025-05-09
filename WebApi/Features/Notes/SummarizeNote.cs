@@ -49,7 +49,7 @@ public class SummarizeNote
             if (owned.IsFailure) 
                 return Result.Failure<SummarizeNoteResponse>(owned.Error!);
             
-            var text = _blockNoteParserService.PrepareNoteForSummarization(note!);
+            var text = _blockNoteParserService.ExtractNoteBlockContents(note!);
             
             var scheduler = await _schedulerFactory.GetScheduler(cancellationToken);
 
