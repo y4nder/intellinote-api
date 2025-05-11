@@ -162,6 +162,7 @@ public class NoteRepository : Repository<Note, Guid>
         }
 
         var noteDtoMinimal = await baseQuery
+            .OrderByDescending( n => n.UpdatedAt)
             .Skip(skip)
             .Take(take)
             .ProjectTo<NoteDtoMinimal>(_mapper.ConfigurationProvider)

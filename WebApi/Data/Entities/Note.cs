@@ -34,7 +34,8 @@ public class Note : Entity<Guid>
         Guid id,
         User user, 
         string title, 
-        string content
+        string content,
+        string normalizedContent
     )
     {
         Title = title;
@@ -42,6 +43,7 @@ public class Note : Entity<Guid>
         UserId = user.Id;
         User = user;
         Content = content;
+        NormalizedContent = normalizedContent;
     }
 
     public static Note Create(
@@ -59,11 +61,14 @@ public class Note : Entity<Guid>
             content = "[{\"type\":\"paragraph\"}]";
         }
         
-        return new Note(
+        var note =  new Note(
             Guid.NewGuid(), 
             user, 
             title, 
-            content);
+            content,
+            "");
+        note.ForceUpdate();
+        return note;
     }
 
     public void AddKeywords(List<Keyword> keywords)
