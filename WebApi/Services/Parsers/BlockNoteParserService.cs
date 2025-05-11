@@ -38,6 +38,30 @@ public class BlockNoteParserService
         }
         return TextCleaner.Clean(text);
     }
+    
+    public string? StringifyNoteDto(NoteDto note)
+    {
+        TryParse(note.Content, out var blocks);
+
+        if (!blocks.Any())
+        {
+            return null;
+        }
+        
+        var noteContent = Stringify(blocks);
+        
+        var text = $"{note.Title} {note.Summary} {noteContent}";
+        if (note.Topics.Any())
+        {
+            text += " " + string.Join(' ', note.Topics);
+        }
+
+        if (note.Keywords.Any())
+        {
+            text += " " + string.Join(' ', note.Keywords);
+        }
+        return TextCleaner.Clean(text);
+    }
 
     public string? ExtractNoteBlockContents(Note note)
     {

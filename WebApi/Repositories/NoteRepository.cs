@@ -206,6 +206,12 @@ public class NoteRepository : Repository<Note, Guid>
         };
     }
 
+    public async Task<string?> GetNormalizedNoteContent(Guid noteId)
+    {
+        return await DbSet.Where(n => n.Id == noteId).AsNoTracking()
+            .Select(n => n.NormalizedContent)
+            .FirstOrDefaultAsync();
+    }
     
     public async Task<NoteDto?> FindNoteWithProjection(Guid noteId)
     {

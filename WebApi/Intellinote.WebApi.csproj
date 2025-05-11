@@ -35,6 +35,7 @@
         </PackageReference>
         <PackageReference Include="Microsoft.Extensions.DependencyInjection"/>
         <PackageReference Include="MongoDB.Driver" />
+        <PackageReference Include="Newtonsoft.Json" />
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
         <PackageReference Include="OpenAI" />
         <PackageReference Include="Pgvector.EntityFrameworkCore" />
