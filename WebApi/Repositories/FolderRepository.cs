@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
+using Pgvector;
+using Pgvector.EntityFrameworkCore;
 using WebApi.Data;
 using WebApi.Data.Entities;
 using WebApi.Generics;
@@ -16,12 +18,30 @@ public class FolderRepository : Repository<Folder, Guid>
         _mapper = mapper;
     }
 
-    public async Task<List<FolderWithDetailsDto>> GetFoldersWithDetailsAsync(string userId)
+    public async Task<PaginatedResult<FolderWithDetailsDto>> GetFoldersWithDetailsAsync(string userId, Vector? searchVector = null, int skip = 0, int take = 10)
     {
-        var folders = await DbSet.Where(f => f.UserId == userId)
-            .ProjectTo<FolderWithDetailsDto>(_mapper.ConfigurationProvider).ToListAsync();
+        var baseQuery = DbSet.AsNoTracking().Where(f => f.UserId == userId);
         
-        return folders;
+        var totalCount = await baseQuery.CountAsync();
+
+        if (searchVector != null)
+        {
+            baseQuery = baseQuery
+                .Where(f => f.Embedding != null)
+                .OrderBy(f => f.Embedding!.CosineDistance(searchVector));
+        }
+        
+        var folders = await baseQuery
+            .Skip(skip)
+            .Take(take)
+            .ProjectTo<FolderWithDetailsDto>(_mapper.ConfigurationProvider)
+            .ToListAsync();
+        
+        return new PaginatedResult<FolderWithDetailsDto>
+        {
+            Items = folders,
+            TotalItems = totalCount,
+        };
     }
 
     public async Task<FolderWithDetailsDto?> GetFolderWithDetailsAsync(Guid folderId)

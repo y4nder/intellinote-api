@@ -60,7 +60,13 @@ public static class OnModelCreateExtensions
                     c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
                     c => c.ToList()));
         });
-        
+
+        modelBuilder.Entity<Note>(note =>
+        {
+            note.HasIndex(n => new { n.Title, n.Summary, n.NormalizedContent })
+                .HasMethod("GIN")
+                .IsTsVectorExpressionIndex("english");
+        });
 
         
         return modelBuilder;
@@ -76,7 +82,7 @@ public static class OnModelCreateExtensions
                     v => v.Split(';', StringSplitOptions.RemoveEmptyEntries).ToList()
                 )
                 .Metadata.SetValueComparer(new ValueComparer<List<string>>(
-                    (c1, c2) => c1.SequenceEqual(c2),
+                    (c1, c2) => c1!.SequenceEqual(c2!),
                     c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
                     c => c.ToList()));
         });
@@ -89,7 +95,7 @@ public static class OnModelCreateExtensions
                     v => v.Split(';', StringSplitOptions.RemoveEmptyEntries).ToList()
                 )
                 .Metadata.SetValueComparer(new ValueComparer<List<string>>(
-                    (c1, c2) => c1.SequenceEqual(c2),
+                    (c1, c2) => c1!.SequenceEqual(c2!),
                     c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
                     c => c.ToList()));
             ;

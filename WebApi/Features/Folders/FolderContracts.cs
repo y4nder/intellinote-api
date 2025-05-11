@@ -7,7 +7,10 @@ public class FolderContracts
 {
     public record GetFoldersRequest() : IMappable<GetFolders.Query>;
     
-    public record GetFoldersResponse(List<FolderWithDetailsDto> Folders);
+    public record GetFoldersResponse(
+        List<FolderWithDetailsDto> Folders,
+        int TotalCount
+    );
     
     public record GetFolderResponse(FolderWithDetailsDto Folder);
 

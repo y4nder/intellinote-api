@@ -12,9 +12,15 @@ public class FolderEndpoints : ICarterModule
         var route = app.CreateApiGroup("folders", "Folders")
             .RequireAuthorization();
 
-        route.MapGet("", async (ISender sender) =>
+        route.MapGet("", async ([FromServices] ISender sender, [FromQuery]string? term = null, [FromQuery]int skip = 0, [FromQuery]int take = 10) =>
         {
-            var response = await sender.Send(new GetFolders.Query());
+            var query = new GetFolders.Query
+            {
+                Term = term,
+                Skip = skip,
+                Take = take
+            };
+            var response = await sender.Send(query);
             return response.ToHttpResult();
         }).AddProducedTypesWithoutValidation<FolderContracts.GetFoldersResponse>();
         
