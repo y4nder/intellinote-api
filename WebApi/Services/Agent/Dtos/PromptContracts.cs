@@ -12,7 +12,7 @@ public class PromptContracts
     public class PromptContext
     {
         public Guid? NoteId { get; set; }
-        // public Guid? FolderId { get; set; }
+        public Guid? FolderId { get; set; }
     }
 
     public class PromptResponseDto

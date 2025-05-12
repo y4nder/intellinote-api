@@ -12,6 +12,7 @@ public static class AgentExtensions
         services.AddScoped<ToolRouter>();
         services.AddScoped<IAgentTool, GetUserNoteTool>();
         services.AddScoped<IAgentTool, GetNoteCitationTool>();
+        services.AddScoped<IAgentTool, GetUserFolderTool>();
         return services;
     }
 

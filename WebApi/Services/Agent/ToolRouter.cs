@@ -1,5 +1,4 @@
-using System.ClientModel;
-using System.Diagnostics.CodeAnalysis;
+#pragma warning disable OPENAI001
 using OpenAI.Assistants;
 using WebApi.Services.Agent.FunctionTools;
 
@@ -13,8 +12,7 @@ public class ToolRouter
     {
         _agentTools = agentTools;
     }
-
-    [Experimental("OPENAI001")]
+    
     public async Task<ToolOutput> RouteToolAsync(RequiredAction action)
     {
         var tool = _agentTools.FirstOrDefault(x => x.FunctionName == action.FunctionName);

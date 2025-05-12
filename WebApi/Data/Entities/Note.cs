@@ -138,3 +138,12 @@ public class NoteDtoMinimal
     public List<string> Topics { get; set; } = new();
     public BlockSnippet? Snippet { get; set; } = null;
 }
+
+public class NoteDtoVeryMinimal
+{
+    public Guid Id { get; set; }
+    public string Title { get; set; } = string.Empty;
+    public DateTime CreatedAt { get; set; }
+    public DateTime? UpdatedAt { get; set; }
+    public string? Summary { get; set; }
+}

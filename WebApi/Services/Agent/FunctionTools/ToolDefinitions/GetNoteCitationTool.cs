@@ -1,5 +1,4 @@
 #pragma warning disable OPENAI001
-using System.ClientModel;
 using System.Text.Json;
 using OpenAI.Assistants;
 using WebApi.Repositories;

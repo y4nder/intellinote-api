@@ -52,6 +52,13 @@ public class FolderRepository : Repository<Folder, Guid>
         return folder;
     }
 
+    public async Task<FolderWithDetailsDtoMinimal?> GetFolderWithDetailsMinimalAsync(Guid folderId)
+    {
+        var folder = await DbSet.Where(f => f.Id == folderId)
+            .ProjectTo<FolderWithDetailsDtoMinimal>(_mapper.ConfigurationProvider).FirstOrDefaultAsync();
+        return folder;
+    }
+
     public override async Task<Folder?> FindByIdAsync(Guid id)
     {
         return await DbSet.Where(f => f.Id == id)

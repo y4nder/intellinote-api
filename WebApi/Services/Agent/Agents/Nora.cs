@@ -9,10 +9,10 @@ using Newtonsoft.Json;
 namespace WebApi.Services.Agent.Agents;
 
 
-public class Nora : IChatAgent<PromptContracts.PromptRequestDto, PromptContracts.PromptResponseDto>
+public class Nora 
+    : IChatAgent<PromptContracts.PromptRequestDto, PromptContracts.PromptResponseDto>
 {
     public string AgentName => nameof(Nora);
-    
     private readonly AssistantClient _assistantClient;
     private readonly ToolRouter _toolRouter;
     private readonly string _assistantId;
@@ -43,20 +43,20 @@ public class Nora : IChatAgent<PromptContracts.PromptRequestDto, PromptContracts
             
             // TODO add folder context prompt feature
             var context = prompt.PromptContext;
-            // if (context.FolderId is null && context.NoteId is null)
-            // {
-            //     throw new ArgumentException("Either folderId or noteId must be provided.");
-            // }
-            //
-            // if (context.FolderId is not null && context.NoteId is not null)
-            // {
-            //     throw new ArgumentException("Only one of folderId or noteId can be provided.");
-            // }
+            if (context.FolderId is null && context.NoteId is null)
+            {
+                throw new ArgumentException("Either folderId or noteId must be provided.");
+            }
+            
+            if (context.FolderId is not null && context.NoteId is not null)
+            {
+                throw new ArgumentException("Only one of folderId or noteId can be provided.");
+            }
 
-            // if (context.FolderId is not null)
-            // {
-            //     initialMessage += $"(folderId: {context.FolderId})";
-            // }
+            if (context.FolderId is not null)
+            {
+                initialMessage += $"(folderId: {context.FolderId})";
+            }
 
             if (context.NoteId is not null)
             {
@@ -80,16 +80,10 @@ public class Nora : IChatAgent<PromptContracts.PromptRequestDto, PromptContracts
             await ProcessRequiredActions(_assistantClient, threadRun);
             threadRun = await _assistantClient.GetRunAsync(threadRun.Value.ThreadId, threadRun.Value.Id);
         }
-        
-        var messages = _assistantClient.GetMessages(threadRun.Value.ThreadId);
-        var messageItem = messages.First();
-        
+        var messageItem  = _assistantClient.GetMessages(threadRun.Value.ThreadId).First();
         var content = messageItem.Content.First().Text;
-        
         var result = JsonConvert.DeserializeObject<PromptContracts.PromptResponseDto>(content)!;
-        
         result.ThreadId = threadRun.Value.ThreadId;
-        
         return result;
     }
 

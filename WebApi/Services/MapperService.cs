@@ -15,6 +15,8 @@ public class MapperService : Profile
         CreateMap<Note, NoteDtoMinimal>()
             .ForMember(d => d.Keywords, opt => opt.MapFrom(src => src.Keywords))
             .ForMember(dest => dest.Folder, opt => opt.MapFrom(src => src.Folder));
+
+        CreateMap<Note, NoteDtoVeryMinimal>();
         
         CreateMap<NoteDto, NoteDtoMinimal>()
             .ForMember(d => d.Keywords, opt => opt.MapFrom(src => src.Keywords))
@@ -26,6 +28,7 @@ public class MapperService : Profile
             .ForMember(d => d.Notes, opt => opt.MapFrom(src => src.Notes))
             .ForMember(dest => dest.Keywords, opt => opt.MapFrom(src => src.Keywords));
 
+        CreateMap<Folder, FolderWithDetailsDtoMinimal>();
         
         CreateMap<User, AuthorDto>().ReverseMap();
         

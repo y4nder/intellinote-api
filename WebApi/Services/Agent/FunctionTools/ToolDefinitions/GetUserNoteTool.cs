@@ -2,7 +2,6 @@
 using System.Text.Json;
 using OpenAI.Assistants;
 using WebApi.Repositories;
-using WebApi.Services.Parsers;
 
 namespace WebApi.Services.Agent.FunctionTools.ToolDefinitions;
 
@@ -11,13 +10,10 @@ public class GetUserNoteTool : IAgentTool
     public string FunctionName => nameof(GetUserNoteTool);
     
     private readonly NoteRepository _noteRepository;
-    private readonly BlockNoteParserService _blockNoteParserService;
     
-
-    public GetUserNoteTool(NoteRepository noteRepository, BlockNoteParserService blockNoteParserService)
+    public GetUserNoteTool(NoteRepository noteRepository)
     {
         _noteRepository = noteRepository;
-        _blockNoteParserService = blockNoteParserService;
     }
 
     public async Task<ToolOutput> ProcessAsync(RequiredAction action)

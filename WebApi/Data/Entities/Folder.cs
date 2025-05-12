@@ -90,3 +90,14 @@ public class FolderWithDetailsDto
     public DateTime? UpdatedAt { get; set; }
 }
 
+public class FolderWithDetailsDtoMinimal
+{
+    public Guid Id { get; set; }
+    public String Name { get; set; }
+    public string Description { get; set; }
+    public AuthorDto Author { get; set; }
+    public List<NoteDtoVeryMinimal> Notes { get; set; }
+    public DateTime CreatedAt { get; set; } 
+    public DateTime? UpdatedAt { get; set; }
+}
+
