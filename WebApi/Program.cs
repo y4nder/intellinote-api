@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Serilog;
 using WebApi.Extensions;
 using WebApi.Middlewares;
+using WebApi.Services.Agent;
 using WebApi.Services.External;
 using WebApi.Services.Hubs;
 
@@ -52,6 +53,9 @@ builder.Services.AddSignalR();
 
 // adding external api service
 builder.Services.AddGeneratedResponseService(builder.Configuration);
+
+// adding agents
+builder.Services.AddChatAgentsWithTools();
 
 var app = builder.Build();
 

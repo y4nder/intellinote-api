@@ -99,6 +99,21 @@ public class NoteRepository : Repository<Note, Guid>
     //     };
     //
     // }
+
+    public async Task<List<NoteDtoVeryMinimal>> SearchNotesForAgent(string userId, Vector searchVector, int top = 5)
+    {
+        var notes = await DbSet
+            .AsNoTracking()
+            .Where(n => n.UserId == userId)
+            .Where(n => n.Embedding != null)
+            .OrderBy(n => n.Embedding!.CosineDistance(searchVector))
+            .Skip(0)
+            .Take(top)
+            .ProjectTo<NoteDtoVeryMinimal>(_mapper.ConfigurationProvider)
+            .ToListAsync();
+        
+        return notes;
+    }
     
     public async Task<PaginatedResult<NoteDtoMinimal>> SearchNotesAsync(string userId, string? searchTerm = null,
         int skip = 0, int take = 10)
@@ -206,6 +221,12 @@ public class NoteRepository : Repository<Note, Guid>
         };
     }
 
+    public async Task<string?> GetNormalizedNoteContent(Guid noteId)
+    {
+        return await DbSet.Where(n => n.Id == noteId).AsNoTracking()
+            .Select(n => n.NormalizedContent)
+            .FirstOrDefaultAsync();
+    }
     
     public async Task<NoteDto?> FindNoteWithProjection(Guid noteId)
     {
