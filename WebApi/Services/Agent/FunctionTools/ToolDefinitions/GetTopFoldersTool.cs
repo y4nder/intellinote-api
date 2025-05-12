@@ -8,15 +8,17 @@ namespace WebApi.Services.Agent.FunctionTools.ToolDefinitions;
 
 public class GetTopFoldersTool : IAgentTool
 {
-    public GetTopFoldersTool(FolderRepository folderRepository, EmbeddingService embeddingService)
+    public GetTopFoldersTool(FolderRepository folderRepository, EmbeddingService embeddingService, UserContext<User, string> userContext)
     {
         _folderRepository = folderRepository;
         _embeddingService = embeddingService;
+        _userContext = userContext;
     }
 
     public string FunctionName => nameof(GetTopFoldersTool);
     private readonly FolderRepository _folderRepository;
     private readonly EmbeddingService _embeddingService;
+    private readonly UserContext<User, string> _userContext;
     public async Task<ToolOutput> ProcessAsync(RequiredAction action)
     {
         using JsonDocument argumentsJson = JsonDocument.Parse(action.FunctionArguments);
@@ -57,13 +59,12 @@ public class GetTopFoldersTool : IAgentTool
 
     private async Task<List<FolderWithDetailsDtoMinimal>> GetTopFoldersFunction(string searchTerm, int top = 5)
     {
-        
         var searchVector = await _embeddingService.GenerateEmbeddings(searchTerm);
-        return await _folderRepository.GetTopFoldersForAgent(searchVector, top:top);
+        return await _folderRepository.GetTopFoldersForAgent(_userContext.Id(), searchVector, top:top);
     } 
     
     private async Task<List<FolderWithoutDetailsDto>> ListFoldersFunction()
     {
-        return await _folderRepository.GetFoldersWithoutDetailsMinimalAsync(100);
+        return await _folderRepository.GetFoldersWithoutDetailsMinimalAsync(_userContext.Id(),100);
     } 
 }

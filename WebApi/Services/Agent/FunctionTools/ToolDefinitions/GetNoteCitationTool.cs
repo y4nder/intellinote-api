@@ -1,6 +1,7 @@
 #pragma warning disable OPENAI001
 using System.Text.Json;
 using OpenAI.Assistants;
+using WebApi.Data.Entities;
 using WebApi.Repositories;
 using WebApi.Services.Agent.Dtos;
 using WebApi.Services.Parsers;
@@ -11,11 +12,13 @@ public class GetNoteCitationTool : IAgentTool
 {
     private readonly NoteRepository _noteRepository;
     private readonly BlockNoteParserService _blockNoteParserService;
+    private readonly UserContext<User, string> _userContext;
 
-    public GetNoteCitationTool(NoteRepository noteRepository, BlockNoteParserService blockNoteParserService)
+    public GetNoteCitationTool(NoteRepository noteRepository, BlockNoteParserService blockNoteParserService, UserContext<User, string> userContext)
     {
         _noteRepository = noteRepository;
         _blockNoteParserService = blockNoteParserService;
+        _userContext = userContext;
     }
 
     public string FunctionName => nameof(GetNoteCitationTool);

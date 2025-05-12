@@ -100,9 +100,12 @@ public class NoteRepository : Repository<Note, Guid>
     //
     // }
 
-    public async Task<List<NoteDtoVeryMinimal>> SearchNotesForAgent(Vector searchVector, int top = 5)
+    public async Task<List<NoteDtoVeryMinimal>> SearchNotesForAgent(string userId, Vector searchVector, int top = 5)
     {
-        var notes = await DbSet.Where(n => n.Embedding != null)
+        var notes = await DbSet
+            .AsNoTracking()
+            .Where(n => n.UserId == userId)
+            .Where(n => n.Embedding != null)
             .OrderBy(n => n.Embedding!.CosineDistance(searchVector))
             .Skip(0)
             .Take(top)

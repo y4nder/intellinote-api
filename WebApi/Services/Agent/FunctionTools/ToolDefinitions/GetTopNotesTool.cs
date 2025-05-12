@@ -8,16 +8,18 @@ namespace WebApi.Services.Agent.FunctionTools.ToolDefinitions;
 
 public class GetTopNotesTool : IAgentTool
 {
-    public GetTopNotesTool(NoteRepository noteRepository, EmbeddingService embeddingService)
+    public GetTopNotesTool(NoteRepository noteRepository, EmbeddingService embeddingService, UserContext<User, string> userContext)
     {
         _noteRepository = noteRepository;
         _embeddingService = embeddingService;
+        _userContext = userContext;
     }
 
     public string FunctionName => nameof(GetTopNotesTool);
     
     private readonly NoteRepository _noteRepository;
     private readonly EmbeddingService _embeddingService;
+    private readonly UserContext<User, string> _userContext;
     public async Task<ToolOutput> ProcessAsync(RequiredAction action)
     {
         using JsonDocument argumentsJson = JsonDocument.Parse(action.FunctionArguments);
@@ -50,6 +52,6 @@ public class GetTopNotesTool : IAgentTool
     private async Task<List<NoteDtoVeryMinimal>> GetTopNotesFunction(string searchTerm, int top = 5)
     {
         var searchVector = await _embeddingService.GenerateEmbeddings(searchTerm);
-        return await _noteRepository.SearchNotesForAgent(searchVector, top: top);
+        return await _noteRepository.SearchNotesForAgent(_userContext.Id(), searchVector, top: top);
     }
 }

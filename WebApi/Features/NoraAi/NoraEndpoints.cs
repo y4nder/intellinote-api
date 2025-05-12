@@ -10,15 +10,15 @@ public class NoraEndpoints : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        // todo add authorization
+        // done add authorization
         var route = app.CreateApiGroup("nora", "Nora")
-            .AllowAnonymous();
+            .RequireAuthorization();
 
         route.MapPost("/chat", async (PromptContracts.PromptRequestDto request, 
             [FromServices] IChatAgent<PromptContracts.PromptRequestDto, PromptContracts.PromptResponseDto> chatAgent) =>
         {
             var response = await chatAgent.ProcessPromptAsync(request);
             return response;
-        });
+        }).Produces<PromptContracts.PromptResponseDto>();
     }
 }

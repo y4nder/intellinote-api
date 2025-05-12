@@ -81,7 +81,9 @@ public class Nora
             await ProcessRequiredActions(_assistantClient, threadRun);
             threadRun = await _assistantClient.GetRunAsync(threadRun.Value.ThreadId, threadRun.Value.Id);
         }
-        var messageItem  = _assistantClient.GetMessages(threadRun.Value.ThreadId).First();
+
+        var messages = _assistantClient.GetMessages(threadRun.Value.ThreadId);
+        var messageItem  = messages.First();
         var content = messageItem.Content.First().Text;
         var result = JsonConvert.DeserializeObject<PromptContracts.PromptResponseDto>(content)!;
         result.ThreadId = threadRun.Value.ThreadId;
