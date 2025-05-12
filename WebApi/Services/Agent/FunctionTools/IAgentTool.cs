@@ -1,5 +1,4 @@
 #pragma warning disable OPENAI001
-using System.ClientModel;
 using OpenAI.Assistants;
 
 namespace WebApi.Services.Agent.FunctionTools;

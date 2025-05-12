@@ -41,17 +41,13 @@ public class Nora
         {
             string initialMessage = "The provided id contexts: ";
             
-            // TODO add folder context prompt feature
             var context = prompt.PromptContext;
-            if (context.FolderId is null && context.NoteId is null)
-            {
-                throw new ArgumentException("Either folderId or noteId must be provided.");
-            }
             
             if (context.FolderId is not null && context.NoteId is not null)
             {
                 throw new ArgumentException("Only one of folderId or noteId can be provided.");
             }
+
 
             if (context.FolderId is not null)
             {
@@ -61,6 +57,11 @@ public class Nora
             if (context.NoteId is not null)
             {
                 initialMessage += $"(noteId: {context.NoteId})";
+            }
+
+            if (context.FolderId is null && context.NoteId is null)
+            {
+                initialMessage = "Perform a search for contextual information.";
             }
             
             ThreadInitializationMessage initializationMessage = new(MessageRole.Assistant, [initialMessage]);

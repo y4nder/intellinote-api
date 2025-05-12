@@ -99,6 +99,18 @@ public class NoteRepository : Repository<Note, Guid>
     //     };
     //
     // }
+
+    public async Task<List<NoteDtoVeryMinimal>> SearchNotesForAgent(Vector searchVector, int top = 5)
+    {
+        var notes = await DbSet.Where(n => n.Embedding != null)
+            .OrderBy(n => n.Embedding!.CosineDistance(searchVector))
+            .Skip(0)
+            .Take(top)
+            .ProjectTo<NoteDtoVeryMinimal>(_mapper.ConfigurationProvider)
+            .ToListAsync();
+        
+        return notes;
+    }
     
     public async Task<PaginatedResult<NoteDtoMinimal>> SearchNotesAsync(string userId, string? searchTerm = null,
         int skip = 0, int take = 10)

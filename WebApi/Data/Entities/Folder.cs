@@ -101,3 +101,12 @@ public class FolderWithDetailsDtoMinimal
     public DateTime? UpdatedAt { get; set; }
 }
 
+public class FolderWithoutDetailsDto
+{
+    public Guid Id { get; set; }
+    public String Name { get; set; }
+    public string Description { get; set; }
+    public DateTime CreatedAt { get; set; } 
+    public DateTime? UpdatedAt { get; set; }
+}
+

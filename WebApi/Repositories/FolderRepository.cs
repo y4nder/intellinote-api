@@ -44,6 +44,27 @@ public class FolderRepository : Repository<Folder, Guid>
         };
     }
 
+    public async Task<List<FolderWithDetailsDtoMinimal>> GetTopFoldersForAgent(Vector searchVector, int top = 5)
+    {
+        return await DbSet.Where(f => f.Embedding != null)
+            .OrderBy(f => f.Embedding!.CosineDistance(searchVector))
+            .Skip(0)
+            .Take(top)
+            .ProjectTo<FolderWithDetailsDtoMinimal>(_mapper.ConfigurationProvider)
+            .ToListAsync();   
+    }
+    
+    public async Task<List<FolderWithoutDetailsDto>> GetFoldersWithoutDetailsMinimalAsync(int take = 10)
+    {
+        return await DbSet.AsNoTracking()
+            .OrderByDescending(f => f.UpdatedAt)
+            .Skip(0)
+            .Take(take)
+            .ProjectTo<FolderWithoutDetailsDto>(_mapper.ConfigurationProvider)
+            .ToListAsync();  
+        
+    }
+
     public async Task<FolderWithDetailsDto?> GetFolderWithDetailsAsync(Guid folderId)
     {
         var folder = await DbSet.Where(f => f.Id == folderId)

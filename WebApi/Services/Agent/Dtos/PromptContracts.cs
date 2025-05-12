@@ -19,18 +19,20 @@ public class PromptContracts
     {
         public string ThreadId { get; set; } = null!;
         public string ResponseMessage { get; set; } = null!;
-        public List<NoteCitation> Citations { get; set; } = new();
+        public List<NoteCitation> NoteCitations { get; set; } = new();
+        public List<FolderCitation> FolderCitations { get; set; } = new();
     }
 
     public class NoteCitation
     {
-        public string? Id { get; set; }
+        public Guid NoteId { get; set; }
+        public string? SnippetId { get; set; }
         public string Text { get; set; } = string.Empty;
     }
 
     public class FolderCitation
     {
-        public string? Id { get; set; }
+        public string? FolderId { get; set; }
         public string Text { get; set; } = string.Empty;
     }
     

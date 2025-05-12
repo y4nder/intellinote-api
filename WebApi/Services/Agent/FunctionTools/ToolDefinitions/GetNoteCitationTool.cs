@@ -54,7 +54,8 @@ public class GetNoteCitationTool : IAgentTool
 
         return new PromptContracts.NoteCitation
         {
-            Id = blockSnippet!.Id,
+            NoteId = noteDto.Id,
+            SnippetId = blockSnippet!.Id,
             Text = blockSnippet.Text
         };
     }

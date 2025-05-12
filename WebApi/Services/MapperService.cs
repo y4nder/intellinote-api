@@ -29,6 +29,7 @@ public class MapperService : Profile
             .ForMember(dest => dest.Keywords, opt => opt.MapFrom(src => src.Keywords));
 
         CreateMap<Folder, FolderWithDetailsDtoMinimal>();
+        CreateMap<Folder, FolderWithoutDetailsDto>();
         
         CreateMap<User, AuthorDto>().ReverseMap();
         
