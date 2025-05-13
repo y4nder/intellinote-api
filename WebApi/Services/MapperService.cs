@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using WebApi.Data.Entities;
+using WebApi.Features.Views;
 
 namespace WebApi.Services;
 
@@ -17,6 +18,7 @@ public class MapperService : Profile
             .ForMember(dest => dest.Folder, opt => opt.MapFrom(src => src.Folder));
 
         CreateMap<Note, NoteDtoVeryMinimal>();
+        CreateMap<Note, NoteDtoWithTopics>();
         
         CreateMap<NoteDto, NoteDtoMinimal>()
             .ForMember(d => d.Keywords, opt => opt.MapFrom(src => src.Keywords))
@@ -32,6 +34,8 @@ public class MapperService : Profile
         CreateMap<Folder, FolderWithoutDetailsDto>();
         
         CreateMap<User, AuthorDto>().ReverseMap();
+        
+        CreateMap<View, ViewResponseDto>().ReverseMap();
         
         CreateMap<Keyword, KeywordDto>().ReverseMap();
     }

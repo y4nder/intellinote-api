@@ -1,0 +1,59 @@
+using System.Globalization;
+using Newtonsoft.Json;
+using WebApi.Generics;
+
+namespace WebApi.Data.Entities;
+
+public class View : Entity<Guid>
+{
+    public string UserId { get; set; }
+    public User User { get; set; } = null!;
+    public string Name { get; set; } = null!;
+    public string FilterCondition { get; set; } = null!;
+    
+    public View() { }
+
+    public static View Create(User user, string name, string filterCondition)
+    {
+        return new View
+        {
+            Id = Guid.NewGuid(),
+            UserId = user.Id,
+            Name = name,
+            User = user,
+            FilterCondition = filterCondition
+        };
+    }
+
+    public static View CreateManually(User user, string name, List<string> topics)
+    {
+        var conditions = new[]
+        {
+            new
+            {
+                id = DateTime.UtcNow.ToString(CultureInfo.InvariantCulture).Replace(" ", ""),
+                property = "topics",
+                @operator = "contains",
+                value = topics
+            }
+        };
+
+        string jsonCondition = JsonConvert.SerializeObject(conditions);
+
+        return new View
+        {
+            Id = Guid.NewGuid(),
+            UserId = user.Id,
+            Name = name,
+            User = user,
+            FilterCondition = jsonCondition
+        };
+    }
+}
+
+public class ViewResponseDto
+{
+    public Guid Id { get; set; }
+    public string Name { get; set; } = null!;
+    public string FilterCondition { get; set; } = null!;    
+}

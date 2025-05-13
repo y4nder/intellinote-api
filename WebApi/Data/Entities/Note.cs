@@ -147,3 +147,10 @@ public class NoteDtoVeryMinimal
     public DateTime? UpdatedAt { get; set; }
     public string? Summary { get; set; }
 }
+
+public class NoteDtoWithTopics
+{
+    public Guid Id { get; set; }
+    public string Title { get; set; } = string.Empty;
+    public List<string> Topics { get; set; } = new();
+}

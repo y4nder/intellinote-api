@@ -37,6 +37,15 @@ public class GetNoteCitationTool : IAgentTool
         var textToFindValue = textToFind.ToString();
         
         var noteCitation = await GetNoteCitationFunction(textToFindValue, noteIdGuid);
+
+        if (noteCitation == null)
+        {
+            return new ToolOutput
+            {
+                ToolCallId = action.ToolCallId,
+                Output = "no citation found."
+            };
+        }
         
         var stringNoteCitation = JsonSerializer.Serialize(noteCitation);
 
@@ -47,14 +56,16 @@ public class GetNoteCitationTool : IAgentTool
         };
     }
 
-    private async Task<PromptContracts.NoteCitation> GetNoteCitationFunction(string textToFind, Guid noteId)
+    private async Task<PromptContracts.NoteCitation?> GetNoteCitationFunction(string textToFind, Guid noteId)
     {
         var noteDto = await _noteRepository.FindNoteWithProjection(noteId);
         
         if (noteDto == null) throw new ArgumentException("Note not found.");
         
         var blockSnippet = _blockNoteParserService.ExtractSnippet(textToFind, noteDto!);
-
+        
+        if (blockSnippet == null) return null;
+        
         return new PromptContracts.NoteCitation
         {
             NoteId = noteDto.Id,
