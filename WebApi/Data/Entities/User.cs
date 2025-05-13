@@ -6,6 +6,7 @@ namespace WebApi.Data.Entities;
 public class User : IdentityUser, IAufyUser
 {
     public UserData? Data { get; set; }
+    
 }
 
 public class AuthorDto

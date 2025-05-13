@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Pgvector;
@@ -12,9 +13,11 @@ using WebApi.Data;
 namespace WebApi.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250513020631_Update_View")]
+    partial class Update_View
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -838,10 +841,6 @@ namespace WebApi.Data.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -858,7 +857,7 @@ namespace WebApi.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Views");
+                    b.ToTable("View");
                 });
 
             modelBuilder.Entity("AppAny.Quartz.EntityFrameworkCore.Migrations.QuartzBlobTrigger", b =>

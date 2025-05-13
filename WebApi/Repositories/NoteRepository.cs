@@ -33,73 +33,6 @@ public class NoteRepository : Repository<Note, Guid>
         return await DbSet.Where(n => noteIds.Contains(n.Id)).ToListAsync();   
     }
 
-    // public async Task<PaginatedResult<NoteDtoMinimal>> SearchNotesAsync(string userId, string? searchTerm = null,
-    //     int skip = 0, int take = 10)
-    // {
-    //     var baseQuery = DbSet.AsNoTracking().Where(n => n.UserId == userId);
-    //
-    //     
-    //     var totalCount = await baseQuery.CountAsync();
-    //
-    //     if (searchTerm is not null)
-    //     {
-    //         var searchVector = await _embeddingService.GenerateEmbeddings(searchTerm);
-    //         
-    //         baseQuery = baseQuery
-    //             .Where(
-    //                 n => 
-    //                     EF.Functions.ToTsVector("english", n.Title).SetWeight(NpgsqlTsVector.Lexeme.Weight.A)
-    //                         .Concat(EF.Functions.ToTsVector("english", n.Summary!).SetWeight(NpgsqlTsVector.Lexeme.Weight.B))
-    //                         .Concat(EF.Functions.ToTsVector("english", n.NormalizedContent!).SetWeight(NpgsqlTsVector.Lexeme.Weight.C))
-    //                 .Matches(EF.Functions.PhraseToTsQuery("english", searchTerm)))
-    //             .OrderBy(n => n.Embedding!.CosineDistance(searchVector));
-    //             
-    //     }
-    //
-    //     if (searchTerm is null)
-    //     {
-    //         var noteDtos = await baseQuery
-    //             .Skip(skip)
-    //             .Take(take)
-    //             .ProjectTo<NoteDtoMinimal>(_mapper.ConfigurationProvider)
-    //             .ToListAsync();
-    //
-    //         return new PaginatedResult<NoteDtoMinimal>
-    //         {
-    //             Items = noteDtos,
-    //             TotalItems = totalCount
-    //         };
-    //     }
-    //
-    //     var notes = await baseQuery
-    //         .Skip(skip)
-    //         .Take(take)
-    //         .ProjectTo<NoteDto>(_mapper.ConfigurationProvider)
-    //         .ToListAsync();
-    //
-    //     var notesDto = new List<NoteDtoMinimal>();
-    //     if (notes.Any())
-    //     {
-    //         foreach (var note in notes)
-    //         {
-    //             var noteDto = _mapper.Map<NoteDtoMinimal>(note);
-    //             noteDto.Snippet = _blockNoteParserService.ExtractSnippet(searchTerm, note);
-    //             notesDto.Add(noteDto);
-    //         }
-    //     }
-    //     else
-    //     {
-    //         notesDto = _mapper.Map<List<NoteDtoMinimal>>(notes);
-    //     } 
-    //         
-    //     return new PaginatedResult<NoteDtoMinimal>
-    //     {
-    //         Items = notesDto,
-    //         TotalItems = totalCount
-    //     };
-    //
-    // }
-
     public async Task<List<NoteDtoVeryMinimal>> SearchNotesForAgent(string userId, Vector searchVector, int top = 5)
     {
         var notes = await DbSet
@@ -112,6 +45,21 @@ public class NoteRepository : Repository<Note, Guid>
             .ProjectTo<NoteDtoVeryMinimal>(_mapper.ConfigurationProvider)
             .ToListAsync();
         
+        return notes;
+    }
+
+    public async Task<List<NoteDtoWithTopics>> SearchNotesForAgentWithTopics(string userId, Vector searchVector,
+        int top = 15)
+    {
+        var notes = await DbSet
+            .AsNoTracking()
+            .Where(n => n.UserId == userId)
+            .Where(n => n.Embedding != null)
+            .OrderBy(n => n.Embedding!.CosineDistance(searchVector))
+            .Skip(0)
+            .Take(top)
+            .ProjectTo<NoteDtoWithTopics>(_mapper.ConfigurationProvider)
+            .ToListAsync();
         return notes;
     }
     

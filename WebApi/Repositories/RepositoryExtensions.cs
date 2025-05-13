@@ -11,5 +11,6 @@ public static class RepositoryExtensions
         
         services.AddScoped<FolderRepository>();
         services.AddScoped<KeywordRepository>();
+        services.AddScoped<ViewRepository>();
     }
 }

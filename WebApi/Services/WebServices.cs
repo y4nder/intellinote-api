@@ -15,5 +15,6 @@ public static class WebServices
         services.AddSingleton<NoteHubService>();
         services.AddScoped<BlockNoteParserService>();
         services.AddScoped<FolderLlmChoiceService>();
+        services.AddScoped<TopicExtractorService>();
     }
 }
