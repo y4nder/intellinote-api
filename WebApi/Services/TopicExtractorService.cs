@@ -29,7 +29,7 @@ public class TopicExtractorService
                 - Disregard any notes that are not relevant to the query.
                 - From the relevant notes, extract and return the most relevant topics that match the query.
                 - Only use the topics that are explicitly listed in the notes.
-                - Avoid duplicates and limit the list to highly relevant topics only (maximum of 10).
+                - Avoid duplicates and limit the list to highly relevant topics only (maximum of 30).
                 - Additionally, generate a short and descriptive title (3-6 words) that represents the view based on the selected topics.
 
                 Query:

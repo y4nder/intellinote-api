@@ -15,9 +15,9 @@ public class NoraEndpoints : ICarterModule
             .RequireAuthorization();
 
         route.MapPost("/chat", async (PromptContracts.PromptRequestDto request, 
-            [FromServices] IChatAgent<PromptContracts.PromptRequestDto, PromptContracts.PromptResponseDto> chatAgent) =>
+            [FromServices] INoraAgent noraAgent) =>
         {
-            var response = await chatAgent.ProcessPromptAsync(request);
+            var response = await noraAgent.ProcessPromptAsync(request);
             return response;
         }).Produces<PromptContracts.PromptResponseDto>();
     }

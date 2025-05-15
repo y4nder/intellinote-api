@@ -43,14 +43,18 @@ public class NoteHubService
         );
     }
 
-    public async Task NotifyGenerationFailed(string message, long milleSeconds)
+    public async Task NotifyGenerationFailed(Note note, string message, long milleSeconds)
     {
         // todo change to caller
-        await _hubContext.Clients.All.NotifyGenerationFailed(new GenerationFailedDto
+        await _hubContext.Clients.User(note.UserId).NotifyGenerationFailed(new GenerationFailedDto
         {
+            Id = note.Id.ToString(),
             Message = message,
             MilleSeconds = milleSeconds
-        });   
+        });
+
+        await _hubContext.Clients.User(note.UserId).NotifyStandard(
+            NotificationStandardDto.NoteSummarizationFailed(note));
     }
 
     public async Task NotifyFolderCreationDone(Folder folder, long milleSeconds)
@@ -79,5 +83,13 @@ public class NoteHubService
     public async Task ManualDevNotify()
     {
         await _hubContext.Clients.All.ManualDevNotify("notified ka");
+    }
+
+    public async Task NotifyAgentStep(string userId, string message)
+    {
+        await _hubContext.Clients.User(userId).NotifyAgentStep(new AgentStepDto
+        {
+            Message = message
+        });   
     }
 }

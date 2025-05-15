@@ -8,9 +8,10 @@ using Newtonsoft.Json;
 
 namespace WebApi.Services.Agent.Agents;
 
+public interface INoraAgent : IChatAgent<PromptContracts.PromptRequestDto, PromptContracts.PromptResponseDto>;
 
 public class Nora 
-    : IChatAgent<PromptContracts.PromptRequestDto, PromptContracts.PromptResponseDto>
+    : INoraAgent
 {
     public string AgentName => nameof(Nora);
     private readonly AssistantClient _assistantClient;

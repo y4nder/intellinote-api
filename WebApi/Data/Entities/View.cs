@@ -27,17 +27,14 @@ public class View : Entity<Guid>
 
     public static View CreateManually(User user, string name, List<string> topics)
     {
-        var conditions = new[]
+        var conditions = topics.Select(topic => new
         {
-            new
-            {
-                id = DateTime.UtcNow.ToString(CultureInfo.InvariantCulture).Replace(" ", ""),
-                property = "topics",
-                @operator = "contains",
-                value = topics
-            }
-        };
-
+            id = DateTime.UtcNow.Ticks.ToString(), // more unique, timestamp-based
+            property = "topics",
+            @operator = "contains",
+            value = new[] { topic }
+        });
+        
         string jsonCondition = JsonConvert.SerializeObject(conditions);
 
         return new View

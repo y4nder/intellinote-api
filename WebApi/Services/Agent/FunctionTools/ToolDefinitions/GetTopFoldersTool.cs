@@ -3,22 +3,25 @@ using System.Text.Json;
 using OpenAI.Assistants;
 using WebApi.Data.Entities;
 using WebApi.Repositories;
+using WebApi.Services.Hubs;
 
 namespace WebApi.Services.Agent.FunctionTools.ToolDefinitions;
 
 public class GetTopFoldersTool : IAgentTool
 {
-    public GetTopFoldersTool(FolderRepository folderRepository, EmbeddingService embeddingService, UserContext<User, string> userContext)
+    public GetTopFoldersTool(FolderRepository folderRepository, EmbeddingService embeddingService, UserContext<User, string> userContext, NoteHubService noteHubService)
     {
         _folderRepository = folderRepository;
         _embeddingService = embeddingService;
         _userContext = userContext;
+        _noteHubService = noteHubService;
     }
 
     public string FunctionName => nameof(GetTopFoldersTool);
     private readonly FolderRepository _folderRepository;
     private readonly EmbeddingService _embeddingService;
     private readonly UserContext<User, string> _userContext;
+    private readonly NoteHubService _noteHubService;
     public async Task<ToolOutput> ProcessAsync(RequiredAction action)
     {
         using JsonDocument argumentsJson = JsonDocument.Parse(action.FunctionArguments);
@@ -41,11 +44,13 @@ public class GetTopFoldersTool : IAgentTool
         
         if (string.IsNullOrWhiteSpace(searchTermValue))
         {
+            await _noteHubService.NotifyAgentStep(_userContext.Id(), "Searching on all folders...");
             var allFolders = await ListFoldersFunction();
             outputFoldersString = JsonSerializer.Serialize(allFolders);             
         }
         else
         {
+            await _noteHubService.NotifyAgentStep(_userContext.Id(), "Searching your folders for " + searchTermValue + "...");
             var topFolders = await GetTopFoldersFunction(searchTermValue, topValue);
             outputFoldersString = JsonSerializer.Serialize(topFolders);             
         }

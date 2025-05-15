@@ -3,16 +3,18 @@ using System.Text.Json;
 using OpenAI.Assistants;
 using WebApi.Data.Entities;
 using WebApi.Repositories;
+using WebApi.Services.Hubs;
 
 namespace WebApi.Services.Agent.FunctionTools.ToolDefinitions;
 
 public class GetTopNotesTool : IAgentTool
 {
-    public GetTopNotesTool(NoteRepository noteRepository, EmbeddingService embeddingService, UserContext<User, string> userContext)
+    public GetTopNotesTool(NoteRepository noteRepository, EmbeddingService embeddingService, UserContext<User, string> userContext, NoteHubService noteHubService)
     {
         _noteRepository = noteRepository;
         _embeddingService = embeddingService;
         _userContext = userContext;
+        _noteHubService = noteHubService;
     }
 
     public string FunctionName => nameof(GetTopNotesTool);
@@ -20,6 +22,7 @@ public class GetTopNotesTool : IAgentTool
     private readonly NoteRepository _noteRepository;
     private readonly EmbeddingService _embeddingService;
     private readonly UserContext<User, string> _userContext;
+    private readonly NoteHubService _noteHubService;
     public async Task<ToolOutput> ProcessAsync(RequiredAction action)
     {
         using JsonDocument argumentsJson = JsonDocument.Parse(action.FunctionArguments);
@@ -51,6 +54,7 @@ public class GetTopNotesTool : IAgentTool
 
     private async Task<List<NoteDtoVeryMinimal>> GetTopNotesFunction(string searchTerm, int top = 5)
     {
+        await _noteHubService.NotifyAgentStep(_userContext.Id(), "Searching your notes for " + searchTerm + "...");
         var searchVector = await _embeddingService.GenerateEmbeddings(searchTerm);
         return await _noteRepository.SearchNotesForAgent(_userContext.Id(), searchVector, top: top);
     }

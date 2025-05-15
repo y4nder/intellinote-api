@@ -1,5 +1,4 @@
-﻿
-using WebApi.Services.Hubs;
+﻿using WebApi.Services.Hubs;
 using WebApi.Services.Parsers;
 
 namespace WebApi.Services;
@@ -16,5 +15,6 @@ public static class WebServices
         services.AddScoped<BlockNoteParserService>();
         services.AddScoped<FolderLlmChoiceService>();
         services.AddScoped<TopicExtractorService>();
+        services.AddScoped<MindMapService>();
     }
 }

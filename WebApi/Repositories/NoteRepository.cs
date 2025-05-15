@@ -169,12 +169,21 @@ public class NoteRepository : Repository<Note, Guid>
         };
     }
 
-    public async Task<string?> GetNormalizedNoteContent(Guid noteId)
+    public async Task<NoteNormalizedDto?> GetNormalizedNoteContent(Guid noteId)
     {
-        return await DbSet.Where(n => n.Id == noteId).AsNoTracking()
-            .Select(n => n.NormalizedContent)
+        return await DbSet
+            .Where(n => n.Id == noteId)
+            .AsNoTracking()
+            .Select(n => new NoteNormalizedDto
+            {
+                Id = n.Id,
+                UserId = n.UserId,
+                NormalizedContent = n.NormalizedContent,
+                Title = n.Title
+            })
             .FirstOrDefaultAsync();
     }
+
     
     public async Task<NoteDto?> FindNoteWithProjection(Guid noteId)
     {
