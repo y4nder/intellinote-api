@@ -4,6 +4,7 @@ using System.Text.Json;
 using OpenAI.Assistants;
 using WebApi.Data.Entities;
 using WebApi.Repositories;
+using WebApi.Services.Hubs;
 
 namespace WebApi.Services.Agent.FunctionTools.ToolDefinitions;
 
@@ -11,10 +12,14 @@ public class GetUserFolderTool : IAgentTool
 {
     public string FunctionName => nameof(GetUserFolderTool);
     private readonly FolderRepository _folderRepository;
+    private readonly NoteHubService _noteHubService;
+    private readonly UserContext<User, string> _userContext;
 
-    public GetUserFolderTool(FolderRepository folderRepository)
+    public GetUserFolderTool(FolderRepository folderRepository, NoteHubService noteHubService, UserContext<User, string> userContext)
     {
         _folderRepository = folderRepository;
+        _noteHubService = noteHubService;
+        _userContext = userContext;
     }
 
     public async Task<ToolOutput> ProcessAsync(RequiredAction action)
@@ -28,7 +33,10 @@ public class GetUserFolderTool : IAgentTool
         var folderIdValue = folderId.ToString();
         var folderIdGuid = Guid.Parse(folderIdValue);
         
+        
         var folder = await GetUserFolderFunction(folderIdGuid);
+
+        await _noteHubService.NotifyAgentStep(_userContext.Id(), "Scanning folder " + folder.Name + "...");
         
         var folderString = JsonSerializer.Serialize(folder);
 

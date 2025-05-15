@@ -1,7 +1,9 @@
 #pragma warning disable OPENAI001
 using System.Text.Json;
 using OpenAI.Assistants;
+using WebApi.Data.Entities;
 using WebApi.Repositories;
+using WebApi.Services.Hubs;
 
 namespace WebApi.Services.Agent.FunctionTools.ToolDefinitions;
 
@@ -10,10 +12,16 @@ public class GetUserNoteTool : IAgentTool
     public string FunctionName => nameof(GetUserNoteTool);
     
     private readonly NoteRepository _noteRepository;
+    private readonly NoteHubService _noteHubService;
+    private readonly UserContext<User, string> _userContext;
     
-    public GetUserNoteTool(NoteRepository noteRepository)
+    public GetUserNoteTool(NoteRepository noteRepository,
+        NoteHubService noteHubService,
+        UserContext<User, string> userContext)
     {
         _noteRepository = noteRepository;
+        _noteHubService = noteHubService;
+        _userContext = userContext;
     }
 
     public async Task<ToolOutput> ProcessAsync(RequiredAction action)
@@ -41,8 +49,11 @@ public class GetUserNoteTool : IAgentTool
 
     private async Task<string?> GetUserNoteFunction(Guid noteId)
     {
-        //todo add caching
         var note = await _noteRepository.GetNormalizedNoteContent(noteId);
-        return note;
+
+        if (note is null) return null;
+        await _noteHubService.NotifyAgentStep(note.UserId, "Scanning note " + note.Title + "...");
+        
+        return note.NormalizedContent;
     }
 }

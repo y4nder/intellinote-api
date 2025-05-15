@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
+using NetTopologySuite.Geometries.Prepared;
 using WebApi.Data.Entities;
 using WebApi.Services.External;
 
@@ -22,7 +23,14 @@ public interface INoteUpdateClient
 
     Task NotifyFolderUpdateDone(FolderUpdateDoneDto message);
     
-    Task ManualDevNotify(string message);   
+    Task ManualDevNotify(string message);
+    
+    Task NotifyAgentStep(AgentStepDto message);
+}
+
+public class AgentStepDto
+{
+    public string Message { get; set; } = null!;
 }
 
 public class NotificationStandardDto
@@ -59,6 +67,18 @@ public class NotificationStandardDto
             Name = note.Title
         };
     }
+
+    public static NotificationStandardDto NoteSummarizationFailed(Note note)
+    {
+        return new NotificationStandardDto
+        {
+            Type = Note,
+            Title = "Summarization Failed",
+            Message = "Failed to Summarize your note",
+            Id = note.Id.ToString(),
+            Name = note.Title
+        };
+    }
 }
 
 public class BroadcastMessageDto
@@ -85,6 +105,7 @@ public class GenerationDoneDto
 
 public class GenerationFailedDto
 {
+    public string Id { get; set; } = null!; 
     public string Message { get; set; } = null!;
     public DateTime DateTime { get; set; } = DateTime.UtcNow;
     public long MilleSeconds { get; set; }
@@ -124,7 +145,7 @@ public class NoteHub : Hub<INoteUpdateClient>
             var userId = Context.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             _logger.LogInformation("Connected: {ConnectionId}", Context.ConnectionId);
             _logger.LogInformation("Connected user: {UserIdentifier}", Context.UserIdentifier);
-            await Clients.Caller.BroadcastMessage(new BroadcastMessageDto { Message = $"Connected: {userId}" });
+            await Clients.Caller.BroadcastMessage(new BroadcastMessageDto { Message = $"Socket Connected" });
         }
         catch (Exception ex)
         {

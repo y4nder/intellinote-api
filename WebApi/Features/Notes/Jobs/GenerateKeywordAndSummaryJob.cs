@@ -53,7 +53,8 @@ public class GenerateKeywordAndSummaryJob : IJob
         {
             stopWatch.Stop();
             await _noteHubService.NotifyGenerationFailed(
-                $"Failed to generate response for note {note.Id}", 
+                note,
+                $"Failed to generate for note {note.Id}", 
                 stopWatch.ElapsedMilliseconds);
             return;
         }

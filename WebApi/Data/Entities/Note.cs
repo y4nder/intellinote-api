@@ -19,6 +19,7 @@ public class Note : Entity<Guid>
     public Folder? Folder { get; set; }
     public List<string> Keywords { get; set; } = new();
     public List<string> Topics { get; set; } = new();
+    public string? Mindmap { get; set; } 
     
     //Embedding
     [Column(TypeName = "vector(1536)")]
@@ -35,7 +36,8 @@ public class Note : Entity<Guid>
         User user, 
         string title, 
         string content,
-        string normalizedContent
+        string normalizedContent,
+        string? mindmap = null
     )
     {
         Title = title;
@@ -44,6 +46,7 @@ public class Note : Entity<Guid>
         User = user;
         Content = content;
         NormalizedContent = normalizedContent;
+        Mindmap = mindmap;
     }
 
     public static Note Create(
@@ -124,6 +127,7 @@ public class NoteDto
     public FolderDto? Folder { get; set; }
     public List<string> Keywords { get; set; } = new();
     public List<string> Topics { get; set; } = new();
+    public string? Mindmap { get; set; }
 }
 
 public class NoteDtoMinimal
@@ -137,6 +141,7 @@ public class NoteDtoMinimal
     public List<string> Keywords { get; set; } = new();
     public List<string> Topics { get; set; } = new();
     public BlockSnippet? Snippet { get; set; } = null;
+    public string? Mindmap { get; set; }
 }
 
 public class NoteDtoVeryMinimal
@@ -153,4 +158,19 @@ public class NoteDtoWithTopics
     public Guid Id { get; set; }
     public string Title { get; set; } = string.Empty;
     public List<string> Topics { get; set; } = new();
+}
+
+public class NoteNormalizedDto
+{
+    public Guid Id { get; set; }
+    public string Title { get; set; } = null!;
+    public string NormalizedContent { get; set; } = null!;
+    public string UserId { get; set; } = null!;
+}
+
+public class NoteAutoCreatedDto
+{
+    public Guid Id { get; set; }
+    public string Title { get; set; } = null!;
+    
 }

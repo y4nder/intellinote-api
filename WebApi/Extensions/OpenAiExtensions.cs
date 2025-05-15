@@ -3,6 +3,8 @@ using OpenAI;
 using OpenAI.Assistants;
 using OpenAI.Chat;
 using OpenAI.Embeddings;
+using OpenAI.VectorStores;
+
 #pragma warning disable OPENAI001
 
 namespace WebApi.Extensions;
@@ -38,7 +40,13 @@ public static class OpenAiExtensions
         {
             var client = sp.GetRequiredService<OpenAIClient>();
             return client.GetAssistantClient();
-        }); 
+        });
+
+        services.AddScoped<VectorStoreClient>(sp =>
+        {
+            var client = sp.GetRequiredService<OpenAIClient>();
+            return client.GetVectorStoreClient();
+        });
         
         return services;
     }
@@ -50,4 +58,5 @@ public class OpenAiSettings
     public string EmbeddingModel { get; init; } = null!;
     public string DescriptionGeneratorModel { get; init; } = null!;
     public string AssistantId { get; init; } = null!;
+    public string LexAssistantId { get; set; } = null!;
 }
