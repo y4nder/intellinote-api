@@ -30,13 +30,16 @@ public class NoteRepository : Repository<Note, Guid>
 
     public async Task<List<Note>> GetNotesByNoteIdsAsync(List<Guid> noteIds)
     {
-        return await DbSet.Where(n => noteIds.Contains(n.Id)).ToListAsync();   
+        return await DbSet
+            .Where(n => !n.IsDeleted)
+            .Where(n => noteIds.Contains(n.Id)).ToListAsync();   
     }
 
     public async Task<List<NoteDtoVeryMinimal>> SearchNotesForAgent(string userId, Vector searchVector, int top = 5)
     {
         var notes = await DbSet
             .AsNoTracking()
+            .Where(n => !n.IsDeleted)
             .Where(n => n.UserId == userId)
             .Where(n => n.Embedding != null)
             .OrderBy(n => n.Embedding!.CosineDistance(searchVector))
@@ -53,6 +56,7 @@ public class NoteRepository : Repository<Note, Guid>
     {
         var notes = await DbSet
             .AsNoTracking()
+            .Where(n => !n.IsDeleted)
             .Where(n => n.UserId == userId)
             .Where(n => n.Embedding != null)
             .OrderBy(n => n.Embedding!.CosineDistance(searchVector))
@@ -66,7 +70,11 @@ public class NoteRepository : Repository<Note, Guid>
     public async Task<PaginatedResult<NoteDtoMinimal>> SearchNotesAsync(string userId, string? searchTerm = null,
         int skip = 0, int take = 10)
     {
-        var baseQuery = DbSet.AsNoTracking().Where(n => n.UserId == userId);
+        var baseQuery 
+            = DbSet
+                .AsNoTracking()
+                .Where(n => !n.IsDeleted)
+                .Where(n => n.UserId == userId);
         var totalCount = await baseQuery.CountAsync();
 
 
@@ -141,7 +149,9 @@ public class NoteRepository : Repository<Note, Guid>
 
     public async Task<PaginatedResult<NoteDtoMinimal>> GetAllNotesForUserAsync(string userId, Vector? searchVector = null, int skip = 0, int take = 10)
     {
-        var baseQuery = DbSet.AsNoTracking().Where(n => n.UserId == userId);
+        var baseQuery = DbSet.AsNoTracking()
+            .Where(n => !n.IsDeleted)
+            .Where(n => n.UserId == userId);
 
         var totalCount = await baseQuery.CountAsync();
         
@@ -172,6 +182,7 @@ public class NoteRepository : Repository<Note, Guid>
     public async Task<NoteNormalizedDto?> GetNormalizedNoteContent(Guid noteId)
     {
         return await DbSet
+            .Where(n => !n.IsDeleted)
             .Where(n => n.Id == noteId)
             .AsNoTracking()
             .Select(n => new NoteNormalizedDto
@@ -187,14 +198,37 @@ public class NoteRepository : Repository<Note, Guid>
     
     public async Task<NoteDto?> FindNoteWithProjection(Guid noteId)
     {
-        return await DbSet.Where(n => n.Id == noteId)
+        return await DbSet
+            .Where(n => !n.IsDeleted)
+            .Where(n => n.Id == noteId)
             .ProjectTo<NoteDto>(_mapper.ConfigurationProvider)
             .FirstOrDefaultAsync();
     }
 
     public override async Task<Note?> FindByIdAsync(Guid id)
     {
-        return await DbSet.Where(n => n.Id == id)
+        return await DbSet
+            .Where(n => !n.IsDeleted)
+            .Where(n => n.Id == id)
+            .Include(n => n.User)
+            .Include(n=> n.Folder )
+            .FirstOrDefaultAsync();
+    }
+
+    public async Task<List<NoteDtoMinimal>> FindDeletedNotesWithProjection(string userId)
+    {
+        return await DbSet
+            .Where(n => n.IsDeleted)
+            .Where(n => n.UserId == userId)
+            .ProjectTo<NoteDtoMinimal>(_mapper.ConfigurationProvider)
+            .ToListAsync();
+    }
+
+    public async Task<Note?> FindDeletedNote(Guid noteId)
+    {
+        return await DbSet
+            .Where(n => n.IsDeleted)
+            .Where(n => n.Id == noteId)
             .Include(n => n.User)
             .Include(n=> n.Folder )
             .FirstOrDefaultAsync();

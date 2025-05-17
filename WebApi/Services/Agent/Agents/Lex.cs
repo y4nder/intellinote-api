@@ -56,10 +56,11 @@ public class Lex : ILexAgent
             }
             
             var store = await _vectorStoreClient.CreateVectorStoreAsync(waitUntilCompleted: true, vectorStoreOption);
-            var id = store.Value!.Id;
+            
+            if(store.Value is null) throw new Exception("Could not create vector store.");
             
             var fsResources = new FileSearchToolResources();
-            fsResources.VectorStoreIds.Add(store.Value.Id);
+            fsResources.VectorStoreIds.Add(store.Value!.Id);
             
             thread = await _assistantClient.CreateThreadAsync(new ThreadCreationOptions()
             {

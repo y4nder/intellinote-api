@@ -91,7 +91,7 @@ public class Nora
         return result;
     }
 
-    public async Task ProcessRequiredActions(
+    private async Task ProcessRequiredActions(
         AssistantClient assistantClient, 
         ClientResult<ThreadRun> threadRun)
     {

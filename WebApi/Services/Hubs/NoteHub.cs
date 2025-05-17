@@ -142,7 +142,6 @@ public class NoteHub : Hub<INoteUpdateClient>
     {
         try
         {
-            var userId = Context.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             _logger.LogInformation("Connected: {ConnectionId}", Context.ConnectionId);
             _logger.LogInformation("Connected user: {UserIdentifier}", Context.UserIdentifier);
             await Clients.Caller.BroadcastMessage(new BroadcastMessageDto { Message = $"Socket Connected" });

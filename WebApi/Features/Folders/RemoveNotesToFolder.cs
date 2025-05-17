@@ -46,7 +46,7 @@ internal sealed class RemoveNotesToFolderHandler : IRequestHandler<RemoveNotesTo
         _mediator = mediator;
         _mapper = mapper;
     }
-    // Don't waste time checking this function it's basically the same as AddNotesToFolder except for line 62
+    // Don't waste time checking this function it's basically the same as AddNotesToFolder except for line 66
     public async Task<Result<RemoveNotesToFolderResponse>> Handle(RemoveNotesToFolder request, CancellationToken cancellationToken)
     {
         if (!request.NoteIds.Any()) 

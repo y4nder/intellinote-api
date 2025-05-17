@@ -26,6 +26,7 @@ public class Note : Entity<Guid>
     public Vector? Embedding { get; set; }
 
     public string? Summary { get; set; }
+    public bool IsDeleted { get; set; } = false;
     
     public static int EmbeddingDimensions = 1536;
 
@@ -128,6 +129,7 @@ public class NoteDto
     public List<string> Keywords { get; set; } = new();
     public List<string> Topics { get; set; } = new();
     public string? Mindmap { get; set; }
+    public bool IsDeleted { get; set; }
 }
 
 public class NoteDtoMinimal
@@ -142,6 +144,7 @@ public class NoteDtoMinimal
     public List<string> Topics { get; set; } = new();
     public BlockSnippet? Snippet { get; set; } = null;
     public string? Mindmap { get; set; }
+    public bool IsDeleted { get; set; }
 }
 
 public class NoteDtoVeryMinimal
@@ -151,6 +154,7 @@ public class NoteDtoVeryMinimal
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
     public string? Summary { get; set; }
+    public bool IsDeleted { get; set; }
 }
 
 public class NoteDtoWithTopics
@@ -158,6 +162,7 @@ public class NoteDtoWithTopics
     public Guid Id { get; set; }
     public string Title { get; set; } = string.Empty;
     public List<string> Topics { get; set; } = new();
+    public bool IsDeleted { get; set; }
 }
 
 public class NoteNormalizedDto
@@ -166,6 +171,7 @@ public class NoteNormalizedDto
     public string Title { get; set; } = null!;
     public string NormalizedContent { get; set; } = null!;
     public string UserId { get; set; } = null!;
+    public bool IsDeleted { get; set; }
 }
 
 public class NoteAutoCreatedDto

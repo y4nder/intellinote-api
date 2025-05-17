@@ -21,6 +21,7 @@ public class ViewRepository : Repository<View, Guid>
             .AsNoTracking()
             .Where(x => x.UserId == userId)
             .OrderByDescending(x => x.UpdatedAt)
+            .ThenByDescending(x => x.CreatedAt)
             .ProjectTo<ViewResponseDto>(_mapper.ConfigurationProvider)
             .ToListAsync();
     }

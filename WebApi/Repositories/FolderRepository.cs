@@ -20,7 +20,9 @@ public class FolderRepository : Repository<Folder, Guid>
 
     public async Task<PaginatedResult<FolderWithDetailsDto>> GetFoldersWithDetailsAsync(string userId, Vector? searchVector = null, int skip = 0, int take = 10)
     {
-        var baseQuery = DbSet.AsNoTracking().Where(f => f.UserId == userId);
+        var baseQuery = DbSet.AsNoTracking()
+            .Where(f => f.UserId == userId)
+            .Where((f => f.Notes.Any(n => n.IsDeleted == false) || f.Notes.Count == 0));
         
         var totalCount = await baseQuery.CountAsync();
 
@@ -48,6 +50,7 @@ public class FolderRepository : Repository<Folder, Guid>
     {
         return await DbSet.Where(f => f.Embedding != null)
             .Where(f => f.UserId == userId)
+            .Where((f => f.Notes.Any(n => n.IsDeleted == false) || f.Notes.Count == 0))
             .Where(f => f.Embedding != null)
             .OrderBy(f => f.Embedding!.CosineDistance(searchVector))
             .Skip(0)
@@ -60,6 +63,7 @@ public class FolderRepository : Repository<Folder, Guid>
     {
         return await DbSet.AsNoTracking()
             .Where(f => f.UserId == userId)
+            .Where((f => f.Notes.Any(n => n.IsDeleted == false) || f.Notes.Count == 0))
             .OrderByDescending(f => f.UpdatedAt)
             .Skip(0)
             .Take(take)
@@ -71,6 +75,7 @@ public class FolderRepository : Repository<Folder, Guid>
     public async Task<FolderWithDetailsDto?> GetFolderWithDetailsAsync(Guid folderId)
     {
         var folder = await DbSet.Where(f => f.Id == folderId)
+            .Where((f => f.Notes.Any(n => n.IsDeleted == false) || f.Notes.Count == 0))
             .ProjectTo<FolderWithDetailsDto>(_mapper.ConfigurationProvider).FirstOrDefaultAsync();
 
         return folder;
@@ -79,13 +84,16 @@ public class FolderRepository : Repository<Folder, Guid>
     public async Task<FolderWithDetailsDtoMinimal?> GetFolderWithDetailsMinimalAsync(Guid folderId)
     {
         var folder = await DbSet.Where(f => f.Id == folderId)
+            .Where((f => f.Notes.Any(n => n.IsDeleted == false) || f.Notes.Count == 0))
             .ProjectTo<FolderWithDetailsDtoMinimal>(_mapper.ConfigurationProvider).FirstOrDefaultAsync();
         return folder;
     }
 
     public override async Task<Folder?> FindByIdAsync(Guid id)
     {
-        return await DbSet.Where(f => f.Id == id)
+        return await DbSet
+            .Where(f => f.Id == id)
+            .Where((f => f.Notes.Any(n => n.IsDeleted == false) || f.Notes.Count == 0))
             .Include(f => f.User)
             .FirstOrDefaultAsync();
     }
@@ -93,6 +101,7 @@ public class FolderRepository : Repository<Folder, Guid>
     public async Task<Folder?> FindByIdAsyncWithNotes(Guid id)
     {
         return await DbSet.Where(f => f.Id == id)
+            .Where((f => f.Notes.Any(n => n.IsDeleted == false) || f.Notes.Count == 0))
             .Include(f => f.User)
             .Include(f => f.Notes)
             .FirstOrDefaultAsync();   

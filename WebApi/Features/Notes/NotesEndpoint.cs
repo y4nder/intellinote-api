@@ -63,5 +63,34 @@ public class NotesEndpoint : ICarterModule
             });
             return response.ToHttpResult();
         }).AddProducedTypesWithoutValidation<GetPotentialFolders.AssignNoteFolderResponse>();
+
+        route.MapPost("/{noteId:guid}/soft-delete", async (ISender sender, Guid noteId) =>
+        {
+            var command = new SoftDeleteNote.SoftDeleteCommand
+            {
+                NoteId = noteId
+            };
+            
+            var response = await sender.Send(command);
+            return response.ToHttpResult();
+        }).AddProducedTypesWithoutValidation<SoftDeleteNote.SoftDeleteResponse>();;
+
+        route.MapGet("/soft-delete", async (ISender sender) =>
+        {
+            var response = await sender.Send(new GetSoftDeletedNotes.Query());
+
+            return response;
+        }).AddProducedTypesWithoutValidation<NotesContracts.GetNoteResponse>();
+
+        route.MapPost("/{noteId:guid}/restore", async (ISender sender, Guid noteId) =>
+        {
+            var command = new RestoreDeleted.RestoreDeletedRequest
+            {
+                NoteId = noteId
+            };
+
+            var response = await sender.Send(command);
+            return response.ToHttpResult();
+        });
     }
 }
