@@ -1,10 +1,10 @@
 using Carter;
 using Microsoft.AspNetCore.Mvc;
-using WebApi.Data.Entities;
 using WebApi.Extensions;
 using WebApi.Services.External;
-using WebApi.Services.Hubs;
-using WebApi.Services.Parsers;
+// using WebApi.Data.Entities;
+// using WebApi.Services.Hubs;
+// using WebApi.Services.Parsers;
 
 namespace WebApi.Features.Health;
 
@@ -24,31 +24,31 @@ public class HealthEndpoints : ICarterModule
             };
         });
         
-        route.MapGet(("/note-schema"), () =>
-        {
-            return "Note Schema";
-        }).AddProducedTypes<Note>();
-        
-        route.MapGet(("/note-minimal-dto"), () =>
-        {
-            return "Note Schema";
-        }).AddProducedTypes<NoteDtoMinimal>();
-        
-        route.MapGet(("/note-dto"), () =>
-        {
-            return "Note Schema";
-        }).AddProducedTypes<NoteDto>();
-
-        route.MapPost("/check-block-schema", ([FromBody]string blocks, [FromServices] BlockNoteParserService blockNoteParserService) =>
-        {   
-            blockNoteParserService.TryParse(blocks, out var result);
-            var text = blockNoteParserService.Stringify(result);
-            return text;
-        });
-
-        route.MapGet("/manual-socket", async ([FromServices] NoteHubService noteHubService) =>
-        {
-            await noteHubService.ManualDevNotify();
-        });
+        // route.MapGet(("/note-schema"), () =>
+        // {
+        //     return "Note Schema";
+        // }).AddProducedTypes<Note>();
+        //
+        // route.MapGet(("/note-minimal-dto"), () =>
+        // {
+        //     return "Note Schema";
+        // }).AddProducedTypes<NoteDtoMinimal>();
+        //
+        // route.MapGet(("/note-dto"), () =>
+        // {
+        //     return "Note Schema";
+        // }).AddProducedTypes<NoteDto>();
+        //
+        // route.MapPost("/check-block-schema", ([FromBody]string blocks, [FromServices] BlockNoteParserService blockNoteParserService) =>
+        // {   
+        //     blockNoteParserService.TryParse(blocks, out var result);
+        //     var text = blockNoteParserService.Stringify(result);
+        //     return text;
+        // });
+        //
+        // route.MapGet("/manual-socket", async ([FromServices] NoteHubService noteHubService) =>
+        // {
+        //     await noteHubService.ManualDevNotify();
+        // });
     }
 }

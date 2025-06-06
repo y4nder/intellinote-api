@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Diagnostics;
 using WebApi.Errors;
-using WebApi.Extensions;
+using WebApi.ResultType;
+
 
 namespace WebApi.Middlewares;
 

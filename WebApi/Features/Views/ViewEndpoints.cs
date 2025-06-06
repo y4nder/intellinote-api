@@ -1,11 +1,9 @@
-using AutoMapper;
 using Carter;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Data.Entities;
 using WebApi.Extensions;
-using WebApi.Repositories;
-using WebApi.Services;
+using WebApi.ResultType;
 
 namespace WebApi.Features.Views;
 
@@ -14,71 +12,29 @@ public class ViewEndpoints : ICarterModule
     public void AddRoutes(IEndpointRouteBuilder app)
     {
         var route = app.CreateApiGroup("views", "Views").RequireAuthorization();
-
-        route.MapPost("", async ([FromBody] ViewDto request,
-            [FromServices] ViewRepository repository,
-            [FromServices] UserContext<User, string> userContext,
-            [FromServices] UnitOfWork unitOfWork) =>
+        
+        route.MapPost("", async ([FromBody] CreateView.CreateViewRequest request, ISender sender) =>
         {
-            var view = View.Create(userContext.GetCurrentUser().Result, request.Name, request.FilterObject);
-            repository.Add(view);
-            await unitOfWork.Commit(CancellationToken.None);
-
-            return new ViewResponseDto
-            {
-                Id = view.Id,
-                Name = view.Name,
-                FilterCondition = view.FilterCondition
-            };
-        });
-
-        route.MapGet("/{viewId:guid}", async (
-            Guid viewId,
-            [FromServices] ViewRepository viewRepository
-        ) =>
+            var response = await sender.Send(request);
+            return response.ToHttpResult();
+        }).Produces<ViewResponseDto>();
+        
+        route.MapGet("", async (ISender sender) =>
         {
-            var view = await viewRepository.FindByIdAsync(viewId);
-            if(view is null) throw new KeyNotFoundException("View not found.");
-            return new ViewResponseDto
-            {
-                Id = view.Id,
-                Name = view.Name,
-                FilterCondition = view.FilterCondition
-            };
+            var response = await sender.Send(new GetViews.GetViewsQuery());
+            return response.ToHttpResult();
+        }).Produces<GetViews.GetViewsResponse>();
+        
+        route.MapGet("/{viewId:guid}", async ([FromQuery] Guid viewId, ISender sender) =>
+        {
+            var response = await sender.Send(new GetViewById.GetViewByIdRequest { ViewId = viewId });
+            return response.ToHttpResult();
         });
         
-        route.MapGet("", async (
-            [FromServices] ViewRepository viewRepository,
-            [FromServices] UserContext<User, string> userContext) =>
+        route.MapPut("/{viewId:guid}", async ( [FromQuery] Guid viewId, [FromBody] UpdateVIew.UpdateViewRequest request, ISender sender) =>
         {
-            var views = await viewRepository.GetViewsByUserId(userContext.Id());
-            return new GetViewsResponse
-            {
-                Views = views
-            };
-        }).Produces<GetViewsResponse>();
-
-        route.MapPut("/{viewId:guid}", async (
-            Guid viewId,
-            [FromBody] ViewDto request,
-            [FromServices] ViewRepository viewRepository,
-            [FromServices] UserContext<User, string> userContext,
-            [FromServices] UnitOfWork unitOfWork) =>
-        {
-            var view = await viewRepository.FindByIdAsync(viewId);
-            
-            if(view is null) throw new KeyNotFoundException("View not found.");
-
-            view.Name = request.Name;
-            view.FilterCondition = request.FilterObject;
-            await unitOfWork.Commit(CancellationToken.None);
-            
-            return new ViewResponseDto
-            {
-                Id = view.Id,   
-                Name = view.Name,
-                FilterCondition = view.FilterCondition
-            };
+            var response = await sender.Send(request);
+            return response.ToHttpResult();
         });
 
         route.MapPost("/auto", async (AutoCreateView.Request request, ISender sender) =>
@@ -87,21 +43,5 @@ public class ViewEndpoints : ICarterModule
             return response;
         });
 
-    }
-
-    public class GetViewsResponse
-    {
-        public List<ViewResponseDto> Views { get; set; } = new();
-    }
-
-    public class ViewDto
-    {
-        public string Name { get; set; } = null!;
-        public string FilterObject { get; set; } = null!;
-    }
-
-    public class CreateViewResponse
-    {
-        public Guid Id { get; set; }
     }
 }

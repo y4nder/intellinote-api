@@ -3,7 +3,6 @@
 namespace WebApi.Generics;
 
 // Author's note: Don't forget to register inheriting classes in the Service Extensions
-// todo paginated repository
 
 public abstract class Repository<TEntity, TIdentifier> where TEntity : Entity<TIdentifier>
 {

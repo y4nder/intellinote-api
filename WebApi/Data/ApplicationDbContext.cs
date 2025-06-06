@@ -5,8 +5,6 @@ using Aufy.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using WebApi.Data.Entities;
-using WebApi.Extensions;
-using WebApi.Generics;
 
 namespace WebApi.Data;
 
@@ -26,7 +24,6 @@ public class ApplicationDbContext : IdentityDbContext<User>, IAufyDbContext<User
         builder.HasPostgresExtension("vector");
         
         builder.ApplyAufyModel();
-        builder.Ignore<DomainEvent>();
         builder.UseModelCreateExtension();
         builder.AddQuartz(q => q.UsePostgreSql());
     }

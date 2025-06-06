@@ -647,9 +647,6 @@ namespace WebApi.Data.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid?>("UserDataId")
-                        .HasColumnType("uuid");
-
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("text");
@@ -660,8 +657,6 @@ namespace WebApi.Data.Migrations
 
                     NpgsqlIndexBuilderExtensions.HasMethod(b.HasIndex("Embedding"), "ivfflat");
                     NpgsqlIndexBuilderExtensions.HasOperators(b.HasIndex("Embedding"), new[] { "vector_cosine_ops" });
-
-                    b.HasIndex("UserDataId");
 
                     b.HasIndex("UserId");
 
@@ -715,9 +710,6 @@ namespace WebApi.Data.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid?>("UserDataId")
-                        .HasColumnType("uuid");
-
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("text");
@@ -730,8 +722,6 @@ namespace WebApi.Data.Migrations
                     NpgsqlIndexBuilderExtensions.HasOperators(b.HasIndex("Embedding"), new[] { "vector_cosine_ops" });
 
                     b.HasIndex("FolderId");
-
-                    b.HasIndex("UserDataId");
 
                     b.HasIndex("UserId");
 
@@ -851,16 +841,11 @@ namespace WebApi.Data.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid?>("UserDataId")
-                        .HasColumnType("uuid");
-
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("UserDataId");
 
                     b.HasIndex("UserId");
 
@@ -975,10 +960,6 @@ namespace WebApi.Data.Migrations
 
             modelBuilder.Entity("WebApi.Data.Entities.Folder", b =>
                 {
-                    b.HasOne("WebApi.Data.Entities.UserData", null)
-                        .WithMany("Folders")
-                        .HasForeignKey("UserDataId");
-
                     b.HasOne("WebApi.Data.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
@@ -994,10 +975,6 @@ namespace WebApi.Data.Migrations
                         .WithMany("Notes")
                         .HasForeignKey("FolderId")
                         .OnDelete(DeleteBehavior.SetNull);
-
-                    b.HasOne("WebApi.Data.Entities.UserData", null)
-                        .WithMany("Notes")
-                        .HasForeignKey("UserDataId");
 
                     b.HasOne("WebApi.Data.Entities.User", "User")
                         .WithMany()
@@ -1023,10 +1000,6 @@ namespace WebApi.Data.Migrations
 
             modelBuilder.Entity("WebApi.Data.Entities.View", b =>
                 {
-                    b.HasOne("WebApi.Data.Entities.UserData", null)
-                        .WithMany("Views")
-                        .HasForeignKey("UserDataId");
-
                     b.HasOne("WebApi.Data.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
@@ -1060,15 +1033,6 @@ namespace WebApi.Data.Migrations
             modelBuilder.Entity("WebApi.Data.Entities.User", b =>
                 {
                     b.Navigation("Data");
-                });
-
-            modelBuilder.Entity("WebApi.Data.Entities.UserData", b =>
-                {
-                    b.Navigation("Folders");
-
-                    b.Navigation("Notes");
-
-                    b.Navigation("Views");
                 });
 #pragma warning restore 612, 618
         }

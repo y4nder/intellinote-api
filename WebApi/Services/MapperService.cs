@@ -37,7 +37,6 @@ public class MapperService : Profile
         
         CreateMap<View, ViewResponseDto>().ReverseMap();
         
-        CreateMap<Keyword, KeywordDto>().ReverseMap();
     }
 }
 

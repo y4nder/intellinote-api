@@ -6,10 +6,7 @@ public class UserData : Entity<Guid>
 {
     public String UserId { get; set; }
     public User User { get; set; }
-    public List<Folder> Folders { get; set; } = new List<Folder>();
-    public List<Note> Notes { get; set; } = new List<Note>();
-    public List<View> Views { get; set; } = new();
-
+    
     public UserData() { }
 
     private UserData(String userId, User user)

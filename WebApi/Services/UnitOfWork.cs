@@ -12,17 +12,13 @@ namespace WebApi.Services;
 public class UnitOfWork
 {
     private readonly ApplicationDbContext _context;
-    private readonly IMediator _mediator;
-
     /// <summary>
     /// Initializes a new instance of the <see cref="UnitOfWork"/> class.
     /// </summary>
     /// <param name="context">The application's database context.</param>
-    /// <param name="mediator">The MediatR instance used for dispatching domain events.</param>
-    public UnitOfWork(ApplicationDbContext context, IMediator mediator)
+    public UnitOfWork(ApplicationDbContext context)
     {
         _context = context;
-        _mediator = mediator;
     }
 
     /// <summary>
@@ -35,6 +31,6 @@ public class UnitOfWork
     /// </returns>
     public async Task<Result> Commit(CancellationToken cancellationToken = default)
     {
-        return await _context.SaveChangesOrFailAsync(_mediator, cancellationToken);
+        return await _context.SaveChangesOrFailAsync(cancellationToken);
     }
 }

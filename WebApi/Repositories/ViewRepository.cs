@@ -25,4 +25,22 @@ public class ViewRepository : Repository<View, Guid>
             .ProjectTo<ViewResponseDto>(_mapper.ConfigurationProvider)
             .ToListAsync();
     }
+
+    public async Task<ViewResponseDto?> GetViewDtoByIdAsync(Guid viewId, string userId)
+    {
+        return await DbSet
+            .AsNoTracking()
+            .Where(x => 
+                x.Id == viewId && x.UserId == userId 
+            )
+            .ProjectTo<ViewResponseDto>(_mapper.ConfigurationProvider)
+            .FirstOrDefaultAsync();
+    }
+
+    public async Task<View?> GetViewByIdAsync(Guid viewId, string userId)
+    {   
+        return await DbSet
+            .Where(x => x.Id == viewId && x.UserId == userId)
+            .FirstOrDefaultAsync();
+    }
 }

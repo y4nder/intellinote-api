@@ -16,7 +16,6 @@ using WebApi.Data;
 using WebApi.Data.Entities;
 using WebApi.Features.Auth;
 using WebApi.Features.Folders.Jobs;
-using WebApi.Features.Keywords.Jobs;
 using WebApi.Features.Notes.Jobs;
 using WebApi.Repositories;
 using WebApi.Services;
@@ -142,10 +141,6 @@ public static class ServicesExtensions
                 c.UseNewtonsoftJsonSerializer();
                 c.PerformSchemaValidation = false;
             });
-            
-            q.AddJob<BatchInsertNewKeywords>(j => j
-                .StoreDurably()
-                .WithIdentity(BatchInsertNewKeywords.Name));
             
             q.AddJob<GenerateNoteEmbeddings>(j => j
                 .StoreDurably()

@@ -9,7 +9,7 @@ public static class RepositoryExtensions
         services.AddScoped<NoteRepository>();
         
         services.AddScoped<FolderRepository>();
-        services.AddScoped<KeywordRepository>();
+        
         services.AddScoped<ViewRepository>();
     }
 }

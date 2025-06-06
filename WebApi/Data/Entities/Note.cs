@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using Pgvector;
 using WebApi.Generics;
-using WebApi.Services;
 using WebApi.Services.Parsers;
 
 namespace WebApi.Data.Entities;
@@ -74,12 +73,7 @@ public class Note : Entity<Guid>
         note.ForceUpdate();
         return note;
     }
-
-    public void AddKeywords(List<Keyword> keywords)
-    {
-        throw new NotImplementedException();
-    }
-
+    
     public void Update(Note note)
     {
         Title = note.Title;
@@ -94,26 +88,8 @@ public class Note : Entity<Guid>
         SetUpdated();
     }
 
-    public void ForceUpdate()
-    {
-        SetUpdated();
-    }
-
-    public string FlattenNoteForEmbedding()
-    {
-        var text = $"{Title} {Content} {Summary}";
-        if (Topics.Any())
-        {
-            text += string.Join(' ', Topics);
-        }
-
-        if (Keywords.Any())
-        {
-            text += string.Join(' ', Keywords);
-        }
-        return TextCleaner.Clean(text);
-    }
-    
+    public void ForceUpdate() => SetUpdated();
+        
 }
 
 public class NoteDto
@@ -172,11 +148,4 @@ public class NoteNormalizedDto
     public string NormalizedContent { get; set; } = null!;
     public string UserId { get; set; } = null!;
     public bool IsDeleted { get; set; }
-}
-
-public class NoteAutoCreatedDto
-{
-    public Guid Id { get; set; }
-    public string Title { get; set; } = null!;
-    
 }

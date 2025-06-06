@@ -21,13 +21,13 @@ public class LogOutUser : ICarterModule
             return Results.NoContent();
         }).RequireAuthorization();
 
-        app.MapGet("/debug/auth-schemes", async ([FromServices] IAuthenticationSchemeProvider schemes) =>
-        {
-            var allSchemes = await schemes.GetAllSchemesAsync();
-            return new
-            {
-                schemes = allSchemes.Select(s => s.Name)
-            };
-        });
+        // app.MapGet("/debug/auth-schemes", async ([FromServices] IAuthenticationSchemeProvider schemes) =>
+        // {
+        //     var allSchemes = await schemes.GetAllSchemesAsync();
+        //     return new
+        //     {
+        //         schemes = allSchemes.Select(s => s.Name)
+        //     };
+        // });
     }
 }

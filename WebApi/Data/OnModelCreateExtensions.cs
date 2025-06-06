@@ -1,16 +1,13 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Pgvector;
 using WebApi.Data.Entities;
 
-namespace WebApi.Extensions;
+namespace WebApi.Data;
 
 public static class OnModelCreateExtensions
 {
     public static ModelBuilder UseModelCreateExtension(this ModelBuilder modelBuilder)
     {
-        // add keyword extensions here
-        // modelBuilder.KeywordExtensions();
         modelBuilder.NoteExtensions();
         modelBuilder.FolderExtensions();
         
@@ -19,12 +16,11 @@ public static class OnModelCreateExtensions
     
     private static ModelBuilder NoteExtensions(this ModelBuilder modelBuilder)
     {
-        // Configure the relationship between Folder and Note with custom delete behavior
         modelBuilder.Entity<Note>()
-            .HasOne(n => n.Folder)  // A Note has one Folder
-            .WithMany(f => f.Notes) // A Folder has many Notes
-            .HasForeignKey(n => n.FolderId) // FolderId is the foreign key
-            .OnDelete(DeleteBehavior.SetNull);  // Set FolderId to null when Folder is deleted
+            .HasOne(n => n.Folder) 
+            .WithMany(f => f.Notes) 
+            .HasForeignKey(n => n.FolderId) 
+            .OnDelete(DeleteBehavior.SetNull);  
         
         modelBuilder.Entity<Note>(n =>
         {
@@ -104,10 +100,10 @@ public static class OnModelCreateExtensions
         modelBuilder.Entity<Folder>().HasIndex(f => f.Embedding).HasMethod("ivfflat").HasOperators("vector_cosine_ops");
         
         modelBuilder.Entity<Folder>()
-            .HasMany(f => f.Notes)  // A Note has one Folder
-            .WithOne(n => n.Folder) // A Folder has many Notes
-            .HasForeignKey(n => n.FolderId) // FolderId is the foreign key
-            .OnDelete(DeleteBehavior.SetNull);  // Set FolderId to null when Folder is deleted
+            .HasMany(f => f.Notes)  
+            .WithOne(n => n.Folder) 
+            .HasForeignKey(n => n.FolderId) 
+            .OnDelete(DeleteBehavior.SetNull);  
         
         return modelBuilder;
     }

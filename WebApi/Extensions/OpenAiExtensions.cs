@@ -1,3 +1,4 @@
+#pragma warning disable OPENAI001
 using Microsoft.Extensions.Options;
 using OpenAI;
 using OpenAI.Assistants;
@@ -5,7 +6,6 @@ using OpenAI.Chat;
 using OpenAI.Embeddings;
 using OpenAI.VectorStores;
 
-#pragma warning disable OPENAI001
 
 namespace WebApi.Extensions;
 

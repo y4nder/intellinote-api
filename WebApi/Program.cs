@@ -42,7 +42,6 @@ builder.Services.AddValidatorsFromAssembly(assembly);
 builder.Services.SetupEmailService(builder.Configuration);
 
 // for http context accessor
-
 builder.Services.AddHttpContextAccessor();
 
 // adding quartz
