@@ -7,6 +7,8 @@ using WebApi.Errors;
 using WebApi.Errors.ErrorDefinitions;
 using WebApi.Features.Folders.Notifications;
 using WebApi.Repositories;
+using WebApi.Repositories.Folder;
+using WebApi.Repositories.Note;
 using WebApi.ResultType;
 using WebApi.Services;
 
@@ -38,8 +40,8 @@ public class CreateFolder
     {
         private readonly IValidator<Command> _validator;
         private readonly UserContext<User, string> _userContext;
-        private readonly FolderRepository _folderRepository;
-        private readonly NoteRepository _noteRepository;
+        private readonly IFolderRepository _folderRepository;
+        private readonly INoteRepository _noteRepository;
         private readonly UnitOfWork _unitOfWork;
         private readonly ISchedulerFactory _schedulerFactory; 
         private readonly IMapper _mapper;
@@ -47,10 +49,10 @@ public class CreateFolder
 
         public Handler(IValidator<Command> validator,
             UserContext<User, string> userContext,
-            FolderRepository folderRepository,
+            IFolderRepository folderRepository,
             UnitOfWork unitOfWork,
             IMapper mapper,
-            NoteRepository noteRepository,
+            INoteRepository noteRepository,
             ISchedulerFactory schedulerFactory, IMediator mediator)
         {
             _validator = validator;

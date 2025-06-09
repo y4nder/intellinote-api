@@ -2,6 +2,7 @@
 using WebApi.Data.Entities;
 using WebApi.Errors.ErrorDefinitions;
 using WebApi.Repositories;
+using WebApi.Repositories.View;
 using WebApi.ResultType;
 using WebApi.Services;
 
@@ -16,10 +17,10 @@ public class GetViewById
     
     internal sealed class Handler : IRequestHandler<GetViewByIdRequest, Result<ViewResponseDto>>
     {
-        private readonly ViewRepository _viewRepository;
+        private readonly IViewRepository _viewRepository;
         private readonly UserContext<User, string> _userContext;
 
-        public Handler(ViewRepository viewRepository, UserContext<User, string> userContext)
+        public Handler(IViewRepository viewRepository, UserContext<User, string> userContext)
         {
             _viewRepository = viewRepository;
             _userContext = userContext;

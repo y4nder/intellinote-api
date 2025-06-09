@@ -2,6 +2,7 @@
 using WebApi.Data.Entities;
 using WebApi.Features.Utilities;
 using WebApi.Repositories;
+using WebApi.Repositories.Folder;
 using WebApi.ResultType;
 using WebApi.Services;
 
@@ -16,10 +17,10 @@ public class GetFolder
     
     internal sealed class Handler : IRequestHandler<Query, Result<FolderContracts.GetFolderResponse>>
     {
-        private readonly FolderRepository _repository;
+        private readonly IFolderRepository _repository;
         private readonly UserContext<User, string> _userContext;
 
-        public Handler(FolderRepository repository, UserContext<User, string> userContext)
+        public Handler(IFolderRepository repository, UserContext<User, string> userContext)
         {
             _repository = repository;
             _userContext = userContext;

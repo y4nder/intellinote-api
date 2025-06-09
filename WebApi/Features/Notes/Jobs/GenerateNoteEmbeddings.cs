@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using Quartz;
 using WebApi.Repositories;
+using WebApi.Repositories.Note;
 using WebApi.Services;
 using WebApi.Services.Hubs;
 
@@ -8,7 +9,7 @@ namespace WebApi.Features.Notes.Jobs;
 
 public class GenerateNoteEmbeddings : IJob
 {
-    private readonly NoteRepository _noteRepository;
+    private readonly INoteRepository _noteRepository;
     private readonly UnitOfWork _unitOfWork;
     private readonly EmbeddingService _embeddingService;
     private readonly NoteHubService _noteHubService;
@@ -16,7 +17,7 @@ public class GenerateNoteEmbeddings : IJob
 
     public GenerateNoteEmbeddings(
         EmbeddingService embeddingService,
-        NoteRepository noteRepository,
+        INoteRepository noteRepository,
         UnitOfWork unitOfWork, 
         NoteHubService noteHubService)
     {

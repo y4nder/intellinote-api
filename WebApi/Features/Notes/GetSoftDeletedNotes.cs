@@ -1,6 +1,7 @@
 using MediatR;
 using WebApi.Data.Entities;
 using WebApi.Repositories;
+using WebApi.Repositories.Note;
 using WebApi.Services;
 
 namespace WebApi.Features.Notes;
@@ -11,10 +12,10 @@ public class GetSoftDeletedNotes
     
     internal sealed class Handler : IRequestHandler<Query, NotesContracts.GetNotesResponse>
     {
-        private readonly NoteRepository _noteRepository;
+        private readonly INoteRepository _noteRepository;
         private readonly UserContext<User, string> _userContext;
 
-        public Handler(NoteRepository noteRepository, UserContext<User, string> userContext)
+        public Handler(INoteRepository noteRepository, UserContext<User, string> userContext)
         {
             _noteRepository = noteRepository;
             _userContext = userContext;

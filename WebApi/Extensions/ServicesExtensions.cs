@@ -7,6 +7,7 @@ using Aufy.EntityFrameworkCore;
 using Aufy.FluentEmail;
 using FluentEmail.MailKitSmtp;
 using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using Quartz;
@@ -55,8 +56,7 @@ public static class ServicesExtensions
         services.AddMapperService();
         return services;
     }
-
-
+    
     public static IServiceCollection SetupAufy(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddAufy<User>(configuration)
@@ -80,6 +80,7 @@ public static class ServicesExtensions
             .AddFluentEmail();
             // .UseAufyCustomSignup();
 
+        
 
         return services;
     }
@@ -113,7 +114,7 @@ public static class ServicesExtensions
             options.AddPolicy("AllowLocalDev",
                 policy =>
                 {
-                    policy.WithOrigins("https://wd0xffs1-5173.asse.devtunnels.ms", "http://localhost:5173")
+                    policy.WithOrigins("https://wd0xffs1-5173.asse.devtunnels.ms", "http://localhost:5173", "http://localhost:3000")
                         .AllowAnyHeader()
                         .AllowAnyMethod()
                         .AllowCredentials(); // If using cookies/auth

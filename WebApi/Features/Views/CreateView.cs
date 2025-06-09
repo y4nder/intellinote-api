@@ -3,6 +3,7 @@ using MediatR;
 using WebApi.Data.Entities;
 using WebApi.Errors;
 using WebApi.Repositories;
+using WebApi.Repositories.View;
 using WebApi.ResultType;
 using WebApi.Services;
 
@@ -16,7 +17,7 @@ public class CreateView
         public string FilterObject { get; set; } = null!;
     }
 
-    internal class Validator : AbstractValidator<CreateViewRequest>
+    public class Validator : AbstractValidator<CreateViewRequest>
     {
         public Validator()
         {
@@ -27,12 +28,12 @@ public class CreateView
 
     internal sealed class Handler : IRequestHandler<CreateViewRequest, Result<ViewResponseDto>>
     {
-        private readonly ViewRepository _viewRepository;
+        private readonly IViewRepository _viewRepository;
         private readonly UserContext<User, string> _userContext;
         private readonly UnitOfWork _unitOfWork;
-        private readonly AbstractValidator<CreateViewRequest> _validator;
+        private readonly IValidator<CreateViewRequest> _validator;
 
-        public Handler(ViewRepository viewRepository, UserContext<User, string> userContext, UnitOfWork unitOfWork, AbstractValidator<CreateViewRequest> validator)
+        public Handler(IViewRepository viewRepository, UserContext<User, string> userContext, UnitOfWork unitOfWork, IValidator<CreateViewRequest> validator)
         {
             _viewRepository = viewRepository;
             _userContext = userContext;

@@ -1,5 +1,6 @@
 using MediatR;
 using WebApi.Repositories;
+using WebApi.Repositories.Note;
 using WebApi.Services;
 
 namespace WebApi.Features.MindMaps;
@@ -18,13 +19,13 @@ public class CreateMindMap
     
     internal sealed class Handler : IRequestHandler<CreateMindMapRequest, CreateMindMapResponse>
     {
-        private readonly NoteRepository _noteRepository;
+        private readonly INoteRepository _noteRepository;
         
         private readonly MindMapService _mindMapService; 
         private readonly UnitOfWork _unitOfWork;
         
 
-        public Handler(NoteRepository noteRepository,
+        public Handler(INoteRepository noteRepository,
             MindMapService mindMapService,
             UnitOfWork unitOfWork)
         {

@@ -4,6 +4,7 @@ using System.Text.Json;
 using OpenAI.Assistants;
 using WebApi.Data.Entities;
 using WebApi.Repositories;
+using WebApi.Repositories.Folder;
 using WebApi.Services.Hubs;
 
 namespace WebApi.Services.Agent.FunctionTools.ToolDefinitions;
@@ -11,11 +12,11 @@ namespace WebApi.Services.Agent.FunctionTools.ToolDefinitions;
 public class GetUserFolderTool : IAgentTool
 {
     public string FunctionName => nameof(GetUserFolderTool);
-    private readonly FolderRepository _folderRepository;
+    private readonly IFolderRepository _folderRepository;
     private readonly NoteHubService _noteHubService;
     private readonly UserContext<User, string> _userContext;
 
-    public GetUserFolderTool(FolderRepository folderRepository, NoteHubService noteHubService, UserContext<User, string> userContext)
+    public GetUserFolderTool(IFolderRepository folderRepository, NoteHubService noteHubService, UserContext<User, string> userContext)
     {
         _folderRepository = folderRepository;
         _noteHubService = noteHubService;

@@ -5,9 +5,9 @@ using WebApi.Data;
 using WebApi.Data.Entities;
 using WebApi.Generics;
 
-namespace WebApi.Repositories;
+namespace WebApi.Repositories.View;
 
-public class ViewRepository : Repository<View, Guid>
+public class ViewRepository : Repository<Data.Entities.View, Guid>, IViewRepository
 {
     private readonly IMapper _mapper;
     public ViewRepository(ApplicationDbContext context, IMapper mapper) : base(context)
@@ -37,7 +37,7 @@ public class ViewRepository : Repository<View, Guid>
             .FirstOrDefaultAsync();
     }
 
-    public async Task<View?> GetViewByIdAsync(Guid viewId, string userId)
+    public async Task<Data.Entities.View?> GetViewByIdAsync(Guid viewId, string userId)
     {   
         return await DbSet
             .Where(x => x.Id == viewId && x.UserId == userId)

@@ -4,6 +4,7 @@ using MediatR;
 using WebApi.Data.Entities;
 using WebApi.Features.Notes.Notification;
 using WebApi.Repositories;
+using WebApi.Repositories.Note;
 using WebApi.ResultType;
 using WebApi.Services;
 using WebApi.Services.Parsers;
@@ -29,13 +30,13 @@ public class CreateNote
     internal sealed class Handler : IRequestHandler<Command, Result<NotesContracts.CreateNoteResponse>>
     {
         private readonly UserContext<User, string> _userContext;
-        private readonly NoteRepository _noteRepository;
+        private readonly INoteRepository _noteRepository;
         private readonly UnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IMediator _mediator;
         private readonly BlockNoteParserService _blockNoteParserService;
 
-        public Handler(UserContext<User, string> userContext, NoteRepository noteRepository, UnitOfWork unitOfWork, IMapper mapper, IMediator mediator, BlockNoteParserService blockNoteParserService)
+        public Handler(UserContext<User, string> userContext, INoteRepository noteRepository, UnitOfWork unitOfWork, IMapper mapper, IMediator mediator, BlockNoteParserService blockNoteParserService)
         {
             _userContext = userContext;
             _noteRepository = noteRepository;

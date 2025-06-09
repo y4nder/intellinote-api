@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using WebApi.Data.Entities;
 using WebApi.Repositories;
+using WebApi.Repositories.View;
 using WebApi.ResultType;
 using WebApi.Services;
 
@@ -17,10 +18,10 @@ public class GetViews
 
     internal sealed class Handler : IRequestHandler<GetViewsQuery, Result<GetViewsResponse>>
     {
-        private readonly ViewRepository _repository;
+        private readonly IViewRepository _repository;
         private readonly UserContext<User, string> _userContext;
  
-        public Handler(ViewRepository repository, UserContext<User, string> userContext)
+        public Handler(IViewRepository repository, UserContext<User, string> userContext)
         {
             _repository = repository;
             _userContext = userContext;

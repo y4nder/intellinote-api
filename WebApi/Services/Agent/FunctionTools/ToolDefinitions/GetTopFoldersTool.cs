@@ -3,13 +3,14 @@ using System.Text.Json;
 using OpenAI.Assistants;
 using WebApi.Data.Entities;
 using WebApi.Repositories;
+using WebApi.Repositories.Folder;
 using WebApi.Services.Hubs;
 
 namespace WebApi.Services.Agent.FunctionTools.ToolDefinitions;
 
 public class GetTopFoldersTool : IAgentTool
 {
-    public GetTopFoldersTool(FolderRepository folderRepository, EmbeddingService embeddingService, UserContext<User, string> userContext, NoteHubService noteHubService)
+    public GetTopFoldersTool(IFolderRepository folderRepository, EmbeddingService embeddingService, UserContext<User, string> userContext, NoteHubService noteHubService)
     {
         _folderRepository = folderRepository;
         _embeddingService = embeddingService;
@@ -18,7 +19,7 @@ public class GetTopFoldersTool : IAgentTool
     }
 
     public string FunctionName => nameof(GetTopFoldersTool);
-    private readonly FolderRepository _folderRepository;
+    private readonly IFolderRepository _folderRepository;
     private readonly EmbeddingService _embeddingService;
     private readonly UserContext<User, string> _userContext;
     private readonly NoteHubService _noteHubService;

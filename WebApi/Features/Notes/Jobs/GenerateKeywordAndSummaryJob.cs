@@ -4,6 +4,7 @@ using Quartz;
 using WebApi.Data.Entities;
 using WebApi.Features.Notes.Notification;
 using WebApi.Repositories;
+using WebApi.Repositories.Note;
 using WebApi.Services;
 using WebApi.Services.External;
 using WebApi.Services.Hubs;
@@ -13,13 +14,13 @@ namespace WebApi.Features.Notes.Jobs;
 public class GenerateKeywordAndSummaryJob : IJob
 {
     private readonly NoteHubService _noteHubService;
-    private readonly NoteRepository _noteRepository;
+    private readonly INoteRepository _noteRepository;
     private readonly UnitOfWork _unitOfWork;
     private readonly GeneratedResponseService _generatedResponseService;
     private readonly IMediator _mediator;
     public const String Name = nameof(GenerateKeywordAndSummaryJob);
 
-    public GenerateKeywordAndSummaryJob(NoteHubService noteHubService, NoteRepository noteRepository, GeneratedResponseService generatedResponseService, UnitOfWork unitOfWork, IMediator mediator)
+    public GenerateKeywordAndSummaryJob(NoteHubService noteHubService, INoteRepository noteRepository, GeneratedResponseService generatedResponseService, UnitOfWork unitOfWork, IMediator mediator)
     {
         _noteHubService = noteHubService;
         _noteRepository = noteRepository;
