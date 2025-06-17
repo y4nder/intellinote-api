@@ -85,7 +85,7 @@ app.UseAufyEndpoints();
 
 app.MapFallbackToFile("index.html");
 
-app.MapHub<NoteHub>("/note-hub");
+app.MapHub<NoteHub>("/note-hub").RequireAuthorization();
 //use result pattern exception handler
 app.UseResultExceptionHandler();
 try

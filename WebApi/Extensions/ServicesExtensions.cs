@@ -9,6 +9,7 @@ using FluentEmail.MailKitSmtp;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Npgsql;
 using Quartz;
 using Quartz.Impl.AdoJobStore;
@@ -78,9 +79,8 @@ public static class ServicesExtensions
             .AddDefaultCorsPolicy()
             .AddEntityFrameworkStore<ApplicationDbContext, User>()
             .AddFluentEmail();
-            // .UseAufyCustomSignup();
 
-        
+        services.AddSingleton<IPostConfigureOptions<JwtBearerOptions>, PostConfigureJwtBearer>();
 
         return services;
     }

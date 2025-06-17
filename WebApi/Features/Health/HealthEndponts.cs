@@ -2,6 +2,8 @@ using Carter;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Extensions;
 using WebApi.Services.External;
+using WebApi.Services.Hubs;
+
 // using WebApi.Data.Entities;
 // using WebApi.Services.Hubs;
 // using WebApi.Services.Parsers;
@@ -46,9 +48,9 @@ public class HealthEndpoints : ICarterModule
         //     return text;
         // });
         //
-        // route.MapGet("/manual-socket", async ([FromServices] NoteHubService noteHubService) =>
-        // {
-        //     await noteHubService.ManualDevNotify();
-        // });
+        route.MapGet("/manual-socket", async ([FromServices] NoteHubService noteHubService) =>
+        {
+            await noteHubService.ManualDevNotify();
+        });
     }
 }

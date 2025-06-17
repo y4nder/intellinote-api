@@ -1,7 +1,4 @@
-using System.Security.Claims;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
-using NetTopologySuite.Geometries.Prepared;
 using WebApi.Data.Entities;
 using WebApi.Services.External;
 
@@ -128,7 +125,6 @@ public class FolderUpdateDoneDto
     public long MilliSeconds { get; set; }
 }
 
-[Authorize]
 public class NoteHub : Hub<INoteUpdateClient>
 {
     private readonly ILogger<NoteHub> _logger;
