@@ -24,6 +24,9 @@ public class PostConfigureJwtBearer : IPostConfigureOptions<JwtBearerOptions>
                 
                 if (context.Request.Cookies.TryGetValue("Aufy.AccessToken", out var str))
                     context.Token = str;
+                
+                // if (context.Request.Cookies.TryGetValue("Aufy.RefreshToken", out var rStr))
+                //     context.Token = rStr;
             }
             else
             {

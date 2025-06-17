@@ -1,10 +1,6 @@
-using Aufy.Core;
 using Carter;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using WebApi.Data.Entities;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace WebApi.Features.Auth;
 
@@ -14,20 +10,27 @@ public class LogOutUser : ICarterModule
     {
         app.MapPost("/api/auth/logout-user", async (HttpContext context) =>
         {
-            // Sign out cookie-based auth schemes
+            // Mirror your cookie settings exactly (Secure, SameSite=None)
+            var cookieOpts = new CookieOptions 
+            {
+                Path     = "/", 
+                Domain   = context.Request.Host.Host,
+                HttpOnly = true,
+                Secure   = true,              // Required for SameSite=None
+                SameSite = SameSiteMode.None, // Explicitly allow cross-site
+                Expires  = DateTimeOffset.UtcNow.AddDays(-1) // Expire immediately
+            };
+
+            // Overwrite cookies to delete them
+            context.Response.Cookies.Append("Aufy.RefreshToken", "", cookieOpts);
+            context.Response.Cookies.Append("Aufy.AccessToken", "", cookieOpts);
+
+            // Perform sign-out for any active schemes
             await context.SignOutAsync("Aufy.BearerSignInCookieScheme");
-            context.Response.Cookies.Delete("Aufy.AccessToken");
-            context.Response.Cookies.Delete("Aufy.RefreshToken");
+            await context.SignOutAsync("Aufy.BearerSignInTokenScheme");
+
             return Results.NoContent();
         }).RequireAuthorization();
-
-        // app.MapGet("/debug/auth-schemes", async ([FromServices] IAuthenticationSchemeProvider schemes) =>
-        // {
-        //     var allSchemes = await schemes.GetAllSchemesAsync();
-        //     return new
-        //     {
-        //         schemes = allSchemes.Select(s => s.Name)
-        //     };
-        // });
+        
     }
 }
