@@ -2,6 +2,7 @@
 using WebApi.Data.Entities;
 using WebApi.Features.Utilities;
 using WebApi.Repositories;
+using WebApi.Repositories.Note;
 using WebApi.ResultType;
 using WebApi.Services;
 
@@ -16,9 +17,9 @@ public class GetNote
     
     internal sealed class Handler : IRequestHandler<Query, Result<NotesContracts.GetNoteResponse>>
     {
-        private readonly NoteRepository _noteRepository;
+        private readonly INoteRepository _noteRepository;
         private readonly UserContext<User, string> _userContext;
-        public Handler(NoteRepository noteRepository, UserContext<User, string> userContext)
+        public Handler(INoteRepository noteRepository, UserContext<User, string> userContext)
         {
             _noteRepository = noteRepository;
             _userContext = userContext;

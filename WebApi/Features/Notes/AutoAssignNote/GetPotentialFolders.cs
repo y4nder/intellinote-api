@@ -5,6 +5,8 @@ using WebApi.Data.Entities;
 using WebApi.Errors.ErrorDefinitions;
 using WebApi.Features.Utilities;
 using WebApi.Repositories;
+using WebApi.Repositories.Folder;
+using WebApi.Repositories.Note;
 using WebApi.ResultType;
 using WebApi.Services;
 using WebApi.Services.Parsers;
@@ -25,16 +27,16 @@ public class GetPotentialFolders
     
     internal sealed class Handler : IRequestHandler<AssignNoteFolderRequest, Result<AssignNoteFolderResponse>>
     {
-        private readonly NoteRepository _noteRepository;
-        private readonly FolderRepository _folderRepository;
+        private readonly INoteRepository _noteRepository;
+        private readonly IFolderRepository _folderRepository;
         private readonly BlockNoteParserService _blockNoteParserService;
         private readonly UserContext<User, string> _userContext;
         private readonly FolderLlmChoiceService _folderLlmChoiceService;
 
-        public Handler(NoteRepository noteRepository,
+        public Handler(INoteRepository noteRepository,
             BlockNoteParserService blockNoteParserService,
             UserContext<User, string> userContext,
-            FolderRepository folderRepository, FolderLlmChoiceService folderLlmChoiceService)
+            IFolderRepository folderRepository, FolderLlmChoiceService folderLlmChoiceService)
         {
             _noteRepository = noteRepository;
             _blockNoteParserService = blockNoteParserService;

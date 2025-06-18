@@ -1,5 +1,4 @@
-﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using WebApi.Errors.ErrorDefinitions;
 using WebApi.ResultType;
 
@@ -15,19 +14,14 @@ public static class DatabaseExtensions
     /// Returns a success or failure result based on the operation outcome.
     /// </summary>
     /// <param name="dbContext">The database context.</param>
-    /// <param name="mediator">The MediatR instance for publishing domain events.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>A Result object indicating success or failure.</returns>
     public static async Task<Result> SaveChangesOrFailAsync(
         this DbContext dbContext,
-        IMediator mediator,
         CancellationToken cancellationToken = default)
     {
         try
         {
-            // Dispatch domain events before saving changes
-            await mediator.DispatchDomainEvents(dbContext);
-
             // Save changes to the database
             await dbContext.SaveChangesAsync(cancellationToken);
 

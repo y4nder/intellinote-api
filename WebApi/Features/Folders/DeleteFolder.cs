@@ -3,6 +3,7 @@ using MediatR;
 using WebApi.Data.Entities;
 using WebApi.Features.Utilities;
 using WebApi.Repositories;
+using WebApi.Repositories.Folder;
 using WebApi.ResultType;
 using WebApi.Services;
 
@@ -17,12 +18,12 @@ public class DeleteFolder
     
     internal sealed class Handler : IRequestHandler<Command, Result<FolderContracts.DeleteFolderResponse>>
     {
-        private readonly FolderRepository _repository;
+        private readonly IFolderRepository _repository;
         private readonly UserContext<User, string> _userContext;
         private readonly UnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        public Handler(FolderRepository repository, UserContext<User, string> userContext, UnitOfWork unitOfWork, IMapper mapper)
+        public Handler(IFolderRepository repository, UserContext<User, string> userContext, UnitOfWork unitOfWork, IMapper mapper)
         {
             _repository = repository;
             _userContext = userContext;

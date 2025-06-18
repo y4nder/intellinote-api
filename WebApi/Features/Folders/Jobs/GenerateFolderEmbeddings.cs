@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using Quartz;
 using WebApi.Repositories;
+using WebApi.Repositories.Folder;
 using WebApi.Services;
 using WebApi.Services.External;
 using WebApi.Services.Hubs;
@@ -9,14 +10,15 @@ namespace WebApi.Features.Folders.Jobs;
 
 public class GenerateFolderEmbeddings : IJob
 {
-    private readonly FolderRepository _repository;
+    private readonly IFolderRepository _repository;
     private readonly UnitOfWork _unitOfWork;
     private readonly EmbeddingService _embeddingService;
     private readonly NoteHubService _noteHubService;
     private readonly FolderMetaDataService _folderMetaDataService;
     public const String Name = nameof(GenerateFolderEmbeddings);
 
-    public GenerateFolderEmbeddings(FolderRepository repository,
+    public GenerateFolderEmbeddings(
+        IFolderRepository repository,
         UnitOfWork unitOfWork,
         EmbeddingService embeddingService,
         NoteHubService noteHubService,

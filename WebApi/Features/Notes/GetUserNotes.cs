@@ -2,6 +2,7 @@
 using Pgvector;
 using WebApi.Data.Entities;
 using WebApi.Repositories;
+using WebApi.Repositories.Note;
 using WebApi.ResultType;
 using WebApi.Services;
 
@@ -12,12 +13,12 @@ public class GetUserNotes
     
     internal sealed class Handler : IRequestHandler<NotesContracts.GetNotesRequest, Result<NotesContracts.GetNotesResponse>>
     {
-        private readonly NoteRepository _noteRepository;
+        private readonly INoteRepository _noteRepository;
         private readonly UserContext<User, string> _userContext;
         private readonly EmbeddingService _embeddingService;
 
         public Handler(
-            NoteRepository noteRepository, 
+            INoteRepository noteRepository, 
             UserContext<User, string> userContext, EmbeddingService embeddingService)
         {
             _noteRepository = noteRepository;

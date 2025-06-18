@@ -7,7 +7,9 @@ using Aufy.EntityFrameworkCore;
 using Aufy.FluentEmail;
 using FluentEmail.MailKitSmtp;
 using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Npgsql;
 using Quartz;
 using Quartz.Impl.AdoJobStore;
@@ -16,7 +18,6 @@ using WebApi.Data;
 using WebApi.Data.Entities;
 using WebApi.Features.Auth;
 using WebApi.Features.Folders.Jobs;
-using WebApi.Features.Keywords.Jobs;
 using WebApi.Features.Notes.Jobs;
 using WebApi.Repositories;
 using WebApi.Services;
@@ -56,8 +57,7 @@ public static class ServicesExtensions
         services.AddMapperService();
         return services;
     }
-
-
+    
     public static IServiceCollection SetupAufy(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddAufy<User>(configuration)
@@ -79,8 +79,8 @@ public static class ServicesExtensions
             .AddDefaultCorsPolicy()
             .AddEntityFrameworkStore<ApplicationDbContext, User>()
             .AddFluentEmail();
-            // .UseAufyCustomSignup();
 
+        services.AddSingleton<IPostConfigureOptions<JwtBearerOptions>, PostConfigureJwtBearer>();
 
         return services;
     }
@@ -114,7 +114,7 @@ public static class ServicesExtensions
             options.AddPolicy("AllowLocalDev",
                 policy =>
                 {
-                    policy.WithOrigins("https://wd0xffs1-5173.asse.devtunnels.ms", "http://localhost:5173")
+                    policy.WithOrigins("https://wd0xffs1-5173.asse.devtunnels.ms", "http://localhost:5173", "http://localhost:3000")
                         .AllowAnyHeader()
                         .AllowAnyMethod()
                         .AllowCredentials(); // If using cookies/auth
@@ -142,10 +142,6 @@ public static class ServicesExtensions
                 c.UseNewtonsoftJsonSerializer();
                 c.PerformSchemaValidation = false;
             });
-            
-            q.AddJob<BatchInsertNewKeywords>(j => j
-                .StoreDurably()
-                .WithIdentity(BatchInsertNewKeywords.Name));
             
             q.AddJob<GenerateNoteEmbeddings>(j => j
                 .StoreDurably()

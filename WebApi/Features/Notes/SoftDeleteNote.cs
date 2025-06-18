@@ -2,6 +2,7 @@ using MediatR;
 using WebApi.Data.Entities;
 using WebApi.Features.Utilities;
 using WebApi.Repositories;
+using WebApi.Repositories.Note;
 using WebApi.ResultType;
 using WebApi.Services;
 
@@ -21,11 +22,11 @@ public class SoftDeleteNote
     
     internal sealed class Handler : IRequestHandler<SoftDeleteCommand, Result<SoftDeleteResponse>>
     {
-        private readonly NoteRepository _noteRepository;
+        private readonly INoteRepository _noteRepository;
         private readonly UserContext<User, string> _userContext;
         private readonly UnitOfWork _unitOfWork;
 
-        public Handler(NoteRepository noteRepository, UserContext<User, string> userContext, UnitOfWork unitOfWork)
+        public Handler(INoteRepository noteRepository, UserContext<User, string> userContext, UnitOfWork unitOfWork)
         {
             _noteRepository = noteRepository;
             _userContext = userContext;

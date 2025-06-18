@@ -3,6 +3,7 @@ using System.Text.Json;
 using OpenAI.Assistants;
 using WebApi.Data.Entities;
 using WebApi.Repositories;
+using WebApi.Repositories.Note;
 using WebApi.Services.Hubs;
 
 namespace WebApi.Services.Agent.FunctionTools.ToolDefinitions;
@@ -11,11 +12,11 @@ public class GetUserNoteTool : IAgentTool
 {
     public string FunctionName => nameof(GetUserNoteTool);
     
-    private readonly NoteRepository _noteRepository;
+    private readonly INoteRepository _noteRepository;
     private readonly NoteHubService _noteHubService;
     private readonly UserContext<User, string> _userContext;
     
-    public GetUserNoteTool(NoteRepository noteRepository,
+    public GetUserNoteTool(INoteRepository noteRepository,
         NoteHubService noteHubService,
         UserContext<User, string> userContext)
     {

@@ -2,6 +2,7 @@
 using WebApi.Data.Entities;
 using WebApi.Features.Utilities;
 using WebApi.Repositories;
+using WebApi.Repositories.Note;
 using WebApi.ResultType;
 using WebApi.Services;
 
@@ -17,11 +18,11 @@ public class DeleteNote
     internal sealed class Handler : IRequestHandler
     <Command, Result<NotesContracts.DeleteNoteResponse>>
     {
-        private readonly NoteRepository _noteRepository;
+        private readonly INoteRepository _noteRepository;
         private readonly UnitOfWork _unitOfWork;
         private readonly UserContext<User, string> _userContext;
 
-        public Handler(NoteRepository noteRepository, UnitOfWork unitOfWork, UserContext<User, string> userContext)
+        public Handler(INoteRepository noteRepository, UnitOfWork unitOfWork, UserContext<User, string> userContext)
         {
             _noteRepository = noteRepository;
             _unitOfWork = unitOfWork;

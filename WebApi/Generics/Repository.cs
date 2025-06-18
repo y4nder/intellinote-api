@@ -3,22 +3,24 @@
 namespace WebApi.Generics;
 
 // Author's note: Don't forget to register inheriting classes in the Service Extensions
-// todo paginated repository
 
-public abstract class Repository<TEntity, TIdentifier> where TEntity : Entity<TIdentifier>
+public interface IRepository<TEntity, in TIdentifier> where TEntity : Entity<TIdentifier>
 {
-    private readonly DbContext _context;
+    void Add(TEntity entity);
+    void Update(TEntity entity);
+    void Delete(TEntity entity);
+    Task<TEntity?> FindByIdAsync(TIdentifier id);
+    Task<List<TEntity>> GetAllAsync();
+}
+
+public abstract class Repository<TEntity, TIdentifier> : IRepository<TEntity, TIdentifier> where TEntity : Entity<TIdentifier>
+{
     protected readonly DbSet<TEntity> DbSet;
     
     protected Repository(DbContext context)
     {
-        _context = context;
-        DbSet = _context.Set<TEntity>();
+        DbSet = context.Set<TEntity>();
     }
-    
-    public DbContext GetDbContext() => _context;
-
-    public DbSet<TEntity> GetDbSet() => DbSet;
     
     public void Add(TEntity entity)
     {

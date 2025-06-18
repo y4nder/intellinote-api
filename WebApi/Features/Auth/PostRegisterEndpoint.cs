@@ -3,6 +3,7 @@ using Aufy.Core.Endpoints;
 using Microsoft.AspNetCore.Http.HttpResults;
 using WebApi.Data.Entities;
 using WebApi.Repositories;
+using WebApi.Repositories.UserData;
 using WebApi.Services;
 
 namespace WebApi.Features.Auth;
@@ -24,7 +25,7 @@ public static class PostRegisterEndpoint
                         
                 var newUserData = UserData.Create(user);
                         
-                var userDataRepository = context.HttpContext.RequestServices.GetRequiredService<UserDataRepository>();
+                var userDataRepository = context.HttpContext.RequestServices.GetRequiredService<IUserDataRepository>();
                 var unitOfWork = context.HttpContext.RequestServices.GetRequiredService<UnitOfWork>();
             
                 userDataRepository.Add(newUserData);

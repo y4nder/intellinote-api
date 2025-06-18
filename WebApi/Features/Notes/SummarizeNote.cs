@@ -4,6 +4,7 @@ using WebApi.Data.Entities;
 using WebApi.Features.Notes.Jobs;
 using WebApi.Features.Utilities;
 using WebApi.Repositories;
+using WebApi.Repositories.Note;
 using WebApi.ResultType;
 using WebApi.Services;
 using WebApi.Services.Parsers;
@@ -25,12 +26,12 @@ public class SummarizeNote
     
     internal sealed class Handler : IRequestHandler<Command, Result<SummarizeNoteResponse>>
     {
-        private readonly NoteRepository _noteRepository;
+        private readonly INoteRepository _noteRepository;
         private readonly UserContext<User, string> _userContext;
         private readonly ISchedulerFactory _schedulerFactory;
         private readonly BlockNoteParserService  _blockNoteParserService;     
 
-        public Handler(NoteRepository noteRepository, UserContext<User, string> userContext, ISchedulerFactory schedulerFactory, BlockNoteParserService blockNoteParserService)
+        public Handler(INoteRepository noteRepository, UserContext<User, string> userContext, ISchedulerFactory schedulerFactory, BlockNoteParserService blockNoteParserService)
         {
             _noteRepository = noteRepository;
             _userContext = userContext;

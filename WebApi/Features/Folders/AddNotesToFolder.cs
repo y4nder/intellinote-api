@@ -5,6 +5,8 @@ using WebApi.Errors.ErrorDefinitions;
 using WebApi.Features.Folders.Notifications;
 using WebApi.Features.Utilities;
 using WebApi.Repositories;
+using WebApi.Repositories.Folder;
+using WebApi.Repositories.Note;
 using WebApi.ResultType;
 using WebApi.Services;
 
@@ -26,16 +28,16 @@ public class AddNotesToFolderResponse
 internal sealed class AddNotesToFolderHandler : IRequestHandler<AddNotesToFolder, Result<AddNotesToFolderResponse>>
 {
     private readonly UserContext<User, string> _userContext;
-    private readonly FolderRepository _folderRepository;
-    private readonly NoteRepository _noteRepository;
+    private readonly IFolderRepository _folderRepository;
+    private readonly INoteRepository _noteRepository;
     private readonly UnitOfWork _unitOfWork;
     private readonly IMediator _mediator;
     private readonly IMapper _mapper;
 
     public AddNotesToFolderHandler(
         UserContext<User, string> userContext,
-        FolderRepository folderRepository,
-        NoteRepository noteRepository,
+        IFolderRepository folderRepository,
+        INoteRepository noteRepository,
         UnitOfWork unitOfWork,
         IMediator mediator, 
         IMapper mapper)

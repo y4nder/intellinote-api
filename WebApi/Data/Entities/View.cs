@@ -1,5 +1,5 @@
-using System.Globalization;
 using Newtonsoft.Json;
+using WebApi.Features.Views;
 using WebApi.Generics;
 
 namespace WebApi.Data.Entities;
@@ -45,6 +45,23 @@ public class View : Entity<Guid>
             User = user,
             FilterCondition = jsonCondition
         };
+    }
+
+    public void Update(string? name, string? filterCondition)
+    {
+        if (name is null && filterCondition is null) return;
+        
+        if (!string.IsNullOrEmpty(name))
+        {
+            if(!name.Equals(Name)) Name = name;
+        }
+
+        if (!string.IsNullOrEmpty(filterCondition))
+        {
+            if(!filterCondition.Equals(FilterCondition)) FilterCondition = filterCondition;
+        }
+        
+        SetUpdated();
     }
 }
 

@@ -1,6 +1,8 @@
 using MediatR;
 using WebApi.Data.Entities;
 using WebApi.Repositories;
+using WebApi.Repositories.Note;
+using WebApi.Repositories.View;
 using WebApi.Services;
 
 namespace WebApi.Features.Views;
@@ -14,17 +16,17 @@ public class AutoCreateView
 
     internal sealed class Handler : IRequestHandler<Request, ViewResponseDto>
     {
-        private readonly NoteRepository _noteRepository;
+        private readonly INoteRepository _noteRepository;
         private readonly UserContext<User, string> _userContext;
         private readonly EmbeddingService _embeddingService;
         private readonly TopicExtractorService _topicExtractorService;
-        private readonly ViewRepository _viewRepository;
+        private readonly IViewRepository _viewRepository;
         private readonly UnitOfWork _unitOfWork;
 
-        public Handler(NoteRepository noteRepository,
+        public Handler(INoteRepository noteRepository,
             UserContext<User, string> userContext,
             EmbeddingService embeddingService,
-            TopicExtractorService topicExtractorService, ViewRepository viewRepository, UnitOfWork unitOfWork)
+            TopicExtractorService topicExtractorService, IViewRepository viewRepository, UnitOfWork unitOfWork)
         {
             _noteRepository = noteRepository;
             _userContext = userContext;

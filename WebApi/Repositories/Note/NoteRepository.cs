@@ -10,9 +10,9 @@ using WebApi.Generics;
 using WebApi.Services;
 using WebApi.Services.Parsers;
 
-namespace WebApi.Repositories;
+namespace WebApi.Repositories.Note;
 
-public class NoteRepository : Repository<Note, Guid>
+public class NoteRepository : Repository<Data.Entities.Note, Guid>, INoteRepository
 {
     private readonly IMapper _mapper;
     private readonly EmbeddingService _embeddingService;
@@ -28,7 +28,7 @@ public class NoteRepository : Repository<Note, Guid>
         _blockNoteParserService = blockNoteParserService;
     }
 
-    public async Task<List<Note>> GetNotesByNoteIdsAsync(List<Guid> noteIds)
+    public async Task<List<Data.Entities.Note>> GetNotesByNoteIdsAsync(List<Guid> noteIds)
     {
         return await DbSet
             .Where(n => !n.IsDeleted)
@@ -205,7 +205,7 @@ public class NoteRepository : Repository<Note, Guid>
             .FirstOrDefaultAsync();
     }
 
-    public override async Task<Note?> FindByIdAsync(Guid id)
+    public override async Task<Data.Entities.Note?> FindByIdAsync(Guid id)
     {
         return await DbSet
             .Where(n => !n.IsDeleted)
@@ -224,7 +224,7 @@ public class NoteRepository : Repository<Note, Guid>
             .ToListAsync();
     }
 
-    public async Task<Note?> FindDeletedNote(Guid noteId)
+    public async Task<Data.Entities.Note?> FindDeletedNote(Guid noteId)
     {
         return await DbSet
             .Where(n => n.IsDeleted)

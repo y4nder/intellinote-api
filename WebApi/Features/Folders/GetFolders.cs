@@ -2,6 +2,7 @@
 using Pgvector;
 using WebApi.Data.Entities;
 using WebApi.Repositories;
+using WebApi.Repositories.Folder;
 using WebApi.ResultType;
 using WebApi.Services;
 
@@ -18,11 +19,12 @@ public class GetFolders
     
     internal sealed class Handler: IRequestHandler<Query, Result<FolderContracts.GetFoldersResponse>>
     {
-        private readonly FolderRepository _repository;
+        private readonly IFolderRepository _repository;
         private readonly UserContext<User, string> _userContext;
         private readonly EmbeddingService _embeddingService;
 
-        public Handler(FolderRepository repository,
+        public Handler(
+            IFolderRepository repository,
             UserContext<User, string> userContext,
             EmbeddingService embeddingService)
         {

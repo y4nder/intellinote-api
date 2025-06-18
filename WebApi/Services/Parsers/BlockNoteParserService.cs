@@ -201,7 +201,7 @@ public class BlockNoteParserService
 
 public class BlockContentConverter : JsonConverter<IBlockContent>
 {
-    public override IBlockContent ReadJson(JsonReader reader, Type objectType, IBlockContent existingValue, bool hasExistingValue, JsonSerializer serializer)
+    public override IBlockContent ReadJson(JsonReader reader, Type objectType, IBlockContent? existingValue, bool hasExistingValue, JsonSerializer serializer)
     {
         JObject obj = JObject.Load(reader);
         string type = obj["type"]?.ToString()?.ToLower()!;
@@ -221,7 +221,7 @@ public class BlockContentConverter : JsonConverter<IBlockContent>
 
 public class BlockContentListConverter : JsonConverter<List<IBlockContent>>
 {
-    public override List<IBlockContent> ReadJson(JsonReader reader, Type objectType, List<IBlockContent> existingValue, bool hasExistingValue, JsonSerializer serializer)
+    public override List<IBlockContent> ReadJson(JsonReader reader, Type objectType, List<IBlockContent>? existingValue, bool hasExistingValue, JsonSerializer serializer)
     {
         var result = new List<IBlockContent>();
         
@@ -242,7 +242,7 @@ public class BlockContentListConverter : JsonConverter<List<IBlockContent>>
         return result;
     }
 
-    public override void WriteJson(JsonWriter writer, List<IBlockContent> value, JsonSerializer serializer)
+    public override void WriteJson(JsonWriter writer, List<IBlockContent>? value, JsonSerializer serializer)
     {
         serializer.Serialize(writer, value);
     }

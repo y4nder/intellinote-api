@@ -7,16 +7,20 @@ using WebApi.Data;
 using WebApi.Data.Entities;
 using WebApi.Generics;
 
-namespace WebApi.Repositories;
+namespace WebApi.Repositories.Folder;
 
-public class FolderRepository : Repository<Folder, Guid>
+public class FolderRepository : Repository<Data.Entities.Folder, Guid>, IFolderRepository
 {
     private readonly IMapper _mapper;    
+    private readonly DbSet<Data.Entities.Folder> _dbSet;
     
     public FolderRepository(ApplicationDbContext context, IMapper mapper) : base(context)
     {
         _mapper = mapper;
+        _dbSet = context.Set<Data.Entities.Folder>();
     }
+
+    public DbSet<Data.Entities.Folder> GetDbSet() => _dbSet;
 
     public async Task<PaginatedResult<FolderWithDetailsDto>> GetFoldersWithDetailsAsync(string userId, Vector? searchVector = null, int skip = 0, int take = 10)
     {
@@ -89,7 +93,7 @@ public class FolderRepository : Repository<Folder, Guid>
         return folder;
     }
 
-    public override async Task<Folder?> FindByIdAsync(Guid id)
+    public override async Task<Data.Entities.Folder?> FindByIdAsync(Guid id)
     {
         return await DbSet
             .Where(f => f.Id == id)
@@ -98,7 +102,7 @@ public class FolderRepository : Repository<Folder, Guid>
             .FirstOrDefaultAsync();
     }
 
-    public async Task<Folder?> FindByIdAsyncWithNotes(Guid id)
+    public async Task<Data.Entities.Folder?> FindByIdAsyncWithNotes(Guid id)
     {
         return await DbSet.Where(f => f.Id == id)
             .Where((f => f.Notes.Any(n => n.IsDeleted == false) || f.Notes.Count == 0))

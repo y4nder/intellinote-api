@@ -5,7 +5,7 @@ using OpenAI.Assistants;
 using OpenAI.VectorStores;
 using WebApi.Data.Entities;
 using WebApi.Extensions;
-using WebApi.Repositories;
+using WebApi.Repositories.Note;
 using WebApi.Services.Agent.Dtos;
 using WebApi.Services.Parsers;
 
@@ -15,7 +15,7 @@ public interface ILexAgent : IChatAgent<PromptContracts.PromptNoteCreationDto, P
 
 public class Lex : ILexAgent
 {
-    public Lex(AssistantClient assistantClient, ToolRouter toolRouter, IOptions<OpenAiSettings> options, BlockNoteParserService blockNoteParserService, ILogger<Lex> logger, NoteRepository noteRepository, UserContext<User, string> userContext, UnitOfWork unitOfWork, VectorStoreClient vectorStoreClient)
+    public Lex(AssistantClient assistantClient, ToolRouter toolRouter, IOptions<OpenAiSettings> options, BlockNoteParserService blockNoteParserService, ILogger<Lex> logger, INoteRepository noteRepository, UserContext<User, string> userContext, UnitOfWork unitOfWork, VectorStoreClient vectorStoreClient)
     {
         _assistantClient = assistantClient;
         _toolRouter = toolRouter;
@@ -34,7 +34,7 @@ public class Lex : ILexAgent
     private readonly ToolRouter _toolRouter;
     private readonly string _assistantId;
     private readonly BlockNoteParserService _blockNoteParserService;
-    private readonly NoteRepository _noteRepository;
+    private readonly INoteRepository _noteRepository;
     private readonly UserContext<User, string> _userContext;
     private readonly ILogger<Lex> _logger;
     private readonly UnitOfWork _unitOfWork;

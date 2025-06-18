@@ -4,6 +4,7 @@ using WebApi.Data.Entities;
 using WebApi.Features.Notes.Notification;
 using WebApi.Features.Utilities;
 using WebApi.Repositories;
+using WebApi.Repositories.Note;
 using WebApi.ResultType;
 using WebApi.Services;
 using WebApi.Services.Parsers;
@@ -22,14 +23,14 @@ public class UpdateNote
     
     internal sealed class Handler  : IRequestHandler<Command, Result<NotesContracts.UpdateNoteResponse>>
     {
-        private readonly NoteRepository _noteRepository;
+        private readonly INoteRepository _noteRepository;
         private readonly UnitOfWork _unitOfWork;
         private readonly UserContext<User, string> _userContext;
         private readonly IMediator _mediator;
         private readonly BlockNoteParserService _blockNoteParserService;
         private readonly IMapper _mapper;
 
-        public Handler(NoteRepository noteRepository,
+        public Handler(INoteRepository noteRepository,
             UnitOfWork unitOfWork,
             IMapper mapper,
             UserContext<User, string> userContext,

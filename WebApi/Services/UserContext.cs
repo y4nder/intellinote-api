@@ -2,7 +2,7 @@
 using Aufy.Core;
 using Microsoft.AspNetCore.Identity;
 using WebApi.Errors.ErrorDefinitions;
-using WebApi.Extensions;
+using WebApi.ResultType;
 
 namespace WebApi.Services;
 

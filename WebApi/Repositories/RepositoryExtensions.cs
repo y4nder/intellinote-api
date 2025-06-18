@@ -1,15 +1,17 @@
-﻿namespace WebApi.Repositories;
+﻿using WebApi.Repositories.Folder;
+using WebApi.Repositories.Note;
+using WebApi.Repositories.UserData;
+using WebApi.Repositories.View;
+
+namespace WebApi.Repositories;
 
 public static class RepositoryExtensions
 {
     public static void AddRepositories(this IServiceCollection services)
     {
-        services.AddScoped<UserDataRepository>();
-        
-        services.AddScoped<NoteRepository>();
-        
-        services.AddScoped<FolderRepository>();
-        services.AddScoped<KeywordRepository>();
-        services.AddScoped<ViewRepository>();
+        services.AddScoped<IUserDataRepository, UserDataRepository>();
+        services.AddScoped<INoteRepository, NoteRepository>();
+        services.AddScoped<IFolderRepository, FolderRepository>();
+        services.AddScoped<IViewRepository, ViewRepository>();
     }
 }
