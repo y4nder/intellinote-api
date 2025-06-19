@@ -21,6 +21,7 @@ using WebApi.Features.Folders.Jobs;
 using WebApi.Features.Notes.Jobs;
 using WebApi.Repositories;
 using WebApi.Services;
+using WebApi.Services.Mappings;
 
 
 namespace WebApi.Extensions;
@@ -103,21 +104,14 @@ public static class ServicesExtensions
     {
         services.AddCors(options =>
         {
-            // options.AddDefaultPolicy(builder =>
-            // {
-            //     builder
-            //         .AllowAnyHeader()
-            //         .AllowAnyMethod()
-            //         .SetIsOriginAllowed(_ => true)
-            //         .AllowAnyOrigin();
-            // });
             options.AddPolicy("AllowLocalDev",
                 policy =>
                 {
-                    policy.WithOrigins("https://wd0xffs1-5173.asse.devtunnels.ms", "http://localhost:5173", "http://localhost:3000")
+                    policy.
+                        SetIsOriginAllowed(_ => true)
                         .AllowAnyHeader()
                         .AllowAnyMethod()
-                        .AllowCredentials(); // If using cookies/auth
+                        .AllowCredentials(); 
                 });
         });
         

@@ -1,6 +1,6 @@
 using System.Text.RegularExpressions;
 
-namespace WebApi.Services;
+namespace WebApi.Services.Parsers;
 
 
 public static class TextCleaner

@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using WebApi.Errors.ErrorDefinitions;
 using WebApi.ResultType;
 
-namespace WebApi.Services;
+namespace WebApi.Services.Http;
 
 public class UserContext<TEntity, TKey> where TEntity : IdentityUser, IAufyUser, new() where TKey : IEquatable<TKey>
 {

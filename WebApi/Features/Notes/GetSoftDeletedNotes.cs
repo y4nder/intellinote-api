@@ -3,6 +3,7 @@ using WebApi.Data.Entities;
 using WebApi.Repositories;
 using WebApi.Repositories.Note;
 using WebApi.Services;
+using WebApi.Services.Http;
 
 namespace WebApi.Features.Notes;
 

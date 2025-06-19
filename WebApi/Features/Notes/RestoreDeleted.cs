@@ -7,6 +7,7 @@ using WebApi.Repositories;
 using WebApi.Repositories.Note;
 using WebApi.ResultType;
 using WebApi.Services;
+using WebApi.Services.Http;
 
 namespace WebApi.Features.Notes;
 

@@ -1,8 +1,7 @@
 ﻿using AutoMapper;
 using WebApi.Data.Entities;
-using WebApi.Features.Views;
 
-namespace WebApi.Services;
+namespace WebApi.Services.Mappings;
 
 public class MapperService : Profile
 {

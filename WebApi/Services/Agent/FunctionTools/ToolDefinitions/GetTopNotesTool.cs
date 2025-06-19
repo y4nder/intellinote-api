@@ -3,6 +3,7 @@ using System.Text.Json;
 using OpenAI.Assistants;
 using WebApi.Data.Entities;
 using WebApi.Repositories.Note;
+using WebApi.Services.Http;
 using WebApi.Services.Hubs;
 
 namespace WebApi.Services.Agent.FunctionTools.ToolDefinitions;
