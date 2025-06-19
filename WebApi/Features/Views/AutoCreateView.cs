@@ -4,6 +4,7 @@ using WebApi.Repositories;
 using WebApi.Repositories.Note;
 using WebApi.Repositories.View;
 using WebApi.Services;
+using WebApi.Services.Http;
 
 namespace WebApi.Features.Views;
 

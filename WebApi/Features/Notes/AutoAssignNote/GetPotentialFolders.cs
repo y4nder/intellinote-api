@@ -9,6 +9,7 @@ using WebApi.Repositories.Folder;
 using WebApi.Repositories.Note;
 using WebApi.ResultType;
 using WebApi.Services;
+using WebApi.Services.Http;
 using WebApi.Services.Parsers;
 
 namespace WebApi.Features.Notes.AutoAssignNote;

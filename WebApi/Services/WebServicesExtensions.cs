@@ -1,9 +1,10 @@
-﻿using WebApi.Services.Hubs;
+﻿using WebApi.Services.Http;
+using WebApi.Services.Hubs;
 using WebApi.Services.Parsers;
 
 namespace WebApi.Services;
 
-public static class WebServices
+public static class WebServicesExtensions
 {
     public static void AddWebServices(this IServiceCollection services)
     {

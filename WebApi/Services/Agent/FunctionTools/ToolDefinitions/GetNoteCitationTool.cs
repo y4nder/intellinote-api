@@ -5,6 +5,7 @@ using WebApi.Data.Entities;
 using WebApi.Repositories;
 using WebApi.Repositories.Note;
 using WebApi.Services.Agent.Dtos;
+using WebApi.Services.Http;
 using WebApi.Services.Hubs;
 using WebApi.Services.Parsers;
 
