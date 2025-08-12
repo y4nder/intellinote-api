@@ -2,9 +2,9 @@ namespace WebApi.Services.External;
 
 public static class GeneratedResponseExtensions
 {
-    public static IServiceCollection AddGeneratedResponseService(this IServiceCollection services, IConfiguration configuration)
+    public static void AddGeneratedResponseService(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddHttpClient<GeneratedResponseService>((sp, client) =>
+        services.AddHttpClient<GeneratedResponseService>((_, client) =>
         {
             var baseUrl = configuration.GetValue<string>("ExternalServices:GeneratedResponse:BaseUrl");
             client.BaseAddress = new Uri(baseUrl!);
@@ -14,6 +14,5 @@ public static class GeneratedResponseExtensions
             PooledConnectionLifetime = TimeSpan.FromMinutes(5)
         })
         .SetHandlerLifetime(Timeout.InfiniteTimeSpan);
-        return services;
     }
 }

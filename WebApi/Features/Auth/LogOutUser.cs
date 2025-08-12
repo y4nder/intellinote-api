@@ -26,8 +26,8 @@ public class LogOutUser : ICarterModule
             context.Response.Cookies.Append("Aufy.AccessToken", "", cookieOpts);
 
             // Perform sign-out for any active schemes
-            await context.SignOutAsync("Aufy.BearerSignInCookieScheme");
-            await context.SignOutAsync("Aufy.BearerSignInTokenScheme");
+            // await context.SignOutAsync("Aufy.BearerSignInCookieScheme");
+            // await context.SignOutAsync("Aufy.BearerSignInTokenScheme");
 
             return Results.NoContent();
         }).RequireAuthorization();

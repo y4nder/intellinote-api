@@ -58,5 +58,5 @@ public class OpenAiSettings
     public string EmbeddingModel { get; init; } = null!;
     public string DescriptionGeneratorModel { get; init; } = null!;
     public string AssistantId { get; init; } = null!;
-    public string LexAssistantId { get; set; } = null!;
+    public string LexAssistantId { get; init; } = null!;
 }

@@ -39,7 +39,7 @@ public class DeleteNote
             
             _noteRepository.Delete(existingNote!);
             
-             var deleted = await _unitOfWork.Commit(cancellationToken);
+             var deleted = await _unitOfWork.CommitAsync(cancellationToken);
              
              if(deleted.IsFailure) return Result.Failure<NotesContracts.DeleteNoteResponse>(deleted.Error!);
              

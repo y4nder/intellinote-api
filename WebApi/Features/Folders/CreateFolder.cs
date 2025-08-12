@@ -95,7 +95,7 @@ public class CreateFolder
             
             _folderRepository.Add(folder);
             
-            var saved = await _unitOfWork.Commit(cancellationToken);
+            var saved = await _unitOfWork.CommitAsync(cancellationToken);
             
             if (saved.IsSuccess && notes.Any())
             {

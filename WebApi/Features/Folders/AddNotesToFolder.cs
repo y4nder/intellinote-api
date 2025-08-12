@@ -16,7 +16,7 @@ namespace WebApi.Features.Folders;
 public class AddNotesToFolder : IRequest<Result<AddNotesToFolderResponse>>
 {
     public Guid FolderId { get; set; }
-    public List<Guid> NoteIds { get; set; } = new List<Guid>();
+    public List<Guid> NoteIds { get; set; } = [];
 }
 
 public class AddNotesToFolderResponse
@@ -75,7 +75,7 @@ internal sealed class AddNotesToFolderHandler : IRequestHandler<AddNotesToFolder
         }
         
         // commit changes
-        await _unitOfWork.Commit(cancellationToken);
+        await _unitOfWork.CommitAsync(cancellationToken);
         
         // send for embedding
         await _mediator.Publish(new DelegateFolderEmbeddingNotification

@@ -1,5 +1,4 @@
-﻿using MediatR;
-using WebApi.Data;
+﻿using WebApi.Data;
 using WebApi.Extensions;
 using WebApi.ResultType;
 
@@ -29,7 +28,7 @@ public class UnitOfWork
     /// A <see cref="Result{T}"/> indicating success or failure. 
     /// Returns <c>true</c> if the commit is successful; otherwise, returns an error.
     /// </returns>
-    public async Task<Result> Commit(CancellationToken cancellationToken = default)
+    public async Task<Result> CommitAsync(CancellationToken cancellationToken = default)
     {
         return await _context.SaveChangesOrFailAsync(cancellationToken);
     }

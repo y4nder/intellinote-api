@@ -18,7 +18,7 @@ public class GenerateKeywordAndSummaryJob : IJob
     private readonly UnitOfWork _unitOfWork;
     private readonly GeneratedResponseService _generatedResponseService;
     private readonly IMediator _mediator;
-    public const String Name = nameof(GenerateKeywordAndSummaryJob);
+    public const string Name = nameof(GenerateKeywordAndSummaryJob);
 
     public GenerateKeywordAndSummaryJob(NoteHubService noteHubService, INoteRepository noteRepository, GeneratedResponseService generatedResponseService, UnitOfWork unitOfWork, IMediator mediator)
     {
@@ -64,7 +64,7 @@ public class GenerateKeywordAndSummaryJob : IJob
         note.Topics = generatedResponse.Topics;
         note.Keywords = generatedResponse.Keywords.Select(k => k.Keyword).ToList();
 
-        await _unitOfWork.Commit(CancellationToken.None);
+        await _unitOfWork.CommitAsync(CancellationToken.None);
         stopWatch.Stop();
         await _noteHubService.NotifyGenerationDone(note, generatedResponse, stopWatch.ElapsedMilliseconds);
         await HandleEmbeddings(note, CancellationToken.None);

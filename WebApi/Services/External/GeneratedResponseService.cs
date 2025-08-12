@@ -7,7 +7,8 @@ public class GeneratedResponseService
     private readonly HttpClient _httpClient;
     private readonly ILogger<GeneratedResponseService> _logger;
 
-    public GeneratedResponseService(HttpClient httpClient,
+    public GeneratedResponseService(
+        HttpClient httpClient,
         ILogger<GeneratedResponseService> logger)
     {
         _httpClient = httpClient;
@@ -44,6 +45,20 @@ public class GeneratedResponseService
         {
             _logger.LogError(ex, "Error in HealthCheck");
             return "Internal Server Error";
+        }
+    }
+
+    public async Task<bool> IsHealthy()
+    {
+        try
+        {
+            var response = await _httpClient.GetStringAsync("");
+            _logger.LogInformation($"[HEALTH_CHECK]: {response}");
+            return true;
+        }
+        catch (Exception ex)
+        {
+            return false;
         }
     }
 

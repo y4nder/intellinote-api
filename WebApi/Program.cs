@@ -9,6 +9,8 @@ using WebApi.Services.Agent;
 using WebApi.Services.External;
 using WebApi.Services.Hubs;
 
+DotNetEnv.Env.Load();
+
 var builder = WebApplication.CreateBuilder(args);
 
 // logging with Serilog

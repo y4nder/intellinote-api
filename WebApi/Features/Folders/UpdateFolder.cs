@@ -49,7 +49,7 @@ public class UpdateFolder
             folder!.Name = request.Name ?? folder.Name;
             folder.Description = request.Description ?? folder.Description;
 
-            var saved = await _unitOfWork.Commit(cancellationToken);
+            var saved = await _unitOfWork.CommitAsync(cancellationToken);
             
             if(saved.IsFailure)
                 return Result.Failure<FolderContracts.UpdateFolderResponse>(saved.Error!);

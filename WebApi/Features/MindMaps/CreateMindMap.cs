@@ -42,7 +42,7 @@ public class CreateMindMap
             var content = note.NormalizedContent;
             var generatedMindMap = await _mindMapService.GenerateMindMap(content);
             note.Mindmap = generatedMindMap;
-            await _unitOfWork.Commit(cancellationToken);            
+            await _unitOfWork.CommitAsync(cancellationToken);            
             return new CreateMindMapResponse
             {
                 MindMap = generatedMindMap

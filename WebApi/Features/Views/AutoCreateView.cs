@@ -52,7 +52,7 @@ public class AutoCreateView
             );
             
             _viewRepository.Add(createdView);
-            await _unitOfWork.Commit(cancellationToken);
+            await _unitOfWork.CommitAsync(cancellationToken);
 
             return new ViewResponseDto
             {
