@@ -12,29 +12,32 @@
     
     <ItemGroup>
         <PackageReference Include="AppAny.Quartz.EntityFrameworkCore.Migrations.PostgreSQL" />
-        <PackageReference Include="Aufy.EntityFrameworkCore"/>
-        <PackageReference Include="Aufy.FluentEmail"/>
+        <PackageReference Include="Aufy.EntityFrameworkCore" />
+        <PackageReference Include="Aufy.FluentEmail" />
         <PackageReference Include="AutoMapper" />
-        <PackageReference Include="Carter"/>
+        <PackageReference Include="Carter" />
+        <PackageReference Include="DotNetEnv" />
         <PackageReference Include="EFCore.BulkExtensions.PostgreSql" />
-        <PackageReference Include="FluentValidation.DependencyInjectionExtensions"/>
-        <PackageReference Include="MediatR"/>
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook"/>
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.Google"/>
-        <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore"/>
-        <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore"/>
+        <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
+        <PackageReference Include="MediatR" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" />
+        <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" />
+        <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
-        <PackageReference Include="Microsoft.AspNetCore.SpaProxy"/>
+        <PackageReference Include="Microsoft.AspNetCore.SpaProxy" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Tools">
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection"/>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
         <PackageReference Include="MongoDB.Driver" />
         <PackageReference Include="Newtonsoft.Json" />
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
@@ -45,12 +48,12 @@
         <PackageReference Include="Quartz.Extensions.Hosting" />
         <PackageReference Include="Quartz.Serialization.Json" />
         <PackageReference Include="Scalar.AspNetCore" />
-        <PackageReference Include="Serilog"/>
-        <PackageReference Include="Serilog.AspNetCore"/>
-        <PackageReference Include="Serilog.Sinks.Console"/>
-        <PackageReference Include="Serilog.Sinks.File"/>
-        <PackageReference Include="Swashbuckle.AspNetCore"/>
-        <PackageReference Include="AspNet.Security.OAuth.Discord"/>
-        <PackageReference Include="AspNet.Security.OAuth.GitHub"/>
+        <PackageReference Include="Serilog" />
+        <PackageReference Include="Serilog.AspNetCore" />
+        <PackageReference Include="Serilog.Sinks.Console" />
+        <PackageReference Include="Serilog.Sinks.File" />
+        <PackageReference Include="Swashbuckle.AspNetCore" />
+        <PackageReference Include="AspNet.Security.OAuth.Discord" />
+        <PackageReference Include="AspNet.Security.OAuth.GitHub" />
     </ItemGroup>
 </Project>

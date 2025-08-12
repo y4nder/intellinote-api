@@ -22,7 +22,7 @@ public class HealthEndpoints : ICarterModule
             return new
             {
                 dotnetApi="Healthy",
-                flaskApi = externalStatus
+                aiApi = externalStatus
             };
         });
         

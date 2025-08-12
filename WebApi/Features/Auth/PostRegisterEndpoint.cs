@@ -29,7 +29,7 @@ public static class PostRegisterEndpoint
                 var unitOfWork = context.HttpContext.RequestServices.GetRequiredService<UnitOfWork>();
             
                 userDataRepository.Add(newUserData);
-                await unitOfWork.Commit();
+                await unitOfWork.CommitAsync();
             }
                     
             return result;

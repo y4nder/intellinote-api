@@ -72,7 +72,7 @@ public class UpdateVIew
             
             view.Update(request.Name, request.FilterObject);
             
-            var updated = await _unitOfWork.Commit(cancellationToken);
+            var updated = await _unitOfWork.CommitAsync(cancellationToken);
             if(updated.IsFailure)return Result.Failure<ViewResponseDto>(updated.Error!);
 
             return new ViewResponseDto

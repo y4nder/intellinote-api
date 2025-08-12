@@ -19,8 +19,6 @@ public class Lex : ILexAgent
     public Lex(AssistantClient assistantClient, ToolRouter toolRouter, IOptions<OpenAiSettings> options, BlockNoteParserService blockNoteParserService, ILogger<Lex> logger, INoteRepository noteRepository, UserContext<User, string> userContext, UnitOfWork unitOfWork, VectorStoreClient vectorStoreClient)
     {
         _assistantClient = assistantClient;
-        _toolRouter = toolRouter;
-        _blockNoteParserService = blockNoteParserService;
         _logger = logger;
         _noteRepository = noteRepository;
         _userContext = userContext;
@@ -32,9 +30,7 @@ public class Lex : ILexAgent
     public string AgentName => nameof(Lex);
     
     private readonly AssistantClient _assistantClient;
-    private readonly ToolRouter _toolRouter;
     private readonly string _assistantId;
-    private readonly BlockNoteParserService _blockNoteParserService;
     private readonly INoteRepository _noteRepository;
     private readonly UserContext<User, string> _userContext;
     private readonly ILogger<Lex> _logger;
@@ -44,8 +40,6 @@ public class Lex : ILexAgent
     {
         var message = prompt.PromptMessage;
         
-        
-
         AssistantThread thread;
         if (prompt.FileIds.Any())
         {
@@ -136,7 +130,7 @@ public class Lex : ILexAgent
         
         _noteRepository.Add(createdNote);
         
-        await _unitOfWork.Commit(CancellationToken.None);
+        await _unitOfWork.CommitAsync(CancellationToken.None);
 
         return new PromptContracts.LexResponseDto
         {

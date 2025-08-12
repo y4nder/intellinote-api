@@ -52,7 +52,7 @@ public class RestoreDeleted
             
             note.IsDeleted = false;
             
-            await _unitOfWork.Commit(cancellationToken);
+            await _unitOfWork.CommitAsync(cancellationToken);
             
             return Result.Success(new RestoreDeletedResponse
             {

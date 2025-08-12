@@ -15,7 +15,7 @@ public class GenerateFolderEmbeddings : IJob
     private readonly EmbeddingService _embeddingService;
     private readonly NoteHubService _noteHubService;
     private readonly FolderMetaDataService _folderMetaDataService;
-    public const String Name = nameof(GenerateFolderEmbeddings);
+    public const string Name = nameof(GenerateFolderEmbeddings);
 
     public GenerateFolderEmbeddings(
         IFolderRepository repository,
@@ -62,7 +62,7 @@ public class GenerateFolderEmbeddings : IJob
 
         folder.Embedding = folderEmbeddingsVector;
                 
-        await _unitOfWork.Commit(CancellationToken.None);
+        await _unitOfWork.CommitAsync(CancellationToken.None);
         stopWatch.Stop();
         if (auto)
         {

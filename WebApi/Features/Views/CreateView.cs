@@ -50,7 +50,7 @@ public class CreateView
             var user = await _userContext.GetCurrentUser();
             var newView = View.Create(user, request.Name, request.FilterObject);
             _viewRepository.Add(newView);
-            var saved = await _unitOfWork.Commit(cancellationToken);
+            var saved = await _unitOfWork.CommitAsync(cancellationToken);
             if(saved.IsFailure) return Result.Failure<ViewResponseDto>(saved.Error!);
 
             return new ViewResponseDto

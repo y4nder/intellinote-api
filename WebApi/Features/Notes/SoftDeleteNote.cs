@@ -44,7 +44,7 @@ public class SoftDeleteNote
             
             note!.IsDeleted = true;
             
-            await _unitOfWork.Commit(cancellationToken);
+            await _unitOfWork.CommitAsync(cancellationToken);
             
             return Result.Success(new SoftDeleteResponse
             {

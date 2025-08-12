@@ -57,7 +57,7 @@ public class CreateNote
                 request.Content);   
             
             _noteRepository.Add(note);
-            var saved = await _unitOfWork.Commit(cancellationToken);
+            var saved = await _unitOfWork.CommitAsync(cancellationToken);
             
             if(saved.IsFailure) return Result.Failure<NotesContracts.CreateNoteResponse>(saved.Error!);
 

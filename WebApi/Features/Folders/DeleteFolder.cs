@@ -42,7 +42,7 @@ public class DeleteFolder
             
             _repository.Delete(folder!);
             
-            var deleted = await _unitOfWork.Commit(cancellationToken);
+            var deleted = await _unitOfWork.CommitAsync(cancellationToken);
             
             if(deleted.IsFailure) return Result.Failure<FolderContracts.DeleteFolderResponse>(deleted.Error!);
 

@@ -100,7 +100,7 @@ public static class ServicesExtensions
         return services;
     }
     
-    public static IServiceCollection SetupCors(this IServiceCollection services)
+    public static void SetupCors(this IServiceCollection services)
     {
         services.AddCors(options =>
         {
@@ -114,8 +114,6 @@ public static class ServicesExtensions
                         .AllowCredentials(); 
                 });
         });
-        
-        return services;
     }
 
     // adding quartz

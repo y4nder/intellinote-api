@@ -61,7 +61,7 @@ public class UpdateNote
                 Summary = request.Summary ?? existingNote.Summary
             });
             
-            var saved = await _unitOfWork.Commit(cancellationToken);
+            var saved = await _unitOfWork.CommitAsync(cancellationToken);
             if(saved.IsFailure) return Result.Failure<NotesContracts.UpdateNoteResponse>(saved.Error!);
 
             var noteDto = _mapper.Map<NoteDto>(existingNote);

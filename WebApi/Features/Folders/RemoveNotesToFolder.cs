@@ -73,7 +73,7 @@ internal sealed class RemoveNotesToFolderHandler : IRequestHandler<RemoveNotesTo
         }
         
         // commit changes
-        await _unitOfWork.Commit(cancellationToken);
+        await _unitOfWork.CommitAsync(cancellationToken);
         
         // send for embedding
         await _mediator.Publish(new DelegateFolderEmbeddingNotification

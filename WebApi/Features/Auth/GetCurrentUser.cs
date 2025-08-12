@@ -2,7 +2,6 @@ using Carter;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Data.Entities;
 using WebApi.Extensions;
-using WebApi.Services;
 using WebApi.Services.Http;
 
 namespace WebApi.Features.Auth;
