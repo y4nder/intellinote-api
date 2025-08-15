@@ -1,0 +1,10 @@
+﻿services:
+  intellinote.webapi:
+    build:
+      context: .
+      dockerfile: WebApi/Dockerfile
+    ports:
+      - "7050:8050"
+    env_file:
+      - ./WebApi/.env
+    restart: unless-stopped
