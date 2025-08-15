@@ -56,4 +56,10 @@
         <PackageReference Include="AspNet.Security.OAuth.Discord" />
         <PackageReference Include="AspNet.Security.OAuth.GitHub" />
     </ItemGroup>
+    
+    <ItemGroup>
+      <Content Include="..\.dockerignore">
+        <Link>.dockerignore</Link>
+      </Content>
+    </ItemGroup>
 </Project>
